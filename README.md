@@ -1,4 +1,22 @@
-# Heroku Django Starter Template
+# TheMenu
+
+### Local database setup
+
+    psql -c 'CREATE DATABASE themenu'
+    ./manage.py migrate
+
+(If we make dummy data)
+
+    ./manage.py loaddata fixture.json
+
+
+Once we have a heroku database
+
+    heroku pg:backups capture
+    curl -o latest.dump `heroku pg:backups public-url`
+    pg_restore --verbose --clean --no-acl --no-owner -d themenu latest.dump
+
+## Heroku Django Starter Template
 
 An utterly fantastic project starter template for Django 1.9.
 
