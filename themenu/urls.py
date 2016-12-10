@@ -19,6 +19,6 @@ import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^calendar/(?P<offset>\w+)/$', views.calendar, name='calendar'),
+    url(r'^calendar/(?P<offset>[\-\d]+)/?$', views.calendar, name='calendar'),
     url(r'^$', views.index, name='index')
     ]

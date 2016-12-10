@@ -5,11 +5,12 @@
 <div class="calendar">
   <table>
     <tr>
-      <th><a href="">< Week of: {{lastweek}}</a></th>
-      <th>Week of: {{thisweek}}</th>
-      <th><a href="">Week of: {{nextweek}}></a></th>
+      <th><a href="{% url 'calendar' lastoffset %}">< Week of {{lastweekmonday}}</a></th>
+      <th>Week of {{thisweekmonday}}</th>
+      <th><a href="{% url 'calendar' nextoffset %}">Week of {{nextweekmonday}}></a></th>
     </tr>
   </table>
+  <br>
   <table>
   <tr>
     <th></th>
@@ -25,10 +26,9 @@
     <td>Breakfast</td>
     {% for breakfast in weekplan.breakfast %}
       <td>
-        {{breakfast.menu.name}}
-        {% for dish in breakfast.menu.dishes %}
-          <p>{{dish.name}}</p>
-        {% endfor %}
+        <a href="">
+          {{breakfast.menu.name}}
+        </a>
       </td>
     {% endfor %}
   </tr>
@@ -36,10 +36,9 @@
     <td>Lunch</td>
     {% for lunch in weekplan.lunch %}
       <td>
-        {{lunch.menu.name}}
-        {% for dish in lunch.menu.dishes %}
-          <p>{{dish.name}}</p>
-        {% endfor %}
+        <a href="">
+          {{lunch.menu.name}}
+        <a href=""
       </td>
     {% endfor %}
   </tr>
@@ -47,10 +46,9 @@
     <td>Dinner</td>
     {% for dinner in weekplan.dinner %}
       <td>
-        {{dinner.menu.name}}
-        {% for dish in dinner.menu.dishes %}
-          <p>{{dish.name}}</p>
-        {% endfor %}
+        <a href="">
+          {{dinner.menu.name}}
+        </a>
       </td>
     {% endfor %}
   </tr>
@@ -58,10 +56,9 @@
     <td>Dessert</td>
     {% for dessert in weekplan.dessert %}
       <td>
-        {{dessert.menu.name}}
-        {% for dish in dessert.menu.dishes %}
-          <p>{{dish.name}}</p>
-        {% endfor %}
+        <a href="">
+          {{dessert.menu.name}}
+        </a>
       </td>
     {% endfor %}
   </tr>
@@ -69,10 +66,9 @@
     <td>Snacks</td>
     {% for snack in weekplan.snacks %}
       <td>
-        {{snack.menu.name}}
-        {% for dish in snack.menu.dishes %}
-          <p>{{dish.name}}</p>
-        {% endfor %}
+        <a href="">
+          {{snack.menu.name}}
+        <a href="">
       </td>
     {% endfor %}
   </tr>
