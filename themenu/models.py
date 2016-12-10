@@ -1,16 +1,6 @@
 from django.db import models
 # from django.contrib.auth.models import User
 
-SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
-MEAL_TYPE_CHOICES = [
-    ('breakfast', 'breakfast'),
-    ('lunch', 'lunch'),
-    ('dinner', 'dinner'),
-    ('dessert', 'dessert'),
-    ('snack', 'snack'),
-    ('tapas', 'tapas'),
-]
-
 
 class Tag(models.Model):
     '''Any label for a Menu, Dish, or Ingredient'''
@@ -33,6 +23,7 @@ class Dish(models.Model):
     '''A collection of dishes to be eaten at one time'''
     class Meta:
         verbose_name_plural = "dishes"
+    SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
 
     name = models.TextField()
     notes = models.TextField(null=True, blank=True)
@@ -70,6 +61,14 @@ class DayPlan(models.Model):
 
 class Meal(models.Model):
     '''A collection of dishes to be eaten at one time'''
+    MEAL_TYPE_CHOICES = [
+        ('breakfast', 'breakfast'),
+        ('lunch', 'lunch'),
+        ('dinner', 'dinner'),
+        ('dessert', 'dessert'),
+        ('snack', 'snack'),
+        ('tapas', 'tapas'),
+    ]
     menu = models.ForeignKey(Menu)
     prepared = models.BooleanField(default=False)
     eaten = models.BooleanField(default=False)
