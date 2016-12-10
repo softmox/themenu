@@ -2,23 +2,24 @@
 
 {% block body %}
 
-<h1>Name: {{object.name}}</h1>
-<p>Notes: {{object.notes}}</p>
-<p>Source: {{object.source}}</p>
-<p>Recipe: {{object.recipe}}</p>
-<p>Speed: {{object.speed}}</p>
-<p>Complexity: {{object.complexity}}</p>
-<p>Results: {{object.results}}</p>
-<p>Ingredients:
-    {% for i in object.ingredients.all %}
+<div class="container">
+  <h1>Name: {{object.name}}</h1>
+  <p>Notes: {{object.notes}}</p>
+  <p>Source: {{object.source}}</p>
+  <p>Recipe: {{object.recipe}}</p>
+  <p>Speed: {{object.speed}}</p>
+  <p>Complexity: {{object.complexity}}</p>
+  <p>Results: {{object.results}}</p>
+  <p>Ingredients:
+      {% for i in object.ingredients.all %}
+        {{ t.name }}
+      {% endfor %}
+  </p>
+  <p>Tags:
+    {% for t in object.tags.all %}
       {{ t.name }}
     {% endfor %}
-</p>
-<p>Tags:
-  {% for t in object.tags.all %}
-    {{ t.name }}
-  {% endfor %}
-</p>
-
+  </p>
+</div>
 
 {% endblock %}
