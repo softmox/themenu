@@ -24,6 +24,7 @@ class Dish(models.Model):
     '''A collection of dishes to be eaten at one time'''
     class Meta:
         verbose_name_plural = "dishes"
+
     SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
 
     name = models.TextField()
@@ -35,8 +36,8 @@ class Dish(models.Model):
     complexity = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
     results = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
 
-    ingredients = models.ManyToManyField(Ingredient, null=True, blank=True)
-    tags = models.ManyToManyField(Tag, null=True, blank=True)
+    ingredients = models.ManyToManyField(Ingredient, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
         return 'Dish: %s' % self.name
@@ -46,7 +47,7 @@ class Menu(models.Model):
     '''A collection of dishes to be eaten at one time'''
     name = models.TextField(null=True, blank=True)
     dishes = models.ManyToManyField(Dish, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
         return 'Menu: %s' % self.name

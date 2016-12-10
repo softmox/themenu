@@ -18,7 +18,8 @@ from django.contrib import admin
 import views
 
 urlpatterns = [
+    url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^calendar/(?P<offset>[\-\d]+)/?$', views.calendar, name='calendar'),
-    url(r'^$', views.index, name='index')
-    ]
+    url(r'^dishes/(?P<pk>[\w]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
+]
