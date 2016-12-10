@@ -31,6 +31,9 @@ class Ingredient(models.Model):
 
 class Dish(models.Model):
     '''A collection of dishes to be eaten at one time'''
+    class Meta:
+        verbose_name_plural = "dishes"
+
     name = models.TextField()
     notes = models.TextField(null=True, blank=True)
     source = models.TextField(null=True, blank=True)
@@ -50,7 +53,7 @@ class Dish(models.Model):
 class Menu(models.Model):
     '''A collection of dishes to be eaten at one time'''
     name = models.TextField(null=True, blank=True)
-    dishes = models.ManyToManyField(Dish)
+    dishes = models.ManyToManyField(Dish, blank=True)
     tags = models.ManyToManyField(Tag)
 
     def __unicode__(self):
@@ -59,7 +62,7 @@ class Menu(models.Model):
 
 class DayPlan(models.Model):
     '''A collection of Menus (meals) for a day'''
-    date = models.DateTimeField('plan date', auto_now_add=True)
+    date = models.DateField('plan date')
 
     def __unicode__(self):
         return 'Day plan for %s' % self.date
@@ -67,11 +70,13 @@ class DayPlan(models.Model):
 
 class Meal(models.Model):
     '''A collection of dishes to be eaten at one time'''
-    meal = models.ForeignKey(Dish)
-    completed = models.BooleanField(default=False)
+    menu = models.ForeignKey(Menu)
+    prepared = models.BooleanField(default=False)
     eaten = models.BooleanField(default=False)
     meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
     dayplan = models.ForeignKey(DayPlan)
 
     def __unicode__(self):
-        return 'Meal: %s' % self.meal
+        return '{type} on {date}: {menu}'.format(type=self.meal_type,
+                                                 date=self.dayplan.date,
+                                                 menu=self.menu.name)

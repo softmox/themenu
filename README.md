@@ -1,5 +1,9 @@
 # TheMenu
 
+    mkvirtualenv themenu
+    pip install -r requirements.txt
+    ./manage.py run
+
 ### Local database setup
 
     psql -c 'CREATE DATABASE themenu'
