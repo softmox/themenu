@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-]
+    url(r'^calendar/(?P<offset>\w+)/$', views.calendar, name='calendar'),
+    url(r'^$', views.index, name='index')
+    ]

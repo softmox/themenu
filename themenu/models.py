@@ -1,6 +1,7 @@
 from django.db import models
+import calendar
+from datetime import date
 # from django.contrib.auth.models import User
-
 
 class Tag(models.Model):
     '''Any label for a Menu, Dish, or Ingredient'''
@@ -34,8 +35,8 @@ class Dish(models.Model):
     complexity = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
     results = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
 
-    ingredients = models.ManyToManyField(Ingredient)
-    tags = models.ManyToManyField(Tag)
+    ingredients = models.ManyToManyField(Ingredient, null=True, blank=True)
+    tags = models.ManyToManyField(Tag, null=True, blank=True)
 
     def __unicode__(self):
         return 'Dish: %s' % self.name
@@ -45,22 +46,17 @@ class Menu(models.Model):
     '''A collection of dishes to be eaten at one time'''
     name = models.TextField(null=True, blank=True)
     dishes = models.ManyToManyField(Dish, blank=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True, null=True)
 
     def __unicode__(self):
         return 'Menu: %s' % self.name
 
 
-class DayPlan(models.Model):
-    '''A collection of Menus (meals) for a day'''
-    date = models.DateField('plan date')
-
-    def __unicode__(self):
-        return 'Day plan for %s' % self.date
-
-
 class Meal(models.Model):
     '''A collection of dishes to be eaten at one time'''
+    class Meta:
+        ordering = ['date']
+
     MEAL_TYPE_CHOICES = [
         ('breakfast', 'breakfast'),
         ('lunch', 'lunch'),
@@ -73,9 +69,18 @@ class Meal(models.Model):
     prepared = models.BooleanField(default=False)
     eaten = models.BooleanField(default=False)
     meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
-    dayplan = models.ForeignKey(DayPlan)
+    date = models.DateField('meal date')
+
+    def weeknum(self):
+        _, weeknum, = self.date.isocalendar()
+        return weeknum
+
+    def weekday(self):
+        _,_,weekdaynum = self.date.isocalendar()
+        weekday = calendar.day_name[weekdaynum]
+        return weekday
 
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
-                                                 date=self.dayplan.date,
+                                                 date=self.date,
                                                  menu=self.menu.name)
