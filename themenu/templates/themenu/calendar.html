@@ -3,7 +3,7 @@
 {% block body %}
 
 <div class="calendar">
-  <table>
+  <table class="table">
     <tr>
       <th><a href="{% url 'calendar' lastoffset %}">< Week of {{lastweekmonday}}</a></th>
       <th>Week of {{thisweekmonday}}</th>
@@ -11,7 +11,7 @@
     </tr>
   </table>
   <br>
-  <table>
+  <table class="table-condensed">
   <tr>
     <th></th>
     <th>Monday</th>
