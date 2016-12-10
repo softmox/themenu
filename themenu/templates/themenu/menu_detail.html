@@ -1,0 +1,19 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<h1>Name: {{object.name}}</h1>
+
+<p>Dishes:
+    {% for i in object.dishes.all %}
+      {{ t.name }}
+    {% endfor %}
+</p>
+<p>Tags:
+  {% for t in object.tags.all %}
+    {{ t.name }}
+  {% endfor %}
+</p>
+
+
+{% endblock %}

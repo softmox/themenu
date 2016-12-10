@@ -11,12 +11,12 @@
 <p>Results: {{object.results}}</p>
 <p>Ingredients:
     {% for i in object.ingredients.all %}
-      {{ t }}
+      {{ t.name }}
     {% endfor %}
 </p>
 <p>Tags:
   {% for t in object.tags.all %}
-    {{ t }}
+    {{ t.name }}
   {% endfor %}
 </p>
 

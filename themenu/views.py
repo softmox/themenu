@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -65,5 +65,20 @@ class DishDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DishDetailView, self).get_context_data(**kwargs)
+        # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
+
+
+class MenuDetailView(DetailView):
+    model = Menu
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object()
+        except Http404:
+            # TODO: What do we wanna show them for invalid menu?
+            return redirect('calendar', offset=0)
+
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)

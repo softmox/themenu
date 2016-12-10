@@ -21,5 +21,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^calendar/(?P<offset>[\-\d]+)/?$', views.calendar, name='calendar'),
+    # generic detail views
     url(r'^dishes/(?P<pk>[\w]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
+    url(r'^menus/(?P<pk>[\w]+)/?$', views.MenuDetailView.as_view(), name='menu-detail'),
 ]
