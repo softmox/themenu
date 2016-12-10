@@ -88,7 +88,10 @@ WSGI_APPLICATION = 'themenu.wsgi.application'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 # Use local database in DEBUG mode, heroku's database in production
-DB_ENV = 'local' if DEBUG else 'prod'
+if os.environ.get('DB_ENV') in ('local', 'prod'):
+    DB_ENV = os.environ.get('DB_ENV')
+else:
+    DB_ENV = 'local' if DEBUG else 'prod'
 
 if DB_ENV == 'local':
     DATABASES = {'default': {
