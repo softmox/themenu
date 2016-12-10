@@ -1,14 +1,13 @@
 from django.contrib import admin
 
-# from .models import Word, Card, Game, Clue, Guess, Comment
-
+from .models import Tag, Ingredient, Dish, Menu, DayPlan, Meal
 
 # class GameAdmin(admin.ModelAdmin):
 #     readonly_fields = ('started_date', 'unique_id')
 
-# admin.site.register(Word)
-# admin.site.register(Card)
-# admin.site.register(Game, GameAdmin)
-# admin.site.register(Clue)
-# admin.site.register(Guess)
-# admin.site.register(Comment)
+admin.site.register(Tag)
+admin.site.register(Ingredient)
+admin.site.register(Dish)
+admin.site.register(Menu)
+admin.site.register(Meal)
+admin.site.register(DayPlan)

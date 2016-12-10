@@ -1,21 +1,77 @@
 from django.db import models
-from django.contrib.auth.models import User
-# import django.contrib.postgres.fields as pg_fields
+# from django.contrib.auth.models import User
 
-# TURN_STATES = (
-#     ('blue_give', 'Blue Team to give clue'), ('blue_guess', 'Blue Team to guess'),
-#     ('red_give', 'Red Team to give clue'), ('red_guess', 'Red Team to guess')
-# )
+SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
+MEAL_TYPE_CHOICES = [
+    ('breakfast', 'breakfast'),
+    ('lunch', 'lunch'),
+    ('dinner', 'dinner'),
+    ('dessert', 'dessert'),
+    ('snack', 'snack'),
+    ('tapas', 'tapas'),
+]
 
-# class Word(models.Model):
-#     '''A word can be reused across games'''
-#     text = models.CharField(max_length=200)
-#     word_set = models.ForeignKey(WordSet, default=1)
-#     color = models.CharField(
-#             max_length=5,
-#             choices=COLOR_CHOICES,
-#             default='grey'
-#         )
 
-#     def __unicode__(self):
-#         return self.text
+class Tag(models.Model):
+    '''Any label for a Menu, Dish, or Ingredient'''
+    name = models.TextField()
+
+    def __unicode__(self):
+        return 'Tag: %s' % self.name
+
+
+class Ingredient(models.Model):
+    '''Some food thing in a dish'''
+    name = models.TextField()
+    tags = models.ManyToManyField(Tag)
+
+    def __unicode__(self):
+        return 'Ingredient: %s' % self.name
+
+
+class Dish(models.Model):
+    '''A collection of dishes to be eaten at one time'''
+    name = models.TextField()
+    notes = models.TextField(null=True, blank=True)
+    source = models.TextField(null=True, blank=True)
+    recipe = models.TextField(null=True, blank=True)
+    # Scores to rate the dishes on
+    speed = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
+    complexity = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
+    results = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
+
+    ingredients = models.ManyToManyField(Ingredient)
+    tags = models.ManyToManyField(Tag)
+
+    def __unicode__(self):
+        return 'Dish: %s' % self.name
+
+
+class Menu(models.Model):
+    '''A collection of dishes to be eaten at one time'''
+    name = models.TextField(null=True, blank=True)
+    dishes = models.ManyToManyField(Dish)
+    tags = models.ManyToManyField(Tag)
+
+    def __unicode__(self):
+        return 'Menu: %s' % self.name
+
+
+class DayPlan(models.Model):
+    '''A collection of Menus (meals) for a day'''
+    date = models.DateTimeField('plan date', auto_now_add=True)
+
+    def __unicode__(self):
+        return 'Day plan for %s' % self.date
+
+
+class Meal(models.Model):
+    '''A collection of dishes to be eaten at one time'''
+    meal = models.ForeignKey(Dish)
+    completed = models.BooleanField(default=False)
+    eaten = models.BooleanField(default=False)
+    meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
+    dayplan = models.ForeignKey(DayPlan)
+
+    def __unicode__(self):
+        return 'Meal: %s' % self.meal

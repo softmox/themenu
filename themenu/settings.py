@@ -33,10 +33,11 @@ if DEBUG is False:
 else:
     SECRET_KEY = 'w0*kbbnkf46j0adk^gt$*ql8c))9b*zhsa-&a)+d8i)d+o&vyw'
 
-DB_ENV
+
 # Application definition
 
 INSTALLED_APPS = [
+    'themenu.apps.ThemenuConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
