@@ -104,14 +104,14 @@
   </tr>
   <tr>
     <td>Snacks</td>
-    {% for snack in weekplan.snacks %}
+    {% for snack in weekplan.snack %}
       <td>
           {% if snack.dishes.all %}
               {% for d in snack.dishes.all %}
                   <div class="checkbox">
                     <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                     <label>
-                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
+                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox" > Prepared
                     </label>
                     <label>
                       <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
