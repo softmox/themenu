@@ -11,5 +11,10 @@
               </label>
             </div>
           {% endfor %}
-      {% endif%}
+      {% endif %}
+      {% if m.tags.all %}
+        {% for t in m.tags.all %}
+          <a href="" class="btn-xs btn-info">{{t.name}}</a>
+        {% endfor %}
+      {% endif %}
 </td>
