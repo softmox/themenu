@@ -15,7 +15,7 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     '''Some food thing in a dish'''
     name = models.TextField()
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
         return 'Ingredient: %s' % self.name
