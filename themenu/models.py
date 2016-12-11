@@ -1,7 +1,8 @@
 from django.db import models
 import calendar
-from datetime import date
+# from datetime import date
 # from django.contrib.auth.models import User
+
 
 class Tag(models.Model):
     '''Any label for a Menu, Dish, or Ingredient'''
@@ -43,16 +44,6 @@ class Dish(models.Model):
         return 'Dish: %s' % self.name
 
 
-class Menu(models.Model):
-    '''A collection of dishes to be eaten at one time'''
-    name = models.TextField(null=True, blank=True)
-    dishes = models.ManyToManyField(Dish, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
-
-    def __unicode__(self):
-        return 'Menu: %s' % self.name
-
-
 class Meal(models.Model):
     '''A collection of dishes to be eaten at one time'''
     class Meta:
@@ -66,9 +57,8 @@ class Meal(models.Model):
         ('snack', 'snack'),
         ('tapas', 'tapas'),
     ]
-    menu = models.ForeignKey(Menu)
-    prepared = models.BooleanField(default=False)
-    eaten = models.BooleanField(default=False)
+    dishes = models.ManyToManyField(Dish, blank=True, through='Course')
+    tags = models.ManyToManyField(Tag, blank=True)
     meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
     date = models.DateField('meal date')
 
@@ -77,11 +67,19 @@ class Meal(models.Model):
         return weeknum
 
     def weekday(self):
-        _,_,weekdaynum = self.date.isocalendar()
+        _, _, weekdaynum = self.date.isocalendar()
         weekday = calendar.day_name[weekdaynum]
         return weekday
 
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
                                                  date=self.date,
-                                                 menu=self.menu.name)
+                                                 menu=','.join(d.name for d in self.dishes.all())
+                                                 )
+
+
+class Course(models.Model):
+    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
+    prepared = models.BooleanField(default=False)
+    eaten = models.BooleanField(default=False)

@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
 
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
@@ -10,11 +9,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from datetime import timedelta, date
 
-from collections import Counter
-from itertools import cycle
-import random
-
-from .models import Tag, Ingredient, Dish, Menu, Meal
+from .models import Tag, Ingredient, Dish, Meal
 from django.contrib.auth.models import User
 
 
@@ -70,14 +65,14 @@ class DishDetailView(DetailView):
         return context
 
 
-class MenuDetailView(DetailView):
-    model = Menu
+class MealDetailView(DetailView):
+    model = Meal
 
     def get(self, request, *args, **kwargs):
         try:
             self.object = self.get_object()
         except Http404:
-            # TODO: What do we wanna show them for invalid menu?
+            # TODO: What do we wanna show them for invalid Meal?
             return redirect('calendar', offset=0)
 
         context = self.get_context_data(object=self.object)

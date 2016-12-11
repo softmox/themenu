@@ -26,10 +26,10 @@
     <td>Breakfast</td>
     {% for breakfast in weekplan.breakfast %}
       <td>
-        <a href="{% url 'menu-detail' breakfast.menu.id %}" class="btn btn-info btn-sm">
-          {{breakfast.menu.name}}</a><br>
-            {% if breakfast.menu.dishes.all %}
-                {% for d in breakfast.menu.dishes.all %}
+        <a href="{% url 'meal-detail' breakfast.id %}" class="btn btn-info btn-sm">
+          {{breakfast}}</a><br>
+            {% if breakfast.dishes.all %}
+                {% for d in breakfast.dishes.all %}
                   <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                 {% endfor %}
             {% endif%}
@@ -40,10 +40,10 @@
     <td>Lunch</td>
     {% for lunch in weekplan.lunch %}
       <td>
-        <a href="{% url 'menu-detail' lunch.menu.id %}" class="btn btn-info btn-sm">
-          {{lunch.menu.name}}</a><br>
-          {% if lunch.menu.dishes.all %}
-              {% for d in lunch.menu.dishes.all %}
+        <a href="{% url 'meal-detail' lunch.id %}" class="btn btn-info btn-sm">
+          {{lunch}}</a><br>
+          {% if lunch.dishes.all %}
+              {% for d in lunch.dishes.all %}
                 <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
               {% endfor %}
           {% endif%}
@@ -54,10 +54,10 @@
     <td>Dinner</td>
     {% for dinner in weekplan.dinner %}
       <td>
-        <a href="{% url 'menu-detail' dinner.menu.id %}" class="btn btn-info btn-sm">
-          {{dinner.menu.name}}</a><br>
-          {% if dinner.menu.dishes.all %}
-              {% for d in dinner.menu.dishes.all %}
+        <a href="{% url 'meal-detail' dinner.id %}" class="btn btn-info btn-sm">
+          {{dinner}}</a><br>
+          {% if dinner.dishes.all %}
+              {% for d in dinner.dishes.all %}
                 <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
               {% endfor %}
           {% endif%}
@@ -68,10 +68,10 @@
     <td>Dessert</td>
     {% for dessert in weekplan.dessert %}
       <td>
-        <a href="{% url 'menu-detail' dessert.menu.id %}" class="btn btn-info btn-sm">
-          {{dessert.menu.name}}</a><br>
-          {% if dessert.menu.dishes.all %}
-              {% for d in dessert.menu.dishes.all %}
+        <a href="{% url 'meal-detail' dessert.id %}" class="btn btn-info btn-sm">
+          {{dessert}}</a><br>
+          {% if dessert.dishes.all %}
+              {% for d in dessert.dishes.all %}
                 <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
               {% endfor %}
           {% endif%}
@@ -82,10 +82,10 @@
     <td>Snacks</td>
     {% for snack in weekplan.snacks %}
       <td>
-        <a href="{% url 'menu-detail' snacks.menu.id %}" class="btn btn-info btn-sm">
-          {{snack.menu.name}}</a><br>
-          {% if snack.menu.dishes.all %}
-              {% for d in snack.menu.dishes.all %}
+        <a href="{% url 'meal-detail' snacks.id %}" class="btn btn-info btn-sm">
+          {{snack}}</a><br>
+          {% if snack.dishes.all %}
+              {% for d in snack.dishes.all %}
                 <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
               {% endfor %}
           {% endif%}
