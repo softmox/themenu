@@ -74,7 +74,7 @@ class Meal(models.Model):
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
                                                  date=self.date,
-                                                 menu=','.join(d.name for d in self.dishes.all())
+                                                 menu=', '.join(d.name for d in self.dishes.all())
                                                  )
 
 
