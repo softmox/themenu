@@ -8,6 +8,13 @@ $(document).ready(function() {
             }
         }
     });
+
+    $('.prepared').on('click', function() {
+        var did = $(this).data('id');
+        console.log('clicked');
+        console.log(did);
+        console.log($(this));
+    });
 });
 
 
@@ -31,14 +38,14 @@ function addComment() {
     var game_id = location.pathname.split('/')[2];
     var $commentText = $('#commentText').val();
     var $teamColor = $('#currentTeam').data('team-color');
-    var $posting = $.ajax({
-            type: 'POST',
-            '/comment/', {
-            game_id: game_id,
-            text: $commentText,
-            color: $teamColor
-        }
-    );
+    // var $posting = $.ajax({
+    //         type: 'POST',
+    //         '/comment/', {
+    //         game_id: game_id,
+    //         text: $commentText,
+    //         color: $teamColor
+    //     }
+    // );
     // $posting.done(function(data) {
     //     window.location.reload();
     // });
