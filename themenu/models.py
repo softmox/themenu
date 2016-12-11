@@ -34,7 +34,7 @@ class Dish(models.Model):
     recipe = models.TextField(null=True, blank=True)
     # Scores to rate the dishes on
     speed = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
-    complexity = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
+    ease = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
     results = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
 
     ingredients = models.ManyToManyField(Ingredient, blank=True)
