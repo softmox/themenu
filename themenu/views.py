@@ -1,5 +1,6 @@
+import json
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.http import Http404, JsonResponse
 from django.core.urlresolvers import reverse
 
 from django.views.generic.edit import CreateView
@@ -9,18 +10,19 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from datetime import timedelta, date
 
-from .models import Tag, Ingredient, Dish, Meal
-from django.contrib.auth.models import User
+from .models import Tag, Ingredient, Dish, Meal, Course
 
 
 def index(request):
     return redirect('calendar', offset=0)
 
+
 def calendar(request, offset):
     offset = offset
+
     def refdate():
         today = date.today()
-        refdate = today + timedelta(days=7*offset)
+        refdate = today + timedelta(days=7 * offset)
         return refdate
 
     def weekdays():
@@ -53,6 +55,23 @@ def calendar(request, offset):
     context['nextweekmonday'] = monday(1)
 
     return render(request, 'themenu/calendar.html', context)
+
+
+@require_http_methods(["POST"])
+def course_update(request):
+    posted_data = json.loads(request.body)
+    meal = get_object_or_404(Meal, id=posted_data['mealId'])
+    dish = get_object_or_404(Dish, id=posted_data['dishId'])
+    course = Course.objects.get(meal=meal, dish=dish)
+    attribute = posted_data['attribute']
+    value = posted_data['checked']
+    if attribute == 'eaten':
+        course.eaten = value
+    elif attribute == 'prepared':
+        course.prepared = value
+    course.save()
+
+    return JsonResponse({"OK": True})
 
 
 class DishDetailView(DetailView):

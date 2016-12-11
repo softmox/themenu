@@ -83,3 +83,7 @@ class Course(models.Model):
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
     prepared = models.BooleanField(default=False)
     eaten = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return 'Meal: %s, Dish: %s. prepared: %s, eaten: %s' % \
+            (self.meal.id, self.dish.id, self.prepared, self.eaten)

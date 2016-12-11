@@ -31,10 +31,10 @@
                     <div class="checkbox">
                     <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                     <label>
-                      <input class=" dish-checkbox prepared" data-id="{{d.id}}" type="checkbox"> Prepared
+                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{breakfast.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
                     </label>
                     <label>
-                      <input class="dish-checkbox eaten" data-id="{{d.id}}" type="checkbox"> Eaten
+                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{breakfast.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
                     </label>
                   </div>
                 {% endfor %}
@@ -51,10 +51,10 @@
                   <div class="checkbox">
                     <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                     <label>
-                      <input class=" dish-checkbox prepared" data-id="{{d.id}}" type="checkbox"> Prepared
+                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{lunch.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
                     </label>
                     <label>
-                      <input class="dish-checkbox eaten" data-id="{{d.id}}" type="checkbox"> Eaten
+                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{lunch.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
                     </label>
                   </div>
               {% endfor %}
@@ -71,10 +71,10 @@
                   <div class="checkbox">
                     <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                     <label>
-                      <input class=" dish-checkbox prepared" data-id="{{d.id}}" type="checkbox"> Prepared
+                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{dinner.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
                     </label>
                     <label>
-                      <input class="dish-checkbox eaten" data-id="{{d.id}}" type="checkbox"> Eaten
+                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{dinner.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
                     </label>
                   </div>
               {% endfor %}
@@ -91,10 +91,10 @@
                   <div class="checkbox">
                     <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                     <label>
-                      <input class=" dish-checkbox prepared" data-id="{{d.id}}" type="checkbox"> Prepared
+                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{dessert.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
                     </label>
                     <label>
-                      <input class="dish-checkbox eaten" data-id="{{d.id}}" type="checkbox"> Eaten
+                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{dessert.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
                     </label>
                   </div>
               {% endfor %}
@@ -111,10 +111,10 @@
                   <div class="checkbox">
                     <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
                     <label>
-                      <input class=" dish-checkbox prepared" data-id="{{d.id}}" type="checkbox"> Prepared
+                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
                     </label>
                     <label>
-                      <input class="dish-checkbox eaten" data-id="{{d.id}}" type="checkbox"> Eaten
+                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
                     </label>
                   </div>
               {% endfor %}

@@ -9,11 +9,13 @@ $(document).ready(function() {
         }
     });
 
-    $('.prepared').on('click', function() {
-        var did = $(this).data('id');
-        console.log('clicked');
-        console.log(did);
-        console.log($(this));
+    $('.course-checkbox').change(function() {
+        var dishId = $(this).data('dish-id');
+        var mealId = $(this).data('meal-id');
+        var attribute = $(this).data('attribute');
+        var checked = this.checked;
+        console.log('clicked', dishId, mealId, attribute, checked);
+        postCourseUpdate(dishId, mealId, attribute, checked)
     });
 });
 
@@ -34,21 +36,23 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function addComment() {
-    var game_id = location.pathname.split('/')[2];
-    var $commentText = $('#commentText').val();
-    var $teamColor = $('#currentTeam').data('team-color');
-    // var $posting = $.ajax({
-    //         type: 'POST',
-    //         '/comment/', {
-    //         game_id: game_id,
-    //         text: $commentText,
-    //         color: $teamColor
-    //     }
-    // );
-    // $posting.done(function(data) {
-    //     window.location.reload();
-    // });
+function postCourseUpdate(dishId, mealId, attribute, checked) {
+    var $posting = $.ajax({
+            type: 'POST',
+            url: '/courseupdate/',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify({
+                dishId: dishId,
+                mealId: mealId,
+                attribute: attribute,
+                checked: checked
+            })
+    });
+    $posting.done(function(data) {
+        console.log('Finished posting dish ID', dishId, 'mealId', mealId);
+        // window.location.reload();
+    });
 }
 
 function csrfSafeMethod(method) {
