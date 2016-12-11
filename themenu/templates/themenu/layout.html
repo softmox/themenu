@@ -3,7 +3,7 @@
 <head>
   <title>The Menu</title>
   <link rel="shortcut icon" href="{% static 'themenu/images/favicon.ico' %}" />
-  <link href='http://fonts.googleapis.com/cs?famil=Source+Sans+Pro:400,600' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="test/css" href="{% static 'themenu/css/font-awesome.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'themenu/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'themenu/css/style.css' %}"/>
@@ -13,5 +13,7 @@
   {% block body %}
 
   {% endblock %}
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script type="text/javascript" src="{% static 'themenu/js/bootstrap.min.js' %}"></script>
 </body>
