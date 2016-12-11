@@ -1,0 +1,15 @@
+<td>
+      {% if m.dishes.all %}
+          {% for d in m.dishes.all %}
+              <div class="checkbox">
+              <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+              <label>
+                <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{m.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
+              </label>
+              <label>
+                <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{m.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
+              </label>
+            </div>
+          {% endfor %}
+      {% endif%}
+</td>

@@ -24,102 +24,32 @@
   </tr>
   <tr>
     <td>Breakfast</td>
-    {% for breakfast in weekplan.breakfast %}
-      <td>
-            {% if breakfast.dishes.all %}
-                {% for d in breakfast.dishes.all %}
-                    <div class="checkbox">
-                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
-                    <label>
-                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{breakfast.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
-                    </label>
-                    <label>
-                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{breakfast.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
-                    </label>
-                  </div>
-                {% endfor %}
-            {% endif%}
-      </td>
+    {% for m in weekplan.breakfast %}
+      {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Lunch</td>
-    {% for lunch in weekplan.lunch %}
-      <td>
-          {% if lunch.dishes.all %}
-              {% for d in lunch.dishes.all %}
-                  <div class="checkbox">
-                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
-                    <label>
-                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{lunch.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
-                    </label>
-                    <label>
-                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{lunch.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
-                    </label>
-                  </div>
-              {% endfor %}
-          {% endif%}
-      </td>
+    {% for m in weekplan.lunch %}
+      {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Dinner</td>
-    {% for dinner in weekplan.dinner %}
-      <td>
-          {% if dinner.dishes.all %}
-              {% for d in dinner.dishes.all %}
-                  <div class="checkbox">
-                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
-                    <label>
-                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{dinner.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
-                    </label>
-                    <label>
-                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{dinner.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
-                    </label>
-                  </div>
-              {% endfor %}
-          {% endif%}
-      </td>
+    {% for m in weekplan.dinner %}
+      {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Dessert</td>
-    {% for dessert in weekplan.dessert %}
-      <td>
-          {% if dessert.dishes.all %}
-              {% for d in dessert.dishes.all %}
-                  <div class="checkbox">
-                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
-                    <label>
-                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{dessert.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
-                    </label>
-                    <label>
-                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{dessert.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
-                    </label>
-                  </div>
-              {% endfor %}
-          {% endif%}
-      </td>
+    {% for m in weekplan.dessert %}
+      {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Snacks</td>
     {% for snack in weekplan.snack %}
-      <td>
-          {% if snack.dishes.all %}
-              {% for d in snack.dishes.all %}
-                  <div class="checkbox">
-                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
-                    <label>
-                      <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox" > Prepared
-                    </label>
-                    <label>
-                      <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{snack.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
-                    </label>
-                  </div>
-              {% endfor %}
-          {% endif%}
-      </td>
+      {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
 </table>
