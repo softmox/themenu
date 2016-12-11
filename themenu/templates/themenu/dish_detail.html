@@ -10,15 +10,19 @@
   <p>Speed: {{object.speed}}</p>
   <p>Ease: {{object.ease}}</p>
   <p>Results: {{object.results}}</p>
-  <p>Ingredients:
+  <p>Ingredients:<p>
+    <ul>
       {% for i in object.ingredients.all %}
-        {{ t.name }}
+        <li>{{ i.name }} </li>
       {% endfor %}
+    </ul>
   </p>
   <p>Tags:
+    <ul>
     {% for t in object.tags.all %}
-      {{ t.name }}
+      <li>{{ t.name }}</li>
     {% endfor %}
+    </ul>
   </p>
 </div>
 
