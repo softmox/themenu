@@ -28,7 +28,15 @@
       <td>
             {% if breakfast.dishes.all %}
                 {% for d in breakfast.dishes.all %}
-                  <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                    <div class="checkbox">
+                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                    <label>
+                      <input id="prepared" data-id="{{id}}" type="checkbox"> Prepared
+                    </label>
+                    <label>
+                      <input id="eaten" data-id="{{id}}" type="checkbox"> Eaten
+                    </label>
+                  </div>
                 {% endfor %}
             {% endif%}
       </td>
@@ -40,7 +48,15 @@
       <td>
           {% if lunch.dishes.all %}
               {% for d in lunch.dishes.all %}
-                <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                  <div class="checkbox">
+                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                    <label>
+                      <input id="prepared" data-id="{{id}}" type="checkbox"> Prepared
+                    </label>
+                    <label>
+                      <input id="eaten" data-id="{{id}}" type="checkbox"> Eaten
+                    </label>
+                  </div>
               {% endfor %}
           {% endif%}
       </td>
@@ -52,7 +68,15 @@
       <td>
           {% if dinner.dishes.all %}
               {% for d in dinner.dishes.all %}
-                <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                  <div class="checkbox">
+                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                    <label>
+                      <input id="prepared" data-id="{{id}}" type="checkbox"> Prepared
+                    </label>
+                    <label>
+                      <input id="eaten" data-id="{{id}}" type="checkbox"> Eaten
+                    </label>
+                  </div>
               {% endfor %}
           {% endif%}
       </td>
@@ -64,7 +88,15 @@
       <td>
           {% if dessert.dishes.all %}
               {% for d in dessert.dishes.all %}
-                <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                  <div class="checkbox">
+                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                    <label>
+                      <input id="prepared" data-id="{{id}}" type="checkbox"> Prepared
+                    </label>
+                    <label>
+                      <input id="eaten" data-id="{{id}}" type="checkbox"> Eaten
+                    </label>
+                  </div>
               {% endfor %}
           {% endif%}
       </td>
@@ -76,7 +108,15 @@
       <td>
           {% if snack.dishes.all %}
               {% for d in snack.dishes.all %}
-                <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                  <div class="checkbox">
+                    <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+                    <label>
+                      <input id="prepared" data-id="{{id}}" type="checkbox"> Prepared
+                    </label>
+                    <label>
+                      <input id="eaten" data-id="{{id}}" type="checkbox"> Eaten
+                    </label>
+                  </div>
               {% endfor %}
           {% endif%}
       </td>
