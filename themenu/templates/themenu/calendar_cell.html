@@ -1,6 +1,5 @@
 <td>
     {%if day.daymeal %}
-      {{day.daymeal}}
       {% if day.daymeal.dishes.all %}
           {% for d in day.daymeal.dishes.all %}
               <div class="checkbox">
