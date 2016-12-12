@@ -24,31 +24,31 @@
   </tr>
   <tr>
     <td>Breakfast</td>
-    {% for m in weekplan.breakfast %}
+    {% for day in weekplan.breakfast %}
       {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Lunch</td>
-    {% for m in weekplan.lunch %}
+    {% for day in weekplan.lunch %}
       {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Dinner</td>
-    {% for m in weekplan.dinner %}
+    {% for day in weekplan.dinner %}
       {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Dessert</td>
-    {% for m in weekplan.dessert %}
+    {% for day in weekplan.dessert %}
       {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>
   <tr>
     <td>Snacks</td>
-    {% for m in weekplan.snack %}
+    {% for day in weekplan.snack %}
       {% include "themenu/calendar_cell.html" %}
     {% endfor %}
   </tr>

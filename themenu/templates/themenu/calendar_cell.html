@@ -1,6 +1,8 @@
 <td>
-      {% if m.dishes.all %}
-          {% for d in m.dishes.all %}
+    {%if day.daymeal %}
+      {{day.daymeal}}
+      {% if day.daymeal.dishes.all %}
+          {% for d in day.daymeal.dishes.all %}
               <div class="checkbox">
               <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
               <label>
@@ -17,4 +19,7 @@
           <a href="" class="btn-xs btn-info">{{t.name}}</a>
         {% endfor %}
       {% endif %}
+    {% else %}
+      <a href="" class="btn-xs btn-success">Add meal</a>
+    {% endif %}
 </td>

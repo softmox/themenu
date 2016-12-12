@@ -29,15 +29,22 @@ def calendar(request, offset):
         weekdays = [refdate() + timedelta(days=i) for i in range(0 - refdate().weekday(), 7 - refdate().weekday())]
         return weekdays
 
-    def get_meals_by_type(mealtype):
-        meals = Meal.objects.filter(date__range=(weekdays()[0], weekdays()[-1]), meal_type=mealtype)
-        return meals
+    def get_meal_by_type_and_date(mealtype,date):
+        try:
+            thismeal = Meal.objects.get(date=date, meal_type=mealtype)
+            return thismeal
+        except Meal.DoesNotExist:
+            return None
 
-    def weekplan():
+    def weekplan(weekdays):
         weekplan = {}
         mt = [i[1] for i in Meal.MEAL_TYPE_CHOICES]
         for t in mt:
-            weekplan[t] = get_meals_by_type(t)
+            days = []
+            for d in weekdays:
+                days.append({'date': d,
+                             'daymeal': get_meal_by_type_and_date(t,d)})
+            weekplan[t] = days
         return weekplan
 
     def monday(valence):
@@ -47,9 +54,11 @@ def calendar(request, offset):
 
     context = {}
     offset = int(offset)
-    context['weekplan'] = weekplan()
+    context['weekplan'] = weekplan(weekdays())
     context['lastoffset'] = offset - 1
     context['nextoffset'] = offset + 1
+    context['weekdays'] = weekdays()
+    context['meal_choices'] = Meal.MEAL_TYPE_CHOICES
     context['thisweekmonday'] = monday(0)
     context['lastweekmonday'] = monday(-1)
     context['nextweekmonday'] = monday(1)
