@@ -13,8 +13,8 @@
             </div>
           {% endfor %}
       {% endif %}
-      {% if m.tags.all %}
-        {% for t in m.tags.all %}
+      {% if day.daymeal.tags.all %}
+        {% for t in day.daymeal.tags.all %}
           <a href="" class="btn-xs btn-info">{{t.name}}</a>
         {% endfor %}
       {% endif %}
