@@ -4,25 +4,23 @@
 
 <div class="container">
   <h1>Name: {{object.name}}</h1>
-  <p>Notes: {{object.notes}}</p>
-  <p>Source: {{object.source}}</p>
-  <p>Recipe: {{object.recipe | linebreaks }}</p>
-  <p>Speed: {{object.speed}}</p>
-  <p>Ease: {{object.ease}}</p>
-  <p>Results: {{object.results}}</p>
-  <p>Ingredients:<p>
+  <p><h4>Notes:</h4> {{object.notes}}</p><br>
+  <p><h4>Source:</h4> {{object.source}}</p><br>
+  <p><h4>Recipe:</h4> {{object.recipe | linebreaks }}</p><br>
+  <p><span class="h4">Speed:</span> {{object.speed}}</p>
+  <p><span class="h4">Ease:</span> {{object.ease}}</p>
+  <p><span class="h4">Results:</span> {{object.results}}</p><br>
+  <p><h4>Ingredients:</h4><p>
     <ul>
       {% for i in object.ingredients.all %}
         <li>{{ i.name }} </li>
       {% endfor %}
     </ul>
-  </p>
-  <p>Tags:
-    <ul>
+  </p><br>
+  <h4>Tags:</h4><p>
     {% for t in object.tags.all %}
-      <li>{{ t.name }}</li>
+      <a href="" class="btn-md btn-info">{{ t.name }}</a>
     {% endfor %}
-    </ul>
   </p>
 </div>
 
