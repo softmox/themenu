@@ -1,14 +1,14 @@
 <td>
     {%if day.daymeal %}
-      {% if day.daymeal.dishes.all %}
-          {% for d in day.daymeal.dishes.all %}
+      {% if day.daymeal.course_set.all %}
+          {% for course in day.daymeal.course_set.all %}
               <div class="checkbox">
-              <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a><br>
+              <a href="{% url 'dish-detail' course.dish.id %}">{{course.dish.name}}</a><br>
               <label>
-                <input class="course-checkbox" data-attribute="prepared" data-meal-id="{{m.id}}" data-dish-id="{{d.id}}" type="checkbox"> Prepared
+                <input class="course-checkbox" {{ course.prepared|yesno:"checked,false" }} data-attribute="prepared" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox"> Prepared
               </label>
               <label>
-                <input class="course-checkbox" data-attribute="eaten" data-meal-id="{{m.id}}" data-dish-id="{{d.id}}" type="checkbox"> Eaten
+                <input class="course-checkbox" {{ course.eaten|yesno:"checked,false" }} data-attribute="eaten" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox"> Eaten
               </label>
             </div>
           {% endfor %}
