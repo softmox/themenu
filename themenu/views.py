@@ -29,7 +29,7 @@ def calendar(request, offset):
         weekdays = [refdate() + timedelta(days=i) for i in range(0 - refdate().weekday(), 7 - refdate().weekday())]
         return weekdays
 
-    def get_meal_by_type_and_date(mealtype,date):
+    def get_meal_by_type_and_date(mealtype, date):
         try:
             thismeal = Meal.objects.get(date=date, meal_type=mealtype)
             return thismeal
@@ -43,7 +43,7 @@ def calendar(request, offset):
             days = []
             for d in weekdays:
                 days.append({'date': d,
-                             'daymeal': get_meal_by_type_and_date(t,d)})
+                             'daymeal': get_meal_by_type_and_date(t, d)})
             weekplan[t] = days
         return weekplan
 

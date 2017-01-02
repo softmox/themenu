@@ -6,6 +6,9 @@ import calendar
 
 class Tag(models.Model):
     '''Any label for a Menu, Dish, or Ingredient'''
+    class Meta:
+        ordering = ['name']
+
     name = models.TextField()
 
     def __unicode__(self):
@@ -14,17 +17,21 @@ class Tag(models.Model):
 
 class Ingredient(models.Model):
     '''Some food thing in a dish'''
+    class Meta:
+        ordering = ['name']
+
     name = models.TextField(unique=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
-        return 'Ingredient: %s' % self.name
+        return self.name
 
 
 class Dish(models.Model):
     '''A collection of dishes to be eaten at one time'''
     class Meta:
         verbose_name_plural = "dishes"
+        ordering = ['name']
 
     SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
 
@@ -41,7 +48,7 @@ class Dish(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
-        return 'Dish: %s' % self.name
+        return self.name
 
 
 class Meal(models.Model):
