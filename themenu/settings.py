@@ -20,8 +20,8 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = os.environ.get('DEBUG') or False  # For use on heroku to run in debug sometimes
+# DEBUG = True
+DEBUG = os.environ.get('DEBUG') or True  # For use on heroku to run in debug sometimes
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if DEBUG is False:

@@ -10,7 +10,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from datetime import timedelta, date
 
-from .models import Tag, Ingredient, Dish, Meal, Course
+from .models import Dish, Meal, Course  # , Tag, Ingredient
 
 
 def index(request):
@@ -26,8 +26,9 @@ def calendar(request, offset):
         return refdate
 
     def weekdays():
-        weekdays = [refdate() + timedelta(days=i) for i in range(0 - refdate().weekday(), 7 - refdate().weekday())]
-        return weekdays
+        weekdays_list = [refdate() + timedelta(days=i)
+                         for i in range(0 - refdate().weekday(), 7 - refdate().weekday())]
+        return weekdays_list
 
     def get_meal_by_type_and_date(mealtype, date):
         try:
@@ -36,15 +37,15 @@ def calendar(request, offset):
         except Meal.DoesNotExist:
             return None
 
-    def weekplan(weekdays):
+    def weekplan(weekdays_list):
         weekplan = {}
-        mt = [i[1] for i in Meal.MEAL_TYPE_CHOICES]
-        for t in mt:
+        meal_types = [i[1] for i in Meal.MEAL_TYPE_CHOICES]
+        for type_ in meal_types:
             days = []
-            for d in weekdays:
-                days.append({'date': d,
-                             'daymeal': get_meal_by_type_and_date(t, d)})
-            weekplan[t] = days
+            for day in weekdays_list:
+                days.append({'date': day,
+                             'daymeal': get_meal_by_type_and_date(type_, day)})
+            weekplan[type_] = days
         return weekplan
 
     def monday(valence):
@@ -57,7 +58,6 @@ def calendar(request, offset):
     context['weekplan'] = weekplan(weekdays())
     context['lastoffset'] = offset - 1
     context['nextoffset'] = offset + 1
-    context['weekdays'] = weekdays()
     context['meal_choices'] = Meal.MEAL_TYPE_CHOICES
     context['thisweekmonday'] = monday(0)
     context['lastweekmonday'] = monday(-1)
