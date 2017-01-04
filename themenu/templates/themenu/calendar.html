@@ -2,25 +2,30 @@
 
 {% block body %}
 
-<div class="calendar">
+<div class="panel panel-primary">
+  <!-- Default panel contents -->
+  <div class="panel-heading text-center">
+          <a href="{% url 'calendar' lastoffset %}" aria-label="Previous"  class="btn btn-default">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        <span>week of {{thisweekmonday}}</span>
+          <a href="{% url 'calendar' nextoffset %}" aria-label="Next"  class="btn btn-default">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+  </div>
+
+  <!-- Table -->
+  <div class="table-responsive">
   <table class="table">
-    <tr>
-      <th><a href="{% url 'calendar' lastoffset %}" class="btn btn-primary btn-lg">< Week of {{lastweekmonday}}</a></th>
-      <th><a href="" class="btn btn-default btn-lg active">Week of {{thisweekmonday}}</a></th>
-      <th><a href="{% url 'calendar' nextoffset %}" class="btn btn-primary btn-lg">Week of {{nextweekmonday}} ></a></th>
-    </tr>
-  </table>
-  <br>
-  <table class="table-bordered">
   <tr>
-    <th></th>
-    <th>Monday</th>
-    <th>Tuesday</th>
-    <th>Wednesday</th>
-    <th>Thursday</th>
-    <th>Friday</th>
-    <th>Saturday</th>
-    <th>Sunday</th>
+    <th width=9%></th>
+    <th width=13%>Monday</th>
+    <th width=13%>Tuesday</th>
+    <th width=13%>Wednesday</th>
+    <th width=13%>Thursday</th>
+    <th width=13%>Friday</th>
+    <th width=13%>Saturday</th>
+    <th width=13%>Sunday</th>
   </tr>
   <tr>
     <td>Breakfast</td>
