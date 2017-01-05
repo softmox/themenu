@@ -10,7 +10,7 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 from datetime import timedelta, date
 
-from .models import Dish, Meal, Course  # , Tag, Ingredient
+from .models import Dish, Meal, Course, Tag #  , Ingredient
 
 
 def index(request):
