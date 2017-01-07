@@ -13,7 +13,7 @@
         </a>
       </div>
       <div class="panel-body">
-        {% for ingredient_name, course_list in grocery_to_course_list.items %}
+        {% for ingredient_name, grocery_list in ingredient_to_grocery_list.items %}
           {% include "themenu/grocery_list_item.html" %}
         {% endfor %}
       </div>

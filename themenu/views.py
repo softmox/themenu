@@ -23,11 +23,11 @@ def grocery_list(request):
     grocery_list = GroceryListItem.objects.filter(
                     course__meal__date__gte=date.today()).order_by(
                     'purchased', 'course__meal__date')
-    grocery_to_course_list = defaultdict(list)
+    ingredient_to_grocery_list = defaultdict(list)
     for grocery_item in grocery_list:
-        grocery_to_course_list[grocery_item.ingredient.name].append(grocery_item.course)
+        ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
     context = {
-        'grocery_to_course_list': dict(grocery_to_course_list)
+        'ingredient_to_grocery_list': dict(ingredient_to_grocery_list)
     }
     return render(request, 'themenu/grocery_list.html', context)
 
@@ -97,6 +97,16 @@ def course_update(request):
         course.prepared = value
         course.save(update_fields=['prepared'])
 
+    return JsonResponse({"OK": True})
+
+
+@require_http_methods(["POST"])
+def grocery_update(request):
+    posted_data = json.loads(request.body)
+    grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    value = posted_data['checked']
+    grocery.purchased = value
+    grocery.save(update_fields=['purchased'])
     return JsonResponse({"OK": True})
 
 
