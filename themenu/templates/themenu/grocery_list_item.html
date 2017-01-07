@@ -2,13 +2,14 @@
   <label>
       <div class="dropdown">
         <input class="purchase-checkbox" type="checkbox">
-        Grocery List Item
+        <span>{{ ingredient_name }} <em>({{course_list | length}} meal{{course_list | length | pluralize }})</em></span>
       <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="#">Dish in meal</a></li>
-        <li><a href="#">Other dish in that other meal</a></li>
+      {% for course in course_list %}
+        <li><a href="#">{{ course.dish.name }}: {{course.meal.meal_type.title}} {{course.meal.date|date:"l (d M)"}}</a></li>
+      {% endfor %}
       </ul>
       </div>
     </input>

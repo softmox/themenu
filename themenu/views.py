@@ -1,4 +1,7 @@
 import json
+from collections import defaultdict
+from datetime import timedelta, date
+
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse
 from django.core.urlresolvers import reverse
@@ -8,9 +11,8 @@ from django.views.generic.detail import DetailView
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
-from datetime import timedelta, date
 
-from .models import Dish, Meal, Course, Tag #  , Ingredient
+from .models import Dish, Meal, Course, Tag, GroceryListItem #  , Ingredient
 
 
 def index(request):
@@ -18,7 +20,15 @@ def index(request):
 
 
 def grocery_list(request):
-    context = {}
+    grocery_list = GroceryListItem.objects.filter(
+                    course__meal__date__gte=date.today()).order_by(
+                    'purchased', 'course__meal__date')
+    grocery_to_course_list = defaultdict(list)
+    for grocery_item in grocery_list:
+        grocery_to_course_list[grocery_item.ingredient.name].append(grocery_item.course)
+    context = {
+        'grocery_to_course_list': dict(grocery_to_course_list)
+    }
     return render(request, 'themenu/grocery_list.html', context)
 
 
@@ -30,7 +40,6 @@ def refdate(offset):
 
 def calendar(request, offset):
     offset = offset
-
 
     def weekdays():
         weekdays_list = [refdate(offset) + timedelta(days=i)
