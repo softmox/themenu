@@ -26,8 +26,18 @@ def grocery_list(request):
     ingredient_to_grocery_list = defaultdict(list)
     for grocery_item in grocery_list:
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
+    # Add a third item to the tuples:
+    # a bool if all groceries have been purchased
+    mark_all_purchased = [
+        (ing, g_list, all(g.purchased for g in g_list))
+        for ing, g_list in ingredient_to_grocery_list.items()
+    ]
+    # Sort the (ingrdient, [grocery,..]) tuples with
+    # ones where everything has been purchased last
+    sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
+
     context = {
-        'ingredient_to_grocery_list': dict(ingredient_to_grocery_list)
+        'ingredient_to_grocery_list': sorted_items
     }
     return render(request, 'themenu/grocery_list.html', context)
 
