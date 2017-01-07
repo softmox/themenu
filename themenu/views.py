@@ -17,6 +17,11 @@ def index(request):
     return redirect('calendar', offset=0)
 
 
+def grocery_list(request):
+    context = {}
+    return render(request, 'themenu/grocery_list.html', context)
+
+
 def calendar(request, offset):
     offset = offset
 

@@ -103,3 +103,13 @@ class Course(models.Model):
     def __unicode__(self):
         return 'Meal: %s, Dish: %s. prepared: %s, eaten: %s' % \
             (self.meal.id, self.dish.id, self.prepared, self.eaten)
+
+
+class GroceryListItem(models.Model):
+    ingredient = models.ForeignKey(Ingredient)
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE, null=True)
+    purchased = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return 'Ingredient: %s, Purchased: %s' % \
+            (self.ingredient.id, self.purchased)
