@@ -107,9 +107,9 @@ class Course(models.Model):
 
 class GroceryListItem(models.Model):
     ingredient = models.ForeignKey(Ingredient)
-    meal = models.ForeignKey(Meal, on_delete=models.CASCADE, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     purchased = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Ingredient: %s, Purchased: %s' % \
-            (self.ingredient.id, self.purchased)
+        return 'Ingredient: %s, %s, Purchased: %s' % \
+            (self.ingredient.id, self.ingredient.name, self.purchased)

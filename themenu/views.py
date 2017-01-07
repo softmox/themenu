@@ -22,17 +22,19 @@ def grocery_list(request):
     return render(request, 'themenu/grocery_list.html', context)
 
 
+def refdate(offset):
+    today = date.today()
+    ref_date = today + timedelta(days=7 * offset)
+    return ref_date
+
+
 def calendar(request, offset):
     offset = offset
 
-    def refdate():
-        today = date.today()
-        refdate = today + timedelta(days=7 * offset)
-        return refdate
 
     def weekdays():
-        weekdays_list = [refdate() + timedelta(days=i)
-                         for i in range(0 - refdate().weekday(), 7 - refdate().weekday())]
+        weekdays_list = [refdate(offset) + timedelta(days=i)
+                         for i in range(0 - refdate(offset).weekday(), 7 - refdate(offset).weekday())]
         return weekdays_list
 
     def get_meal_by_type_and_date(mealtype, date):
@@ -54,7 +56,7 @@ def calendar(request, offset):
         return weekplan
 
     def monday(valence):
-        monday = refdate() + timedelta(days=(7 * valence - refdate().weekday()))
+        monday = refdate(offset) + timedelta(days=(7 * valence - refdate(offset).weekday()))
         prettymonday = monday.strftime('%d %B, %Y')
         return prettymonday
 
@@ -81,9 +83,10 @@ def course_update(request):
     value = posted_data['checked']
     if attribute == 'eaten':
         course.eaten = value
+        course.save(update_fields=['eaten'])
     elif attribute == 'prepared':
         course.prepared = value
-    course.save()
+        course.save(update_fields=['prepared'])
 
     return JsonResponse({"OK": True})
 
@@ -110,3 +113,4 @@ class MealDetailView(DetailView):
 
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
+
