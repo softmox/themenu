@@ -4,6 +4,10 @@
 
 <div class="container">
   <h1>Name: {{object.name}}</h1>
+  {{object.id}}
+  <a href="{% url 'dish-update' pk=object.id %}">
+    <button type="button" class="btn btn-warning">Edit</button>
+  </a>
   <p><h4>Notes:</h4> {{object.notes}}</p><br>
   <p><h4>Source:</h4> {{object.source}}</p><br>
   <p><h4>Recipe:</h4> {{object.recipe | linebreaks }}</p><br>

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-import views
+from themenu import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
     # generic list views
     url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
+    # generic update views
+    url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdateView.as_view(), 'dish-update'),
     # generic detail views
     url(r'^dishes/(?P<pk>[\w]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
     url(r'^meals/(?P<pk>[\w]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
