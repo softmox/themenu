@@ -12,6 +12,8 @@ from django.views.generic.detail import DetailView
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 
+from django.db.models import Count
+
 from .models import Dish, Meal, Course, Tag, GroceryListItem #  , Ingredient
 
 
@@ -143,3 +145,21 @@ class MealDetailView(DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
+class TagDetailView(DetailView):
+    model = Tag
+
+    def get_context_data(self, **kwargs):
+        this_tag = self.object
+        tag_dishes = this_tag.dish_set
+        tag_ing = this_tag.ingredient_set
+        tag_meals = this_tag.meal_set
+        context = super(TagDetailView, self).get_context_data(**kwargs)
+        context['dish_count'] = tag_dishes.count()
+        context['dishes'] = tag_dishes.annotate(num_meals=Count('meal')).order_by('-num_meals')[:15]
+        context['ingredient_count'] = tag_ing.count()
+        context['ingredients'] = tag_ing.annotate(num_dishes=Count('dish')).order_by('-num_dishes')[:15]
+        context['meal_count'] = tag_meals.count()
+        context['meals'] = tag_meals.order_by('-date')[:15]
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context

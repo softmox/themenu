@@ -15,7 +15,7 @@
       {% endif %}
       {% if day.daymeal.tags.all %}
         {% for t in day.daymeal.tags.all %}
-          <a href="#"><button class="btn btn-default btn-xs" style="background-color:{{t.color}}; border:none">{{t.name}}</button></a>
+          <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-default btn-xs" style="background-color:{{t.color}}; border:none">{{t.name}}</button></a>
         {% endfor %}
       {% endif %}
     {% else %}

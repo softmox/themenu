@@ -1,0 +1,75 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container width=95%">
+  <div class="row">
+    <div class='col-md-3'>
+      <button class="btn btn-default btn-xl" style="background-color:{{tag.color}}; border:none">
+        <h4>{{tag.name}}<h4>
+      </button>
+    </div>
+    <div class="col-md-9">
+    </div>
+  </div>
+  <div class="row">
+    <br>
+  </div>
+</div>
+<div class="container width=95%">
+  <div class="row">
+    <div class="dish-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">{{dish_count}} dishes tagged with <span><button class="btn btn-default btn-xs" style="background-color:{{tag.color}}; border:none">{{tag.name}}</button></span></div>
+        <div class="panel-body">
+        {% if dishes %}
+          <ul>
+            {% for dish in dishes %}
+              <li><a href="">{{dish.name}}</a><em> (In {{dish.num_meals}} meals)</em>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+        <p>No dishes have this tag<p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="ingredient-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">{{ingredient_count}} ingredients tagged with <span><button class="btn btn-default btn-xs" style="background-color:{{tag.color}}; border:none">{{tag.name}}</button></span></div>
+        <div class="panel-body">
+        {% if ingredients %}
+          <ul>
+            {% for ing in ingredients %}
+              <li><a href="">{{ing.name}}</a><em> (In {{ing.num_dishes}} dishes)</em>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+        <p>No ingredients have this tag<p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="meal-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">{{meal_count}} meals tagged with <span><button class="btn btn-default btn-xs" style="background-color:{{tag.color}}; border:none">{{tag.name}}</button></span></div>
+        <div class="panel-body">
+          {% if meals %}
+            <ul>
+              {% for meal in meals %}
+                <li><a href="">{{meal.meal_type}} on {{meal.date}}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+          <p>No meals have this tag<p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
