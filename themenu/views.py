@@ -4,12 +4,12 @@ from datetime import timedelta, date
 
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
-from django.core.urlresolvers import reverse
-from django.core import serializers
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.generic.edit import UpdateView
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
@@ -147,6 +147,7 @@ class MealDetailView(DetailView):
         context = self.get_context_data(object=self.object)
         return self.render_to_response(context)
 
+
 class TagDetailView(DetailView):
     model = Tag
 
@@ -185,36 +186,23 @@ def tag_json_view(request):
     return JsonResponse(tag_query_set, safe=False)
 
 
-# This came from https://docs.djangoproject.com/en/1.10/topics/class-based-views/mixins/
-# If we make a bunch of views with the serializing code, the mixing might be better?
-# For now it's complicated so meh
-# class JSONResponseMixin(object):
-#     """
-#     A mixin that can be used to render a JSON response.
-#     """
-#     def render_to_json_response(self, context, **response_kwargs):
-#         """
-#         Returns a JSON response, transforming 'context' to make the payload.
-#         """
-#         return JsonResponse(
-#             self.get_data(context),
-#             **response_kwargs
-#         )
+class DishUpdateView(UpdateView):
+    model = Dish
+    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
 
-#     def get_data(self, context):
-#         """
-#         Returns an object that will be serialized as JSON by json.dumps().
-#         """
-#         # Note: This is *EXTREMELY* naive; in reality, you'll need
-#         # to do much more complex handling to ensure that arbitrary
-#         # objects -- such as Django model instances or querysets
-#         # -- can be serialized as JSON.
-#         # data = serializers.serialize("xml", Tag.objects.all())
-#         return context
+    def get_success_url(self):
+        return reverse('dish-detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super(DishUpdateView, self).get_context_data(**kwargs)
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
 
 
-# class TagJSONView(JSONResponseMixin, ListView):
-#     model = Tag
+class DishCreateView(CreateView):
+    model = Dish
+    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
 
-#     def render_to_response(self, context, **response_kwargs):
-#         return self.render_to_json_response(context, safe=False, **response_kwargs)
+    def get_success_url(self):
+        return reverse('dish-detail', kwargs={'pk': self.object.id})
