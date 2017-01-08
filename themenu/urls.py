@@ -27,7 +27,7 @@ urlpatterns = [
     # generic list views
     url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
     # generic update views
-    url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdateView.as_view(), 'dish-update'),
+    url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdateView.as_view(), name='dish-update'),
     # generic detail views
     url(r'^dishes/(?P<pk>[\w]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
     url(r'^meals/(?P<pk>[\w]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),

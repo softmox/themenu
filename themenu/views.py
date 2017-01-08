@@ -4,7 +4,7 @@ from datetime import timedelta, date
 
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
@@ -180,6 +180,10 @@ class TagListView(ListView):
 
 class DishUpdateView(UpdateView):
     model = Dish
+    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results']
+
+    def get_success_url(self):
+        return reverse('dish-detail', kwargs={'pk':self.object.id})
 
     def get_context_data(self, **kwargs):
         context = super(DishUpdateView, self).get_context_data(**kwargs)

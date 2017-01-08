@@ -4,7 +4,6 @@
 
 <div class="container">
   <h1>Name: {{object.name}}</h1>
-  {{object.id}}
   <a href="{% url 'dish-update' pk=object.id %}">
     <button type="button" class="btn btn-warning">Edit</button>
   </a>
