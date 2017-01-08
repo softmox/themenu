@@ -19,7 +19,7 @@
   </p><br>
   <h4>Tags:</h4><p>
     {% for t in object.tags.all %}
-      <a href="" class="btn-md btn-info">{{ t.name }}</a>
+      <span><a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a></span>
     {% endfor %}
   </p>
 </div>
