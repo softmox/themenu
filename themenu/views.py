@@ -180,7 +180,7 @@ class TagListView(ListView):
 
 class DishUpdateView(UpdateView):
     model = Dish
-    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results']
+    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients']
 
     def get_success_url(self):
         return reverse('dish-detail', kwargs={'pk':self.object.id})
