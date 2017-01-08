@@ -24,6 +24,8 @@ $(document).ready(function() {
         console.log('clicked', dishId, mealId, attribute, checked);
         postCourseUpdate(dishId, mealId, attribute, checked)
     });
+
+  $('.js-example-basic-multiple').select2();
 });
 
 
