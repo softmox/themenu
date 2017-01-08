@@ -9,6 +9,10 @@ $(document).ready(function() {
         }
     });
 
+    // Api call for the tags for autocomplete
+    $('.js-example-basic-multiple').select2({placeholder: "Start typing for tags..."});
+    getAjax('/api/tags', {}, $('#tag-select'));
+
     $('.grocery-checkbox').change(function() {
         var groceryId = $(this).data('grocery-id');
         var checked = this.checked;
@@ -25,7 +29,6 @@ $(document).ready(function() {
         postCourseUpdate(dishId, mealId, attribute, checked)
     });
 
-  $('.js-example-basic-multiple').select2();
 });
 
 
@@ -62,6 +65,25 @@ function postGroceryUpdate(groceryId, checked) {
     });
 }
 
+
+function appendApiData(data, htmlElement) {
+    for (var i = 0; i < data.length; i++) {
+        htmlElement.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+    }
+}
+
+function getAjax(url, data, htmlElement) {
+    var $get = $.ajax({
+        type: 'GET',
+        url: url,
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        success: function(data) {
+            appendApiData(data, htmlElement);
+        }
+    });
+}
 
 
 function postCourseUpdate(dishId, mealId, attribute, checked) {
