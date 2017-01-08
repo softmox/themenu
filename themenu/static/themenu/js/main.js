@@ -10,8 +10,12 @@ $(document).ready(function() {
     });
 
     // Api call for the tags for autocomplete
-    $('.js-example-basic-multiple').select2({placeholder: "Start typing for tags..."});
-    getAjax('/api/tags', {}, $('#tag-select'));
+    var tagDropDown = $('.js-example-basic-multiple').select2({
+        placeholder: "Start typing for tags..."
+    });
+    if (tagDropDown) {
+        getAjax('/api/tags', {}, $('#tag-select'));
+    }
 
     $('.grocery-checkbox').change(function() {
         var groceryId = $(this).data('grocery-id');
@@ -80,6 +84,7 @@ function getAjax(url, data, htmlElement) {
         dataType: 'json',
         data: JSON.stringify(data),
         success: function(data) {
+            console.log("Success getting", url);
             appendApiData(data, htmlElement);
         }
     });
