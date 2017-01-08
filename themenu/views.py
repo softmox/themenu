@@ -190,3 +190,10 @@ class DishUpdateView(UpdateView):
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
+
+class DishCreateView(CreateView):
+    model = Dish
+    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
+
+    def get_success_url(self):
+        return reverse('dish-detail', kwargs={'pk':self.object.id})
