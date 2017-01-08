@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^courseupdate/?$', views.course_update, name='course-update'),
     url(r'^groceryupdate/?$', views.grocery_update, name='grocery-update'),
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
+    # generic list views
+    url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
     # generic detail views
     url(r'^dishes/(?P<pk>[\w]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
     url(r'^meals/(?P<pk>[\w]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
