@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
@@ -160,6 +161,18 @@ class TagDetailView(DetailView):
         context['ingredients'] = tag_ing.annotate(num_dishes=Count('dish')).order_by('-num_dishes')[:15]
         context['meal_count'] = tag_meals.count()
         context['meals'] = tag_meals.order_by('-date')[:15]
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
+
+class TagListView(ListView):
+    model = Tag
+
+    def get_context_data(self, **kwargs):
+        context = super(TagListView, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all().annotate(num_dishes=Count('dish', distinct=True),
+                                             num_ingredients=Count('ingredient', distinct=True)
+                                            ).order_by('-num_dishes')
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
