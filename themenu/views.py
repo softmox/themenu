@@ -4,11 +4,12 @@ from datetime import timedelta, date
 
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.generic.edit import UpdateView
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
@@ -173,6 +174,19 @@ class TagListView(ListView):
         context['tags'] = Tag.objects.all().annotate(num_dishes=Count('dish', distinct=True),
                                              num_ingredients=Count('ingredient', distinct=True)
                                             ).order_by('-num_dishes')
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
+
+class DishUpdateView(UpdateView):
+    model = Dish
+    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients']
+
+    def get_success_url(self):
+        return reverse('dish-detail', kwargs={'pk':self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super(DishUpdateView, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
