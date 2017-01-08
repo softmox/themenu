@@ -30,4 +30,5 @@ urlpatterns = [
     url(r'^dishes/(?P<pk>[\w]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
     url(r'^meals/(?P<pk>[\w]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
     url(r'^tags/(?P<pk>[\w]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
+    url(r'^api/tags/?$', views.tag_json_view, name='tag-json'),
 ]
