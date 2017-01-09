@@ -3,8 +3,47 @@
 {% block body %}
 
 <form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
+  <div class="fieldWrapper">
+    {{ form.notes.errors }}
+    {{ form.notes.label_tag }}
+    {{ form.notes }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.source.errors }}
+    {{ form.source.label_tag }}
+    {{ form.source }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.recipe.errors }}
+    {{ form.recipe.label_tag }}
+    {{ form.recipe }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.speed.errors }}
+    {{ form.speed.label_tag }}
+    {{ form.speed }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.ease.errors }}
+    {{ form.ease.label_tag }}
+    {{ form.ease }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.results.errors }}
+    {{ form.results.label_tag }}
+    {{ form.results }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.ingredients.errors }}
+    {{ form.ingredients.label_tag }}
+    {{ form.ingredients }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.tags.errors }}
+    {{ form.tags.label_tag }}
+    {{ form.tags }}
+  </div>
+  <input type="submit" value="Submit" />
 </form>
 
 {% endblock %}
