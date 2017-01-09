@@ -2,6 +2,7 @@ import json
 from collections import defaultdict
 from datetime import timedelta, date
 
+from django.apps import apps
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -180,9 +181,28 @@ class TagListView(ListView):
         # context['now'] = timezone.now()
         return context
 
+from itertools import chain
+def get_fields(model):
+    return list(set(chain.from_iterable(
+        (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
+        for field in model._meta.get_fields()
+        # For complete backwards compatibility, you may want to exclude
+        # GenericForeignKey from the results.
+        if not (field.many_to_one and field.related_model is None)
+    )))
 
-def tag_json_view(request):
-    tag_query_set = list(Tag.objects.values('id', 'name', 'color'))
+
+def model_json_view(request, model_name):
+    model = apps.get_model('themenu', model_name.title())
+    order_by = request.GET.get('order_by', None)
+    print 'order', order_by
+    # model_fields = list(model._meta.get_fields())
+    model_fields = get_fields(model)
+    base_query_set = model.objects.values(*[str(f) for f in model_fields])\
+                                  .distinct('id')
+    if order_by:
+        base_query_set = base_query_set.order_by(order_by)
+    tag_query_set = list(base_query_set)
     return JsonResponse(tag_query_set, safe=False)
 
 

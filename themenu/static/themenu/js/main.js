@@ -13,8 +13,9 @@ $(document).ready(function() {
     var tagDropDown = $('.js-example-basic-multiple').select2({
         placeholder: "Start typing for tags..."
     });
-    if (tagDropDown) {
-        getAjax('/api/tags', {}, $('#tag-select'));
+    if (tagDropDown.length) {
+        console.log('uh', tagDropDown)
+        getAjax('/api/tag', {}, $('#tag-select'));
     }
 
     $('.grocery-checkbox').change(function() {
