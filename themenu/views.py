@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from itertools import chain
 from datetime import timedelta, date
 
 from django.apps import apps
@@ -37,7 +38,7 @@ def grocery_list(request):
         (ing, g_list, all(g.purchased for g in g_list))
         for ing, g_list in ingredient_to_grocery_list.items()
     ]
-    # Sort the (ingrdient, [grocery,..]) tuples with
+    # Sort the (ingrdient, [grocery,..], purchased) tuples with
     # ones where everything has been purchased last
     sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
 
@@ -181,27 +182,53 @@ class TagListView(ListView):
         # context['now'] = timezone.now()
         return context
 
-from itertools import chain
+
+# From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
+# MyModel._meta.get_fields_with_model() becomes:
+
+
 def get_fields(model):
     return list(set(chain.from_iterable(
         (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
         for field in model._meta.get_fields()
         # For complete backwards compatibility, you may want to exclude
         # GenericForeignKey from the results.
-        if not (field.many_to_one and field.related_model is None)
+        if not field.is_relation
+            or field.one_to_one
+            or (field.many_to_one and field.related_model)
+        # if not (field.many_to_one and field.related_model is None)
     )))
+
+# In [93]: Meal._meta.get_fields()
+# Out[93]:
+# (<ManyToOneRel: themenu.course>,
+#  <django.db.models.fields.AutoField: id>,
+#  <django.db.models.fields.CharField: meal_type>,
+#  <django.db.models.fields.DateField: date>,
+#  <django.db.models.fields.related.ManyToManyField: dishes>,
+#  <django.db.models.fields.related.ManyToManyField: tags>)
+
+# In [94]: Tag._meta.get_fields()
+# Out[94]:
+# (<ManyToManyRel: themenu.ingredient>,
+#  <ManyToManyRel: themenu.dish>,
+#  <ManyToManyRel: themenu.meal>,
+#  <django.db.models.fields.AutoField: id>,
+#  <django.db.models.fields.TextField: name>,
+#  <django.db.models.fields.TextField: color>)
 
 
 def model_json_view(request, model_name):
     model = apps.get_model('themenu', model_name.title())
-    order_by = request.GET.get('order_by', None)
-    print 'order', order_by
+    order_by = request.GET.get('order_by')
+
     # model_fields = list(model._meta.get_fields())
     model_fields = get_fields(model)
-    base_query_set = model.objects.values(*[str(f) for f in model_fields])\
-                                  .distinct('id')
+    base_query_set = model.objects.values(*[str(f) for f in model_fields])
+
     if order_by:
         base_query_set = base_query_set.order_by(order_by)
+
     tag_query_set = list(base_query_set)
     return JsonResponse(tag_query_set, safe=False)
 

@@ -34,16 +34,17 @@
     {{ form.results }}
   </div>
   <div class="fieldWrapper">
-    {{ form.ingredients.errors }}
-    {{ form.ingredients.label_tag }}
-    {{ form.ingredients }}
+    <div class="col-md-4">
+      Ingredients:
+      <select id="ingredient-select" data-model="ingredient" class="select-multiple form-control" multiple="multiple"></select>
+    </div>
   </div>
   <div class="fieldWrapper">
-    {{ form.tags.errors }}
-    {{ form.tags.label_tag }}
-    {{ form.tags }}
-    <select id="tag-select" class="js-example-basic-multiple form-control" multiple="multiple">
-    </select>
+    <div class="col-md-4">
+      Tags:
+      <select id="tag-select" data-model="tag" class="select-multiple form-control" multiple="multiple"></select>
+    </div>
+
   </div>
   <input type="submit" value="Submit" />
 </form>

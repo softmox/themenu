@@ -10,12 +10,21 @@ $(document).ready(function() {
     });
 
     // Api call for the tags for autocomplete
-    var tagDropDown = $('.js-example-basic-multiple').select2({
-        placeholder: "Start typing for tags..."
-    });
-    if (tagDropDown.length) {
-        console.log('uh', tagDropDown)
-        getAjax('/api/tag', {}, $('#tag-select'));
+    // https://select2.github.io/examples.html
+    var selectDropDowns = $('.select-multiple');
+    if (selectDropDowns) {
+        console.log(selectDropDowns);
+        for (var i = 0; i < selectDropDowns.length; i++) {
+            model = $(selectDropDowns[i]).data('model');
+            $(selectDropDowns[i]).select2({
+                placeholder: 'Start typing for ' + model + ' ...',
+                // To include data here, the elements need a "text" field,
+                //      as well as the id field
+                // data: data
+            });
+            fetchDataAndAppend('/api/' + model, {}, $(selectDropDowns[i]));
+        }
+
     }
 
     $('.grocery-checkbox').change(function() {
@@ -71,13 +80,7 @@ function postGroceryUpdate(groceryId, checked) {
 }
 
 
-function appendApiData(data, htmlElement) {
-    for (var i = 0; i < data.length; i++) {
-        htmlElement.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
-    }
-}
-
-function getAjax(url, data, htmlElement) {
+function fetchDataAndAppend(url, data, jqueryElement) {
     var $get = $.ajax({
         type: 'GET',
         url: url,
@@ -86,9 +89,15 @@ function getAjax(url, data, htmlElement) {
         data: JSON.stringify(data),
         success: function(data) {
             console.log("Success getting", url);
-            appendApiData(data, htmlElement);
+            appendApiData(data, jqueryElement);
         }
     });
+}
+
+function appendApiData(data, jqueryElement) {
+    for (var i = 0; i < data.length; i++) {
+        jqueryElement.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+    }
 }
 
 
