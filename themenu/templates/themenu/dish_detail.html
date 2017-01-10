@@ -3,28 +3,67 @@
 {% block body %}
 
 <div class="container">
-  <h1>Name: {{object.name}}</h1>
-  <a href="{% url 'dish-update' pk=object.id %}">
-    <button type="button" class="btn btn-warning">Edit</button>
-  </a>
-  <p><h4>Notes:</h4> {{object.notes}}</p><br>
-  <p><h4>Source:</h4> {{object.source}}</p><br>
-  <p><h4>Recipe:</h4> {{object.recipe | linebreaks }}</p><br>
-  <p><span class="h4">Speed:</span> {{object.speed}}</p>
-  <p><span class="h4">Ease:</span> {{object.ease}}</p>
-  <p><span class="h4">Results:</span> {{object.results}}</p><br>
-  <p><h4>Ingredients:</h4><p>
-    <ul>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="page-header">
+      <h1>{{object.name}}    <span><a href="{% url 'dish-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
+            </a></span></h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="dish-info col-md-7 col-md-offset-1">
+      <p>Source: {{object.source}}</p>
+      <p>{{object.notes}}</p>
+      <div class="col-md-2">
+        {% for t in object.tags.all %}
+              <span><a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a></span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="dish-ratings col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <p>Speed: {{object.speed}}</p>
+          <p>Ease: {{object.ease}}</p>
+          <p>Results: {{object.results}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h4>You will need:</h4>
+    </div>
+  </div>
+  <div class="ingredients row">
+    <div class="col-md-10 col-md-offset-1">
       {% for i in object.ingredients.all %}
-        <li>{{ i.name }} </li>
+        <div class="col-sm-4 col-md-3">
+            <div class="ingredient">
+              <p><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>   {{ i.name }}</p>
+            </div>
+        </div>
       {% endfor %}
-    </ul>
-  </p><br>
-  <h4>Tags:</h4><p>
-    {% for t in object.tags.all %}
-      <span><a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a></span>
-    {% endfor %}
-  </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Recipe</h4>
+        </div>
+        <div class="panel-body">
+          <p>{{object.recipe | linebreaks }}<p>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 {% endblock %}
