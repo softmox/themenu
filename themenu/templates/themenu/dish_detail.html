@@ -17,9 +17,11 @@
     <div class="dish-info col-md-7 col-md-offset-1">
       <p>Source: {{object.source}}</p>
       <p>{{object.notes}}</p>
-      <div class="col-md-2">
+      <div class="tag thumbs">
         {% for t in object.tags.all %}
-              <span><a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a></span>
+          <div class="col-md-2">
+              <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a>
+          </div>
         {% endfor %}
       </div>
     </div>
@@ -43,9 +45,9 @@
     <div class="col-md-10 col-md-offset-1">
       {% for i in object.ingredients.all %}
         <div class="col-sm-4 col-md-3">
-            <div class="ingredient">
-              <p><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>   {{ i.name }}</p>
-            </div>
+          <div class="ingredient">
+            <p><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>   {{ i.name }}</p>
+          </div>
         </div>
       {% endfor %}
     </div>
