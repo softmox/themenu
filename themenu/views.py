@@ -237,7 +237,6 @@ def model_json_view(request, model_name):
 class DishUpdateView(UpdateView):
     model = Dish
     form_class = DishModelSelect2MultipleWidgetForm
-    template_name = 'themenu/dish_form.html'
 
     # This now happens in model "get_absolute_url"
     # def get_success_url(self):
@@ -252,4 +251,4 @@ class DishUpdateView(UpdateView):
 
 class DishCreateView(CreateView):
     model = Dish
-    fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
+    form_class = DishModelSelect2MultipleWidgetForm
