@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
@@ -19,6 +19,13 @@ from django.shortcuts import redirect
 from django.db.models import Count
 
 from .models import Dish, Meal, Course, Tag, GroceryListItem #  , Ingredient
+
+
+from django.views.generic import FormView
+
+
+class TemplateFormView(FormView):
+    template_name = 'themenu/form.html'
 
 
 def index(request):
@@ -237,8 +244,9 @@ class DishUpdateView(UpdateView):
     model = Dish
     fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
 
-    def get_success_url(self):
-        return reverse('dish-detail', kwargs={'pk': self.object.id})
+    # This now happens in model "get_absolute_url"
+    # def get_success_url(self):
+    #     return reverse('dish-detail', kwargs={'pk': self.object.id})
 
     def get_context_data(self, **kwargs):
         context = super(DishUpdateView, self).get_context_data(**kwargs)
@@ -250,6 +258,3 @@ class DishUpdateView(UpdateView):
 class DishCreateView(CreateView):
     model = Dish
     fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
-
-    def get_success_url(self):
-        return reverse('dish-detail', kwargs={'pk': self.object.id})
