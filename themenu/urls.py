@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from themenu import views
-from themenu.forms import DishModelSelect2MultipleWidgetForm
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),

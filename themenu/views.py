@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 
-from django.views.generic.edit import CreateView, FormView
+from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
@@ -18,34 +18,8 @@ from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from .models import Dish, Meal, Course, Tag, GroceryListItem #  , Ingredient
+from .models import Dish, Meal, Course, Tag, GroceryListItem
 from themenu.forms import DishModelSelect2MultipleWidgetForm
-
-from django.views.generic import FormView
-
-
-class TemplateFormView(FormView):
-    template_name = 'themenu/form.html'
-
-
-# class SaveView(UpdateView):
-#     model = Dish
-#     form_class = DishModelSelect2MultipleWidgetForm
-#     template_name = 'themenu/dish_form.html'
-#     fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
-
-
-#     # That should be all you need. If you need to do any more custom stuff
-#     # before saving the form, override the `form_valid` method, like this:
-
-#     def form_valid(self, form):
-#         self.object = form.save(commit=False)
-
-#         # Do any custom stuff here
-
-#         self.object.save()
-
-#         return render_to_response(self.template_name, self.get_context_data())
 
 
 def index(request):
@@ -264,7 +238,6 @@ class DishUpdateView(UpdateView):
     model = Dish
     form_class = DishModelSelect2MultipleWidgetForm
     template_name = 'themenu/dish_form.html'
-    # fields = ['name', 'notes', 'source', 'recipe', 'speed', 'ease', 'results', 'ingredients', 'tags']
 
     # This now happens in model "get_absolute_url"
     # def get_success_url(self):

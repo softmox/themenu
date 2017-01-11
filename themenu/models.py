@@ -5,17 +5,21 @@ from django.core.urlresolvers import reverse, reverse_lazy
 # from datetime import date
 # from django.contrib.auth.models import User
 
+
 def randcolor():
     return random.choice(Tag.TAG_COLORS)
+
 
 class Tag(models.Model):
     '''Any label for a Menu, Dish, or Ingredient'''
     class Meta:
         ordering = ['name']
 
-    TAG_COLORS = ['Wheat', 'PeachPuff', 'YellowGreen', 'RosyBrown', 'Peru',
-          'Khaki', 'Salmon', 'LemonChiffon', 'Orange', 'Lavender', 'Tomato',
-          'LightBlue', 'DarkSeaGreen', 'Pink']
+    TAG_COLORS = [
+        'Wheat', 'PeachPuff', 'YellowGreen', 'RosyBrown', 'Peru',
+        'Khaki', 'Salmon', 'LemonChiffon', 'Orange', 'Lavender', 'Tomato',
+        'LightBlue', 'DarkSeaGreen', 'Pink'
+    ]
 
     name = models.TextField()
     color = models.TextField(default=randcolor)
