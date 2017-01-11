@@ -2,7 +2,8 @@ from django import forms
 
 from django_select2.forms import ModelSelect2MultipleWidget
 
-from .models import Dish
+
+from .models import Dish, Meal
 
 
 class NameSearchFieldMixin(object):
@@ -29,4 +30,18 @@ class DishModelSelect2MultipleWidgetForm(forms.ModelForm):
         widgets = {
             'ingredients': NameModelSelect2MultipleWidget,
             'tags': NameModelSelect2MultipleWidget,
+        }
+
+
+class MealModelSelect2MultipleWidgetForm(forms.ModelForm):
+    """Like a normal ModelForm, but the Many-to-Many fields
+    use the prettier select2 multiple fields"""
+    class Meta:
+        model = Meal
+        fields = ['meal_type', 'date', 'dishes', 'tags', 'meal_type']
+
+        widgets = {
+            'dishes': NameModelSelect2MultipleWidget,
+            'tags': NameModelSelect2MultipleWidget,
+            'date': forms.DateInput(attrs={'type': 'date'})
         }

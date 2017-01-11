@@ -26,13 +26,17 @@ urlpatterns = [
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
     # generic list views
     url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
-    # generic create views
+
+    # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreateView.as_view(), name='dish-create'),
-    # generic update views
     url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdateView.as_view(), name='dish-update'),
-    # generic detail views
     url(r'^dishes/(?P<pk>[\d]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
-    url(r'^meals/(?P<pk>[\w]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
+
+    # Generic meal views (with select2 widgets)
+    url(r'^meals/create/?$', views.MealCreateView.as_view(), name='meal-create'),
+    url(r'^meals/(?P<pk>[\d]+)/update/?$', views.MealUpdateView.as_view(), name='meal-update'),
+    url(r'^meals/(?P<pk>[\d]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
+
     url(r'^tags/(?P<pk>[\w]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
     url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json_view, name='model-json'),
     url(r'^select2/', include('django_select2.urls')),

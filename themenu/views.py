@@ -19,7 +19,10 @@ from django.shortcuts import redirect
 from django.db.models import Count
 
 from .models import Dish, Meal, Course, Tag, GroceryListItem
-from themenu.forms import DishModelSelect2MultipleWidgetForm
+from themenu.forms import (
+    DishModelSelect2MultipleWidgetForm,
+    MealModelSelect2MultipleWidgetForm
+)
 
 
 def index(request):
@@ -137,18 +140,39 @@ class DishDetailView(DetailView):
         return context
 
 
+class DishUpdateView(UpdateView):
+    model = Dish
+    form_class = DishModelSelect2MultipleWidgetForm
+
+    # This now happens in model "get_absolute_url"
+    # def get_success_url(self):
+    #     return reverse('dish-detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super(DishUpdateView, self).get_context_data(**kwargs)
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
+
+
+class DishCreateView(CreateView):
+    model = Dish
+    form_class = DishModelSelect2MultipleWidgetForm
+
+
+class MealUpdateView(UpdateView):
+    # model = Meal
+    form_class = MealModelSelect2MultipleWidgetForm
+
+
+class MealCreateView(CreateView):
+    model = Meal
+    form_class = MealModelSelect2MultipleWidgetForm
+
+
 class MealDetailView(DetailView):
     model = Meal
 
-    def get(self, request, *args, **kwargs):
-        try:
-            self.object = self.get_object()
-        except Http404:
-            # TODO: What do we wanna show them for invalid Meal?
-            return redirect('calendar', offset=0)
-
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
 
 
 class TagDetailView(DetailView):
@@ -233,22 +257,3 @@ def model_json_view(request, model_name):
     tag_query_set = list(base_query_set)
     return JsonResponse(tag_query_set, safe=False)
 
-
-class DishUpdateView(UpdateView):
-    model = Dish
-    form_class = DishModelSelect2MultipleWidgetForm
-
-    # This now happens in model "get_absolute_url"
-    # def get_success_url(self):
-    #     return reverse('dish-detail', kwargs={'pk': self.object.id})
-
-    def get_context_data(self, **kwargs):
-        context = super(DishUpdateView, self).get_context_data(**kwargs)
-        # If we need to add extra items to what passes to the template
-        # context['now'] = timezone.now()
-        return context
-
-
-class DishCreateView(CreateView):
-    model = Dish
-    form_class = DishModelSelect2MultipleWidgetForm
