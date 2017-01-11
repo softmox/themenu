@@ -1,13 +1,8 @@
-from django.db import models
 from django import forms
 
-from django_select2.forms import (
-    HeavySelect2MultipleWidget, HeavySelect2Widget, ModelSelect2MultipleWidget,
-    ModelSelect2TagWidget, ModelSelect2Widget, Select2MultipleWidget,
-    Select2Widget
-)
+from django_select2.forms import ModelSelect2MultipleWidget
 
-from .models import Dish, Tag
+from .models import Dish
 
 
 class NameSearchFieldMixin(object):
@@ -31,11 +26,3 @@ class DishModelSelect2MultipleWidgetForm(forms.ModelForm):
             'ingredients': NameModelSelect2MultipleWidget,
             'tags': NameModelSelect2MultipleWidget,
         }
-
-
-# class DishModelSelect2MultipleWidgetForm(forms.Form):
-#     name = forms.CharField(max_length=50)
-#     tags = forms.ModelMultipleChoiceField(widget=ModelSelect2MultipleWidget(
-#         queryset=Tag.objects.all(),
-#         search_fields=['name__icontains'],
-#     ), queryset=Tag.objects.all(), required=False)

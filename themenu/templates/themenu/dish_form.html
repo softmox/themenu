@@ -2,13 +2,8 @@
 
 {% block body %}
 
-<!-- <form action="" method="post">{% csrf_token %} -->
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
-</form>
-
-<!--   <div class="fieldWrapper">
+<form action="" method="post">{% csrf_token %}
+  <div class="fieldWrapper">
     {{ form.name.errors }}
     {{ form.name.label_tag }}
     {% if field.help_text %}
@@ -65,16 +60,7 @@
     {{ form.results }}
   </div>
 
- <div class="fieldWrapper col-md-4" >
-      Ingredients:
-      <select id="id_ingredients" name="ingredients" data-model="ingredient" class="select-multiple form-control" multiple="multiple"></select>
-  </div>
-  <div class="fieldWrapper col-md-4">
-      Tags:
-      <select id="id_tags" data-model="tag" class="select-multiple form-control" multiple="multiple"></select>
-  </div> -->
-
-<!--
+  <!-- ManyToMany fields- Select2 multiple fields -->
   <div class="fieldWrapper">
     {{ form.ingredients.errors }}
     {{ form.ingredients.label_tag }}
@@ -91,7 +77,17 @@
     {% endif %}
     {{ form.tags }}
   </div>
-  <input type="submit" value="Submit" /> -->
+  <!-- End select2 multiple fields -->
+  <input type="submit" value="Submit" />
+
+<!-- <div class="fieldWrapper col-md-4" >
+      Ingredients:
+      <select id="id_ingredients" name="ingredients" data-model="ingredient" class="select-multiple form-control" multiple="multiple"></select>
+  </div>
+  <div class="fieldWrapper col-md-4">
+      Tags:
+      <select id="id_tags" data-model="tag" class="select-multiple form-control" multiple="multiple"></select>
+  </div> -->
 </form>
 
 {% endblock %}
