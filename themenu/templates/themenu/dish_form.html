@@ -2,9 +2,85 @@
 
 {% block body %}
 
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" />
+<form action="" method="post">{% csrf_token %}
+  <div class="fieldWrapper">
+    {{ form.name.errors }}
+    {{ form.name.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.name }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.notes.errors }}
+    {{ form.notes.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.notes }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.source.errors }}
+    {{ form.source.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.source }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.recipe.errors }}
+    {{ form.recipe.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.recipe }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.speed.errors }}
+    {{ form.speed.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.speed }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.ease.errors }}
+    {{ form.ease.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.ease }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.results.errors }}
+    {{ form.results.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.results }}
+  </div>
+
+  <!-- ManyToMany fields- Select2 multiple fields -->
+  <div class="fieldWrapper">
+    {{ form.ingredients.errors }}
+    {{ form.ingredients.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.ingredients }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.tags.errors }}
+    {{ form.tags.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.tags }}
+  </div>
+  <!-- End select2 multiple fields -->
+  <input type="submit" value="Submit" />
+
 </form>
 
 {% endblock %}
+

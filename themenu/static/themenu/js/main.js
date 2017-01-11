@@ -9,6 +9,24 @@ $(document).ready(function() {
         }
     });
 
+    // Api call for the tags for autocomplete
+    // https://select2.github.io/examples.html
+    // var selectDropDowns = $('.select-multiple');
+    // if (selectDropDowns) {
+    //     // console.log(selectDropDowns);
+    //     for (var i = 0; i < selectDropDowns.length; i++) {
+    //         model = $(selectDropDowns[i]).data('model');
+    //         $(selectDropDowns[i]).select2({
+    //             placeholder: 'Start typing for ' + model + ' ...',
+    //             // To include data here, the elements need a "text" field,
+    //             //      as well as the id field
+    //             // data: data
+    //         });
+    //         fetchDataAndAppend('/api/' + model, {}, $(selectDropDowns[i]));
+    //     }
+
+    // }
+
     $('.grocery-checkbox').change(function() {
         var groceryId = $(this).data('grocery-id');
         var checked = this.checked;
@@ -24,6 +42,7 @@ $(document).ready(function() {
         console.log('clicked', dishId, mealId, attribute, checked);
         postCourseUpdate(dishId, mealId, attribute, checked)
     });
+
 });
 
 
@@ -60,6 +79,26 @@ function postGroceryUpdate(groceryId, checked) {
     });
 }
 
+
+function fetchDataAndAppend(url, data, jqueryElement) {
+    var $get = $.ajax({
+        type: 'GET',
+        url: url,
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify(data),
+        success: function(data) {
+            console.log("Success getting", url);
+            appendApiData(data, jqueryElement);
+        }
+    });
+}
+
+function appendApiData(data, jqueryElement) {
+    for (var i = 0; i < data.length; i++) {
+        jqueryElement.append('<option value="' + data[i].id + '">' + data[i].name + '</option>');
+    }
+}
 
 
 function postCourseUpdate(dishId, mealId, attribute, checked) {
