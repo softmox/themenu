@@ -13,9 +13,10 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from themenu import views
+from themenu.forms import DishModelSelect2MultipleWidgetForm
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -35,5 +36,5 @@ urlpatterns = [
     url(r'^meals/(?P<pk>[\w]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
     url(r'^tags/(?P<pk>[\w]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
     url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json_view, name='model-json'),
-
+    url(r'^select2/', include('django_select2.urls')),
 ]

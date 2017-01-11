@@ -11,21 +11,21 @@ $(document).ready(function() {
 
     // Api call for the tags for autocomplete
     // https://select2.github.io/examples.html
-    var selectDropDowns = $('.select-multiple');
-    if (selectDropDowns) {
-        console.log(selectDropDowns);
-        for (var i = 0; i < selectDropDowns.length; i++) {
-            model = $(selectDropDowns[i]).data('model');
-            $(selectDropDowns[i]).select2({
-                placeholder: 'Start typing for ' + model + ' ...',
-                // To include data here, the elements need a "text" field,
-                //      as well as the id field
-                // data: data
-            });
-            fetchDataAndAppend('/api/' + model, {}, $(selectDropDowns[i]));
-        }
+    // var selectDropDowns = $('.select-multiple');
+    // if (selectDropDowns) {
+    //     // console.log(selectDropDowns);
+    //     for (var i = 0; i < selectDropDowns.length; i++) {
+    //         model = $(selectDropDowns[i]).data('model');
+    //         $(selectDropDowns[i]).select2({
+    //             placeholder: 'Start typing for ' + model + ' ...',
+    //             // To include data here, the elements need a "text" field,
+    //             //      as well as the id field
+    //             // data: data
+    //         });
+    //         fetchDataAndAppend('/api/' + model, {}, $(selectDropDowns[i]));
+    //     }
 
-    }
+    // }
 
     $('.grocery-checkbox').change(function() {
         var groceryId = $(this).data('grocery-id');
