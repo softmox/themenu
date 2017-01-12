@@ -1,5 +1,5 @@
 import json
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from itertools import chain
 from datetime import timedelta, date
 
@@ -71,7 +71,7 @@ def calendar(request, offset):
             return None
 
     def weekplan(weekdays_list):
-        weekplan = {}
+        weekplan = OrderedDict()
         meal_types = [i[1] for i in Meal.MEAL_TYPE_CHOICES]
         for type_ in meal_types:
             days = []
@@ -167,13 +167,11 @@ class MealCreateView(CreateView):
     form_class = MealModelForm
 
     def get_initial(self):
-        """Get all the url arguments that are field names"""
+        """Get all the url params that are field names"""
         initial = {}
         for field in get_fields(Meal):
             initial[field] = self.request.GET.get(field)
-        print initial
         return initial
-        # return {'date': '2017-01-01'}
 
 
 class MealDetailView(DetailView):
