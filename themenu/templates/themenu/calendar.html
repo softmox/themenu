@@ -26,37 +26,19 @@
     <th width=13%>Saturday</th>
     <th width=13%>Sunday</th>
   </tr>
+
+
+ {% for meal_type, meal_plan in weekplan.items %}
   <tr>
-    <td>Breakfast</td>
-    {% for day in weekplan.breakfast %}
-      {% include "themenu/calendar_cell.html" %}
-    {% endfor %}
+    <td>{{ meal_type.title }}</td>
+      {% for day in meal_plan %}
+        {% include "themenu/calendar_cell.html" %}
+      {% endfor %}
   </tr>
-  <tr>
-    <td>Lunch</td>
-    {% for day in weekplan.lunch %}
-      {% include "themenu/calendar_cell.html" %}
-    {% endfor %}
-  </tr>
-  <tr>
-    <td>Dinner</td>
-    {% for day in weekplan.dinner %}
-      {% include "themenu/calendar_cell.html" %}
-    {% endfor %}
-  </tr>
-  <tr>
-    <td>Dessert</td>
-    {% for day in weekplan.dessert %}
-      {% include "themenu/calendar_cell.html" %}
-    {% endfor %}
-  </tr>
-  <tr>
-    <td>Snacks</td>
-    {% for day in weekplan.snack %}
-      {% include "themenu/calendar_cell.html" %}
-    {% endfor %}
-  </tr>
+  {% endfor %}
+
 </table>
 </div>
 
 {% endblock %}
+

@@ -1,5 +1,5 @@
 import json
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from itertools import chain
 from datetime import timedelta, date
 
@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, ModelFormMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
@@ -18,8 +18,8 @@ from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from .models import Dish, Meal, Course, Tag, GroceryListItem
-from themenu.forms import DishModelSelect2MultipleWidgetForm
+from themenu.models import Dish, Meal, Course, Tag, GroceryListItem
+from themenu.forms import DishModelForm, MealModelForm
 
 
 def index(request):
@@ -71,7 +71,7 @@ def calendar(request, offset):
             return None
 
     def weekplan(weekdays_list):
-        weekplan = {}
+        weekplan = OrderedDict()
         meal_types = [i[1] for i in Meal.MEAL_TYPE_CHOICES]
         for type_ in meal_types:
             days = []
@@ -137,18 +137,55 @@ class DishDetailView(DetailView):
         return context
 
 
+class DishUpdateView(UpdateView):
+    model = Dish
+    form_class = DishModelForm
+
+    # This now happens in model "get_absolute_url"
+    # def get_success_url(self):
+    #     return reverse('dish-detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super(DishUpdateView, self).get_context_data(**kwargs)
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
+
+
+class DishCreateView(CreateView):
+    model = Dish
+    form_class = DishModelForm
+
+
+class MealUpdateView(UpdateView):
+    # model = Meal
+    form_class = MealModelForm
+
+
+class MealCreateView(CreateView):
+    model = Meal
+    form_class = MealModelForm
+
+    def get_initial(self):
+        """Get all the url params that are field names"""
+        initial = {}
+        for field in get_fields(Meal):
+            initial[field] = self.request.GET.get(field)
+        return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        for dish in form.cleaned_data['dishes']:
+            course = Course(meal=self.object, dish=dish)
+            course.save()
+        for tag in form.cleaned_data['tags']:
+            self.object.tags.add(tag)
+        return super(ModelFormMixin, self).form_valid(form)
+
+
 class MealDetailView(DetailView):
     model = Meal
-
-    def get(self, request, *args, **kwargs):
-        try:
-            self.object = self.get_object()
-        except Http404:
-            # TODO: What do we wanna show them for invalid Meal?
-            return redirect('calendar', offset=0)
-
-        context = self.get_context_data(object=self.object)
-        return self.render_to_response(context)
 
 
 class TagDetailView(DetailView):
@@ -232,23 +269,3 @@ def model_json_view(request, model_name):
 
     tag_query_set = list(base_query_set)
     return JsonResponse(tag_query_set, safe=False)
-
-
-class DishUpdateView(UpdateView):
-    model = Dish
-    form_class = DishModelSelect2MultipleWidgetForm
-
-    # This now happens in model "get_absolute_url"
-    # def get_success_url(self):
-    #     return reverse('dish-detail', kwargs={'pk': self.object.id})
-
-    def get_context_data(self, **kwargs):
-        context = super(DishUpdateView, self).get_context_data(**kwargs)
-        # If we need to add extra items to what passes to the template
-        # context['now'] = timezone.now()
-        return context
-
-
-class DishCreateView(CreateView):
-    model = Dish
-    form_class = DishModelSelect2MultipleWidgetForm
