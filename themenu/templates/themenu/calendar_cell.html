@@ -19,9 +19,11 @@
         {% endfor %}
       {% endif %}
     {% else %}
-    <div style="color:DarkGray">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-      <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>
+    <a href="{% url 'meal-create' %}?date={{ day.date | date:"Y-m-d"}}&meal_type={{meal_type}}">
+      <div style="color:DarkGray">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>
     </div>
+    </a>
     {% endif %}
 </td>
