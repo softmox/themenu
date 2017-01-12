@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404, JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse, reverse_lazy
 
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, ModelFormMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
@@ -172,6 +172,16 @@ class MealCreateView(CreateView):
         for field in get_fields(Meal):
             initial[field] = self.request.GET.get(field)
         return initial
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        for dish in form.cleaned_data['dishes']:
+            course = Course(meal=self.object, dish=dish)
+            course.save()
+        for tag in form.cleaned_data['tags']:
+            self.object.tags.add(tag)
+        return super(ModelFormMixin, self).form_valid(form)
 
 
 class MealDetailView(DetailView):
