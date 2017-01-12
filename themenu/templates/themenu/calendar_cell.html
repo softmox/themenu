@@ -5,10 +5,12 @@
               <div class="checkbox">
               <a href="{% url 'dish-detail' course.dish.id %}">{{course.dish.name}}</a><br>
               <label>
-                <input class="course-checkbox" {{ course.prepared|yesno:"checked,false" }} data-attribute="prepared" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox"> Made
+                <input class="course-checkbox" {{ course.prepared|yesno:"checked,false" }} data-attribute="prepared" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox">
+                <small style="color:Gray"> Made</small>
               </label>
               <label>
-                <input class="course-checkbox" {{ course.eaten|yesno:"checked,false" }} data-attribute="eaten" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox"> Eaten
+                <input class="course-checkbox" {{ course.eaten|yesno:"checked,false" }} data-attribute="eaten" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox">
+                <small style="color:Gray"> Eaten</small>
               </label>
             </div>
           {% endfor %}
