@@ -3,10 +3,11 @@
 {% block body %}
 
 <div class="container">
-  <h1>Name: {{object.name}}</h1>
+  <h1>{{object.meal_type.title}} on {{object.date}}</h1>
+
   <p>Dishes:
-      {% for i in object.dishes.all %}
-        {{ t.name }}
+      {% for dish in object.dishes.all %}
+        {{ dish.name }}
       {% endfor %}
   </p>
   <p>Tags:
