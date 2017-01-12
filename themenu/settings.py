@@ -165,3 +165,38 @@ LOGGING = {
         },
     },
 }
+
+
+# https://devcenter.heroku.com/articles/django-memcache
+def get_cache():
+    try:
+        os.environ['MEMCACHE_SERVERS'] = os.environ['MEMCACHIER_SERVERS'].replace(',', ';')
+        os.environ['MEMCACHE_USERNAME'] = os.environ['MEMCACHIER_USERNAME']
+        os.environ['MEMCACHE_PASSWORD'] = os.environ['MEMCACHIER_PASSWORD']
+        return {
+            'default': {
+                'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+                'TIMEOUT': 500,
+                'BINARY': True,
+                'OPTIONS': {'tcp_nodelay': True}
+            },
+            'select2': {
+                'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+                'TIMEOUT': 500,
+                'BINARY': True,
+                'OPTIONS': {'tcp_nodelay': True}
+            }
+        }
+    except:
+        return {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+            },
+            'select2': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+            }
+        }
+
+CACHES = get_cache()
+
+SELECT2_CACHE_BACKEND = 'select2'

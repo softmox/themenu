@@ -1,6 +1,7 @@
 # TheMenu
 
     mkvirtualenv themenu
+    brew install libmemcached
     pip install -r requirements.txt
     ./manage.py run
 
