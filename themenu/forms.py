@@ -13,13 +13,13 @@ class NameSearchFieldMixin(object):
     ]
 
 
-class NameModelSelect2MultipleWidget(NameSearchFieldMixin, ModelSelect2MultipleWidget):
+class NameSelect2MultipleWidget(NameSearchFieldMixin, ModelSelect2MultipleWidget):
     """This just combines the library's Select2 multiple widget
     with the ability to search by name or pk"""
     pass
 
 
-class DishModelSelect2MultipleWidgetForm(forms.ModelForm):
+class DishModelForm(forms.ModelForm):
     """Like a normal ModelForm, but the Many-to-Many fields
     use the prettier select2 multiple fields"""
     class Meta:
@@ -28,12 +28,12 @@ class DishModelSelect2MultipleWidgetForm(forms.ModelForm):
                   'ease', 'results', 'ingredients', 'tags']
 
         widgets = {
-            'ingredients': NameModelSelect2MultipleWidget,
-            'tags': NameModelSelect2MultipleWidget,
+            'ingredients': NameSelect2MultipleWidget,
+            'tags': NameSelect2MultipleWidget,
         }
 
 
-class MealModelSelect2MultipleWidgetForm(forms.ModelForm):
+class MealModelForm(forms.ModelForm):
     """Like a normal ModelForm, but the Many-to-Many fields
     use the prettier select2 multiple fields"""
     class Meta:
@@ -41,7 +41,7 @@ class MealModelSelect2MultipleWidgetForm(forms.ModelForm):
         fields = ['meal_type', 'date', 'dishes', 'tags', 'meal_type']
 
         widgets = {
-            'dishes': NameModelSelect2MultipleWidget,
-            'tags': NameModelSelect2MultipleWidget,
+            'dishes': NameSelect2MultipleWidget,
+            'tags': NameSelect2MultipleWidget,
             'date': forms.DateInput(attrs={'type': 'date'})
         }

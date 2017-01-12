@@ -18,11 +18,8 @@ from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from .models import Dish, Meal, Course, Tag, GroceryListItem
-from themenu.forms import (
-    DishModelSelect2MultipleWidgetForm,
-    MealModelSelect2MultipleWidgetForm
-)
+from themenu.models import Dish, Meal, Course, Tag, GroceryListItem
+from themenu.forms import DishModelForm, MealModelForm
 
 
 def index(request):
@@ -142,7 +139,7 @@ class DishDetailView(DetailView):
 
 class DishUpdateView(UpdateView):
     model = Dish
-    form_class = DishModelSelect2MultipleWidgetForm
+    form_class = DishModelForm
 
     # This now happens in model "get_absolute_url"
     # def get_success_url(self):
@@ -157,22 +154,30 @@ class DishUpdateView(UpdateView):
 
 class DishCreateView(CreateView):
     model = Dish
-    form_class = DishModelSelect2MultipleWidgetForm
+    form_class = DishModelForm
 
 
 class MealUpdateView(UpdateView):
     # model = Meal
-    form_class = MealModelSelect2MultipleWidgetForm
+    form_class = MealModelForm
 
 
 class MealCreateView(CreateView):
     model = Meal
-    form_class = MealModelSelect2MultipleWidgetForm
+    form_class = MealModelForm
+
+    def get_initial(self):
+        """Get all the url arguments that are field names"""
+        initial = {}
+        for field in get_fields(Meal):
+            initial[field] = self.request.GET.get(field)
+        print initial
+        return initial
+        # return {'date': '2017-01-01'}
 
 
 class MealDetailView(DetailView):
     model = Meal
-
 
 
 class TagDetailView(DetailView):
@@ -256,4 +261,3 @@ def model_json_view(request, model_name):
 
     tag_query_set = list(base_query_set)
     return JsonResponse(tag_query_set, safe=False)
-
