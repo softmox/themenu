@@ -1,4 +1,8 @@
-<td>
+{% if day.date == today %}
+  <td style="background-color:AliceBlue">
+{% else %}
+  <td>
+{% endif %}
     {%if day.daymeal %}
       {% if day.daymeal.course_set.all %}
           {% for course in day.daymeal.course_set.all %}

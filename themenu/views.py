@@ -95,6 +95,7 @@ def calendar(request, offset):
     context['thisweekmonday'] = monday(0)
     context['lastweekmonday'] = monday(-1)
     context['nextweekmonday'] = monday(1)
+    context['today'] = date.today()
 
     return render(request, 'themenu/calendar.html', context)
 
