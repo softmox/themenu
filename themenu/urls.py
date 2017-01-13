@@ -24,8 +24,6 @@ urlpatterns = [
     url(r'^courseupdate/?$', views.course_update, name='course-update'),
     url(r'^groceryupdate/?$', views.grocery_update, name='grocery-update'),
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
-    # generic list views
-    url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
 
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreateView.as_view(), name='dish-create'),
@@ -37,7 +35,12 @@ urlpatterns = [
     url(r'^meals/(?P<pk>[\d]+)/update/?$', views.MealUpdateView.as_view(), name='meal-update'),
     url(r'^meals/(?P<pk>[\d]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
 
-    url(r'^tags/(?P<pk>[\w]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
+    # Generic tag views
+    url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
+    url(r'^tags/create/?$', views.TagCreateView.as_view(), name='tag-create'),
+    url(r'^tags/(?P<pk>[\d]+)/update/?$', views.TagUpdateView.as_view(), name='tag-update'),
+    url(r'^tags/(?P<pk>[\d]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
+
     url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json_view, name='model-json'),
     url(r'^select2/', include('django_select2.urls')),
 ]

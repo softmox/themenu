@@ -1,9 +1,12 @@
 from django import forms
 
-from django_select2.forms import ModelSelect2MultipleWidget
+from django_select2.forms import (
+    ModelSelect2MultipleWidget,
+    ModelSelect2Widget,
+)
 
 
-from .models import Dish, Meal
+from .models import Dish, Meal, Tag
 
 
 class NameSearchFieldMixin(object):
@@ -44,4 +47,22 @@ class MealModelForm(forms.ModelForm):
             'dishes': NameSelect2MultipleWidget,
             'tags': NameSelect2MultipleWidget,
             'date': forms.DateInput(attrs={'type': 'date'})
+        }
+
+
+class NameSelect2Widget(NameSearchFieldMixin, ModelSelect2Widget):
+    """This just combines the library's Select2 multiple widget
+    with the ability to search by name or pk"""
+    pass
+
+
+class TagModelForm(forms.ModelForm):
+    """Like a normal ModelForm, but the Many-to-Many fields
+    use the prettier select2 multiple fields"""
+    class Meta:
+        model = Tag
+        fields = ['name', 'color']
+
+        widgets = {
+            'color': NameSelect2Widget
         }

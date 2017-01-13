@@ -15,6 +15,9 @@ class Tag(models.Model):
     class Meta:
         ordering = ['name']
 
+    def get_absolute_url(self):
+        return reverse('dish-detail', args=[str(self.id)])
+
     TAG_COLORS = [
         'Wheat', 'PeachPuff', 'YellowGreen', 'RosyBrown', 'Peru',
         'Khaki', 'Salmon', 'LemonChiffon', 'Orange', 'Lavender', 'Tomato',

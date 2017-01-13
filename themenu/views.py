@@ -19,7 +19,7 @@ from django.shortcuts import redirect
 from django.db.models import Count
 
 from themenu.models import Dish, Meal, Course, Tag, GroceryListItem
-from themenu.forms import DishModelForm, MealModelForm
+from themenu.forms import DishModelForm, MealModelForm, TagModelForm
 
 
 def index(request):
@@ -220,6 +220,23 @@ class TagListView(ListView):
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
+
+
+class TagUpdateView(UpdateView):
+    model = Tag
+    form_class = TagModelForm
+
+    def get_context_data(self, **kwargs):
+        context = super(TagUpdateView, self).get_context_data(**kwargs)
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
+
+
+class TagCreateView(CreateView):
+    model = Tag
+    form_class = TagModelForm
+
 
 
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
