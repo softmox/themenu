@@ -11,7 +11,9 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, ModelFormMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
+
+
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
@@ -156,6 +158,21 @@ class DishUpdateView(UpdateView):
 class DishCreateView(CreateView):
     model = Dish
     form_class = DishModelForm
+
+
+# Including this for when we want to only allow the owner to
+# Delete the item
+# class MyDeleteView(DeleteView):
+#     def get_object(self, queryset=None):
+#         """ Hook to ensure object is owned by request.user. """
+#         obj = super(MyDeleteView, self).get_object()
+#         if not obj.owner == self.request.user:
+#             raise Http404
+#         return obj
+
+class MealDeleteView(DeleteView):
+    model = Meal
+    success_url = reverse_lazy('calendar', args=(0,))
 
 
 class MealUpdateView(UpdateView):

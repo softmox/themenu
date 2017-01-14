@@ -33,6 +33,7 @@ urlpatterns = [
     # Generic meal views (with select2 widgets)
     url(r'^meals/create/?$', views.MealCreateView.as_view(), name='meal-create'),
     url(r'^meals/(?P<pk>[\d]+)/update/?$', views.MealUpdateView.as_view(), name='meal-update'),
+    url(r'^meals/(?P<pk>[\d]+)/delete/?$', views.MealDeleteView.as_view(), name='meal-delete'),
     url(r'^meals/(?P<pk>[\d]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
 
     # Generic tag views

@@ -4,10 +4,13 @@
   <td>
 {% endif %}
     {%if day.daymeal %}
+      <a href="{% url 'meal-delete' day.daymeal.id %}" style="color:DarkGray"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Remove</a>
       {% if day.daymeal.course_set.all %}
           {% for course in day.daymeal.course_set.all %}
               <div class="checkbox">
-              <a href="{% url 'dish-detail' course.dish.id %}">{{course.dish.name}}</a><br>
+              <a href="{% url 'dish-detail' course.dish.id %}">{{course.dish.name}}</a>
+              <br>
+
               <label>
                 <input class="course-checkbox" {{ course.prepared|yesno:"checked,false" }} data-attribute="prepared" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox">
                 <small style="color:Gray"> Made</small>
