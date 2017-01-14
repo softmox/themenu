@@ -181,7 +181,7 @@ class MealDeleteView(DeleteView):
 
 
 class MealUpdateView(UpdateView):
-    # model = Meal
+    model = Meal
     form_class = MealModelForm
 
 

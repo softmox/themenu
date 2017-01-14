@@ -4,7 +4,7 @@
   <td>
 {% endif %}
     {%if day.daymeal %}
-      <a href="{% url 'meal-delete' day.daymeal.id %}" style="color:DarkGray"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Remove</a>
+      <a href="{% url 'meal-update' day.daymeal.id %}" style="color:DarkGray"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>Edit</a>
       {% if day.daymeal.course_set.all %}
           {% for course in day.daymeal.course_set.all %}
               <div class="checkbox">
