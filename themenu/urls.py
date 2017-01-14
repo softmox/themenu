@@ -26,24 +26,31 @@ urlpatterns = [
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
 
     # Generic dish views (with select2 widgets)
-    url(r'^dishes/create/$', views.DishCreateView.as_view(), name='dish-create'),
-    url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdateView.as_view(), name='dish-update'),
-    url(r'^dishes/(?P<pk>[\d]+)/delete/?$', views.DishDeleteView.as_view(), name='dish-delete'),
-    url(r'^dishes/(?P<pk>[\d]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
+    url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),
+    url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdate.as_view(), name='dish-update'),
+    url(r'^dishes/(?P<pk>[\d]+)/delete/?$', views.DishDelete.as_view(), name='dish-delete'),
+    url(r'^dishes/(?P<pk>[\d]+)/?$', views.DishDetail.as_view(), name='dish-detail'),
 
     # Generic meal views (with select2 widgets)
-    url(r'^meals/create/?$', views.MealCreateView.as_view(), name='meal-create'),
-    url(r'^meals/(?P<pk>[\d]+)/update/?$', views.MealUpdateView.as_view(), name='meal-update'),
-    url(r'^meals/(?P<pk>[\d]+)/delete/?$', views.MealDeleteView.as_view(), name='meal-delete'),
-    url(r'^meals/(?P<pk>[\d]+)/?$', views.MealDetailView.as_view(), name='meal-detail'),
+    url(r'^meals/create/?$', views.MealCreate.as_view(), name='meal-create'),
+    url(r'^meals/(?P<pk>[\d]+)/update/?$', views.MealUpdate.as_view(), name='meal-update'),
+    url(r'^meals/(?P<pk>[\d]+)/delete/?$', views.MealDelete.as_view(), name='meal-delete'),
+    url(r'^meals/(?P<pk>[\d]+)/?$', views.MealDetail.as_view(), name='meal-detail'),
 
     # Generic tag views
-    url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
-    url(r'^tags/create/?$', views.TagCreateView.as_view(), name='tag-create'),
-    url(r'^tags/(?P<pk>[\d]+)/update/?$', views.TagUpdateView.as_view(), name='tag-update'),
-    url(r'^tags/(?P<pk>[\d]+)/delete/?$', views.TagDeleteView.as_view(), name='tag-delete'),
-    url(r'^tags/(?P<pk>[\d]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
+    url(r'^tags/$', views.TagList.as_view(), name='tag-list'),
+    url(r'^tags/create/?$', views.TagCreate.as_view(), name='tag-create'),
+    url(r'^tags/(?P<pk>[\d]+)/update/?$', views.TagUpdate.as_view(), name='tag-update'),
+    url(r'^tags/(?P<pk>[\d]+)/delete/?$', views.TagDelete.as_view(), name='tag-delete'),
+    url(r'^tags/(?P<pk>[\d]+)/?$', views.TagDetail.as_view(), name='tag-detail'),
 
-    url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json_view, name='model-json'),
+    # Generic ingredient views
+    url(r'^ingredients/$', views.IngredientList.as_view(), name='ingredient-list'),
+    url(r'^ingredients/create/?$', views.IngredientCreate.as_view(), name='ingredient-create'),
+    url(r'^ingredients/(?P<pk>[\d]+)/update/?$', views.IngredientUpdate.as_view(), name='ingredient-update'),
+    url(r'^ingredients/(?P<pk>[\d]+)/delete/?$', views.IngredientDelete.as_view(), name='ingredient-delete'),
+    url(r'^ingredients/(?P<pk>[\d]+)/?$', views.IngredientDetail.as_view(), name='ingredient-detail'),
+
+    url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json, name='model-json'),
     url(r'^select2/', include('django_select2.urls')),
 ]

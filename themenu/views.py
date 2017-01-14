@@ -130,7 +130,7 @@ def grocery_update(request):
     return JsonResponse({"OK": True})
 
 
-class DishDetailView(DetailView):
+class DishDetail(DetailView):
     model = Dish
 
     def get_context_data(self, **kwargs):
@@ -140,7 +140,7 @@ class DishDetailView(DetailView):
         return context
 
 
-class DishUpdateView(UpdateView):
+class DishUpdate(UpdateView):
     model = Dish
     form_class = DishModelForm
 
@@ -155,19 +155,19 @@ class DishUpdateView(UpdateView):
         return context
 
 
-class DishCreateView(CreateView):
+class DishCreate(CreateView):
     model = Dish
     form_class = DishModelForm
 
 
-class DishDeleteView(DeleteView):
+class DishDelete(DeleteView):
     model = Dish
     success_url = reverse_lazy('calendar', args=(0,))
 
 
 # Including this for when we want to only allow the owner to
 # Delete the item
-# class MyDeleteView(DeleteView):
+# class MyDelete(DeleteView):
 #     def get_object(self, queryset=None):
 #         """ Hook to ensure object is owned by request.user. """
 #         obj = super(MyDeleteView, self).get_object()
@@ -175,17 +175,17 @@ class DishDeleteView(DeleteView):
 #             raise Http404
 #         return obj
 
-class MealDeleteView(DeleteView):
+class MealDelete(DeleteView):
     model = Meal
     success_url = reverse_lazy('calendar', args=(0,))
 
 
-class MealUpdateView(UpdateView):
+class MealUpdate(UpdateView):
     model = Meal
     form_class = MealModelForm
 
 
-class MealCreateView(CreateView):
+class MealCreate(CreateView):
     model = Meal
     form_class = MealModelForm
 
@@ -207,11 +207,11 @@ class MealCreateView(CreateView):
         return super(ModelFormMixin, self).form_valid(form)
 
 
-class MealDetailView(DetailView):
+class MealDetail(DetailView):
     model = Meal
 
 
-class TagDetailView(DetailView):
+class TagDetail(DetailView):
     model = Tag
 
     def get_context_data(self, **kwargs):
@@ -231,7 +231,7 @@ class TagDetailView(DetailView):
         return context
 
 
-class TagListView(ListView):
+class TagList(ListView):
     model = Tag
 
     def get_context_data(self, **kwargs):
@@ -244,7 +244,7 @@ class TagListView(ListView):
         return context
 
 
-class TagUpdateView(UpdateView):
+class TagUpdate(UpdateView):
     model = Tag
     form_class = TagModelForm
 
@@ -255,12 +255,12 @@ class TagUpdateView(UpdateView):
         return context
 
 
-class TagCreateView(CreateView):
+class TagCreate(CreateView):
     model = Tag
     form_class = TagModelForm
 
 
-class TagDeleteView(DeleteView):
+class TagDelete(DeleteView):
     model = Tag
     success_url = reverse_lazy('calendar', args=(0,))
 
@@ -300,7 +300,7 @@ def get_fields(model):
 #  <django.db.models.fields.TextField: color>)
 
 
-def model_json_view(request, model_name):
+def model_json(request, model_name):
     model = apps.get_model('themenu', model_name.title())
     order_by = request.GET.get('order_by')
 
