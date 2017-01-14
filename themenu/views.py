@@ -160,6 +160,11 @@ class DishCreateView(CreateView):
     form_class = DishModelForm
 
 
+class DishDeleteView(DeleteView):
+    model = Dish
+    success_url = reverse_lazy('calendar', args=(0,))
+
+
 # Including this for when we want to only allow the owner to
 # Delete the item
 # class MyDeleteView(DeleteView):
@@ -254,6 +259,10 @@ class TagCreateView(CreateView):
     model = Tag
     form_class = TagModelForm
 
+
+class TagDeleteView(DeleteView):
+    model = Tag
+    success_url = reverse_lazy('calendar', args=(0,))
 
 
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api

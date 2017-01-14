@@ -28,6 +28,7 @@ urlpatterns = [
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreateView.as_view(), name='dish-create'),
     url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdateView.as_view(), name='dish-update'),
+    url(r'^dishes/(?P<pk>[\d]+)/delete/?$', views.DishDeleteView.as_view(), name='dish-delete'),
     url(r'^dishes/(?P<pk>[\d]+)/?$', views.DishDetailView.as_view(), name='dish-detail'),
 
     # Generic meal views (with select2 widgets)
@@ -40,6 +41,7 @@ urlpatterns = [
     url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
     url(r'^tags/create/?$', views.TagCreateView.as_view(), name='tag-create'),
     url(r'^tags/(?P<pk>[\d]+)/update/?$', views.TagUpdateView.as_view(), name='tag-update'),
+    url(r'^tags/(?P<pk>[\d]+)/delete/?$', views.TagDeleteView.as_view(), name='tag-delete'),
     url(r'^tags/(?P<pk>[\d]+)/?$', views.TagDetailView.as_view(), name='tag-detail'),
 
     url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json_view, name='model-json'),
