@@ -16,7 +16,7 @@ class Tag(models.Model):
         ordering = ['name']
 
     def get_absolute_url(self):
-        return reverse('dish-detail', args=[str(self.id)])
+        return reverse('tag-detail', args=[str(self.id)])
 
     TAG_COLORS = [
         'Wheat', 'PeachPuff', 'YellowGreen', 'RosyBrown', 'Peru',
@@ -24,8 +24,8 @@ class Tag(models.Model):
         'LightBlue', 'DarkSeaGreen', 'Pink'
     ]
 
-    name = models.TextField()
-    color = models.TextField(default=randcolor)
+    name = models.CharField(max_length=48)
+    color = models.CharField(max_length=48, default=randcolor)
 
     def __str__(self):
         return self.name

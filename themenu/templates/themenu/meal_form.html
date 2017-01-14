@@ -4,7 +4,6 @@
 
 <form action="" method="post">{% csrf_token %}
   <div class="fieldWrapper">
-  {{form.medis}}
     {{ form.date.errors }}
     {{ form.date.label_tag }}
     {% if field.help_text %}
@@ -30,7 +29,10 @@
     {% endif %}
     {{ form.dishes }}
   </div>
-  <a href="{% url 'dish-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true">Add Dish</span></a>
+  <a href="{% url 'dish-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new Dish</a>
+
+  <br><br>
+
   <div class="fieldWrapper">
     {{ form.tags.errors }}
     {{ form.tags.label_tag }}
@@ -39,7 +41,8 @@
     {% endif %}
     {{ form.tags }}
   </div>
-  <a href="{% url 'tag-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true">Add Tag</span></a>
+  <a href="{% url 'tag-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new Tag</a>
+  <br>
   <!-- End select2 multiple fields -->
   <input type="submit" value="Submit" />
 

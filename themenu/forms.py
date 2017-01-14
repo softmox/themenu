@@ -56,13 +56,13 @@ class NameSelect2Widget(NameSearchFieldMixin, ModelSelect2Widget):
     pass
 
 
+# TODO (Anne):  Do we want the colors to be choices? or is a textbox fine?
 class TagModelForm(forms.ModelForm):
-    """Like a normal ModelForm, but the Many-to-Many fields
-    use the prettier select2 multiple fields"""
+
     class Meta:
         model = Tag
         fields = ['name', 'color']
 
-        widgets = {
-            'color': NameSelect2Widget
-        }
+        # widgets = {
+        #     'color': NameSelect2Widget
+        # }
