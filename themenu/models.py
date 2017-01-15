@@ -36,6 +36,9 @@ class Ingredient(models.Model):
     class Meta:
         ordering = ['name']
 
+    def get_absolute_url(self):
+        return reverse('ingredient-detail', args=[str(self.id)])
+
     name = models.CharField(max_length=96, unique=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
