@@ -283,7 +283,7 @@ class IngredientCreate(CreateView):
 
 
 class IngredientDetail(DetailView):
-    model = Meal
+    model = Ingredient
 
 
 class IngredientDelete(DeleteView):

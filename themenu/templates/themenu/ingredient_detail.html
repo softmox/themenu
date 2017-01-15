@@ -1,0 +1,23 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="page-header">
+      <h1>{{object.name}}    <span><a href="{% url 'ingredient-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
+            </a></span></h1>
+      </div>
+    </div>
+  </div>
+
+  <p>Tags:
+    {% for t in object.tags.all %}
+      {{ t.name }}
+    {% endfor %}
+  </p>
+</div>
+
+{% endblock %}
