@@ -59,7 +59,7 @@ class TagModelForm(forms.ModelForm):
 
     class Meta:
         model = Tag
-        fields = ['name', 'color']
+        fields = ['name']
 
 
 class IngredientModelForm(forms.ModelForm):

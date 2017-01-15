@@ -12,14 +12,7 @@
     {% endif %}
     {{ form.name }}
   </div>
-  <div class="fieldWrapper">
-    {{ form.color.errors }}
-    {{ form.color.label_tag }}
-    {% if field.help_text %}
-      <p class="help">{{ field.help_text|safe }}</p>
-    {% endif %}
-    {{ form.color }}
-  </div>
+
   <input type="submit" value="Submit" />
 
 
