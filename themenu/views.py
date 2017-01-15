@@ -165,6 +165,24 @@ class DishDelete(DeleteView):
     success_url = reverse_lazy('calendar', args=(0,))
 
 
+class DishList(ListView):
+    model = Dish
+
+    def dishes_by_source(self):
+        """Creates a dictionary mapping each source
+        to a list of the dishes with that source"""
+        by_source = defaultdict(list)
+        all_dishes = Dish.objects.all()
+        for dish in all_dishes:
+            by_source[dish.source].append(dish)
+        return by_source
+
+    def get_context_data(self, **kwargs):
+        context = super(DishList, self).get_context_data(**kwargs)
+        context['dishes'] = self.dishes_by_source()
+        return context
+
+
 # Including this for when we want to only allow the owner to
 # Delete the item
 # class MyDelete(DeleteView):
