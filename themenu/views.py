@@ -11,15 +11,17 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, ModelFormMixin
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
+
+
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from themenu.models import Dish, Meal, Course, Tag, GroceryListItem
-from themenu.forms import DishModelForm, MealModelForm
+from themenu.models import Dish, Meal, Course, Tag, Ingredient, GroceryListItem
+from themenu.forms import DishModelForm, MealModelForm, TagModelForm, IngredientModelForm
 
 
 def index(request):
@@ -128,17 +130,17 @@ def grocery_update(request):
     return JsonResponse({"OK": True})
 
 
-class DishDetailView(DetailView):
+class DishDetail(DetailView):
     model = Dish
 
     def get_context_data(self, **kwargs):
-        context = super(DishDetailView, self).get_context_data(**kwargs)
+        context = super(DishDetail, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
 
 
-class DishUpdateView(UpdateView):
+class DishUpdate(UpdateView):
     model = Dish
     form_class = DishModelForm
 
@@ -147,23 +149,43 @@ class DishUpdateView(UpdateView):
     #     return reverse('dish-detail', kwargs={'pk': self.object.id})
 
     def get_context_data(self, **kwargs):
-        context = super(DishUpdateView, self).get_context_data(**kwargs)
+        context = super(DishUpdate, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
 
 
-class DishCreateView(CreateView):
+class DishCreate(CreateView):
     model = Dish
     form_class = DishModelForm
 
 
-class MealUpdateView(UpdateView):
-    # model = Meal
+class DishDelete(DeleteView):
+    model = Dish
+    success_url = reverse_lazy('calendar', args=(0,))
+
+
+# Including this for when we want to only allow the owner to
+# Delete the item
+# class MyDelete(DeleteView):
+#     def get_object(self, queryset=None):
+#         """ Hook to ensure object is owned by request.user. """
+#         obj = super(MyDeleteView, self).get_object()
+#         if not obj.owner == self.request.user:
+#             raise Http404
+#         return obj
+
+class MealDelete(DeleteView):
+    model = Meal
+    success_url = reverse_lazy('calendar', args=(0,))
+
+
+class MealUpdate(UpdateView):
+    model = Meal
     form_class = MealModelForm
 
 
-class MealCreateView(CreateView):
+class MealCreate(CreateView):
     model = Meal
     form_class = MealModelForm
 
@@ -185,11 +207,11 @@ class MealCreateView(CreateView):
         return super(ModelFormMixin, self).form_valid(form)
 
 
-class MealDetailView(DetailView):
+class MealDetail(DetailView):
     model = Meal
 
 
-class TagDetailView(DetailView):
+class TagDetail(DetailView):
     model = Tag
 
     def get_context_data(self, **kwargs):
@@ -197,7 +219,7 @@ class TagDetailView(DetailView):
         tag_dishes = this_tag.dish_set
         tag_ing = this_tag.ingredient_set
         tag_meals = this_tag.meal_set
-        context = super(TagDetailView, self).get_context_data(**kwargs)
+        context = super(TagDetail, self).get_context_data(**kwargs)
         context['dish_count'] = tag_dishes.count()
         context['dishes'] = tag_dishes.annotate(num_meals=Count('meal')).order_by('-num_meals')[:15]
         context['ingredient_count'] = tag_ing.count()
@@ -209,11 +231,11 @@ class TagDetailView(DetailView):
         return context
 
 
-class TagListView(ListView):
+class TagList(ListView):
     model = Tag
 
     def get_context_data(self, **kwargs):
-        context = super(TagListView, self).get_context_data(**kwargs)
+        context = super(TagList, self).get_context_data(**kwargs)
         context['tags'] = Tag.objects.all().annotate(num_dishes=Count('dish', distinct=True),
                                              num_ingredients=Count('ingredient', distinct=True)
                                             ).order_by('-num_dishes')
@@ -222,10 +244,54 @@ class TagListView(ListView):
         return context
 
 
+class TagUpdate(UpdateView):
+    model = Tag
+    form_class = TagModelForm
+
+    def get_context_data(self, **kwargs):
+        context = super(TagUpdate, self).get_context_data(**kwargs)
+        # If we need to add extra items to what passes to the template
+        # context['now'] = timezone.now()
+        return context
+
+
+class TagCreate(CreateView):
+    model = Tag
+    form_class = TagModelForm
+
+
+class TagDelete(DeleteView):
+    model = Tag
+    success_url = reverse_lazy('calendar', args=(0,))
+
+
+class IngredientUpdate(UpdateView):
+    model = Ingredient
+    form_class = IngredientModelForm
+
+
+class IngredientCreate(CreateView):
+    model = Ingredient
+    form_class = IngredientModelForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        for tag in form.cleaned_data['tags']:
+            self.object.tags.add(tag)
+        return super(ModelFormMixin, self).form_valid(form)
+
+
+class IngredientDetail(DetailView):
+    model = Meal
+
+
+class IngredientDelete(DeleteView):
+    model = Ingredient
+    success_url = reverse_lazy('calendar', args=(0,))
+
+
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
-# MyModel._meta.get_fields_with_model() becomes:
-
-
 def get_fields(model):
     return list(set(chain.from_iterable(
         (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
@@ -257,7 +323,7 @@ def get_fields(model):
 #  <django.db.models.fields.TextField: color>)
 
 
-def model_json_view(request, model_name):
+def model_json(request, model_name):
     model = apps.get_model('themenu', model_name.title())
     order_by = request.GET.get('order_by')
 

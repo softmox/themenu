@@ -15,14 +15,17 @@ class Tag(models.Model):
     class Meta:
         ordering = ['name']
 
+    def get_absolute_url(self):
+        return reverse('tag-detail', args=[str(self.id)])
+
     TAG_COLORS = [
         'Wheat', 'PeachPuff', 'YellowGreen', 'RosyBrown', 'Peru',
         'Khaki', 'Salmon', 'LemonChiffon', 'Orange', 'Lavender', 'Tomato',
         'LightBlue', 'DarkSeaGreen', 'Pink'
     ]
 
-    name = models.TextField()
-    color = models.TextField(default=randcolor)
+    name = models.CharField(max_length=48)
+    color = models.CharField(max_length=48, default=randcolor)
 
     def __str__(self):
         return self.name
@@ -33,7 +36,7 @@ class Ingredient(models.Model):
     class Meta:
         ordering = ['name']
 
-    name = models.TextField(unique=True)
+    name = models.CharField(max_length=96, unique=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):
