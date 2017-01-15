@@ -6,7 +6,7 @@ from django_select2.forms import (
 )
 
 
-from .models import Dish, Meal, Tag
+from .models import Dish, Meal, Tag, Ingredient
 
 
 class NameSearchFieldMixin(object):
@@ -63,6 +63,16 @@ class TagModelForm(forms.ModelForm):
         model = Tag
         fields = ['name', 'color']
 
-        # widgets = {
-        #     'color': NameSelect2Widget
-        # }
+
+class IngredientModelForm(forms.ModelForm):
+    """Like a normal ModelForm, but the Many-to-Many fields
+    use the prettier select2 multiple fields"""
+    class Meta:
+        model = Ingredient
+        fields = ['name', 'tags']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'size': 40}),
+            'tags': NameSelect2MultipleWidget,
+
+        }

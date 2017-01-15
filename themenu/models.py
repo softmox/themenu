@@ -36,7 +36,7 @@ class Ingredient(models.Model):
     class Meta:
         ordering = ['name']
 
-    name = models.TextField(unique=True)
+    name = models.CharField(max_length=96, unique=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __unicode__(self):

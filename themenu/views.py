@@ -20,8 +20,8 @@ from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from themenu.models import Dish, Meal, Course, Tag, GroceryListItem
-from themenu.forms import DishModelForm, MealModelForm, TagModelForm
+from themenu.models import Dish, Meal, Course, Tag, Ingredient, GroceryListItem
+from themenu.forms import DishModelForm, MealModelForm, TagModelForm, IngredientModelForm
 
 
 def index(request):
@@ -134,7 +134,7 @@ class DishDetail(DetailView):
     model = Dish
 
     def get_context_data(self, **kwargs):
-        context = super(DishDetailView, self).get_context_data(**kwargs)
+        context = super(DishDetail, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
@@ -149,7 +149,7 @@ class DishUpdate(UpdateView):
     #     return reverse('dish-detail', kwargs={'pk': self.object.id})
 
     def get_context_data(self, **kwargs):
-        context = super(DishUpdateView, self).get_context_data(**kwargs)
+        context = super(DishUpdate, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
@@ -219,7 +219,7 @@ class TagDetail(DetailView):
         tag_dishes = this_tag.dish_set
         tag_ing = this_tag.ingredient_set
         tag_meals = this_tag.meal_set
-        context = super(TagDetailView, self).get_context_data(**kwargs)
+        context = super(TagDetail, self).get_context_data(**kwargs)
         context['dish_count'] = tag_dishes.count()
         context['dishes'] = tag_dishes.annotate(num_meals=Count('meal')).order_by('-num_meals')[:15]
         context['ingredient_count'] = tag_ing.count()
@@ -235,7 +235,7 @@ class TagList(ListView):
     model = Tag
 
     def get_context_data(self, **kwargs):
-        context = super(TagListView, self).get_context_data(**kwargs)
+        context = super(TagList, self).get_context_data(**kwargs)
         context['tags'] = Tag.objects.all().annotate(num_dishes=Count('dish', distinct=True),
                                              num_ingredients=Count('ingredient', distinct=True)
                                             ).order_by('-num_dishes')
@@ -249,7 +249,7 @@ class TagUpdate(UpdateView):
     form_class = TagModelForm
 
     def get_context_data(self, **kwargs):
-        context = super(TagUpdateView, self).get_context_data(**kwargs)
+        context = super(TagUpdate, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
@@ -265,10 +265,33 @@ class TagDelete(DeleteView):
     success_url = reverse_lazy('calendar', args=(0,))
 
 
+class IngredientUpdate(UpdateView):
+    model = Ingredient
+    form_class = IngredientModelForm
+
+
+class IngredientCreate(CreateView):
+    model = Ingredient
+    form_class = IngredientModelForm
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        for tag in form.cleaned_data['tags']:
+            self.object.tags.add(tag)
+        return super(ModelFormMixin, self).form_valid(form)
+
+
+class IngredientDetail(DetailView):
+    model = Meal
+
+
+class IngredientDelete(DeleteView):
+    model = Ingredient
+    success_url = reverse_lazy('calendar', args=(0,))
+
+
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
-# MyModel._meta.get_fields_with_model() becomes:
-
-
 def get_fields(model):
     return list(set(chain.from_iterable(
         (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)

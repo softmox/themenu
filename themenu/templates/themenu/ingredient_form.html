@@ -20,32 +20,14 @@
 
 <form action="" method="post">{% csrf_token %}
   <div class="fieldWrapper">
-    {{ form.date.errors }}
-    {{ form.date.label_tag }}
+    {{ form.name.errors }}
+    {{ form.name.label_tag }}
     {% if field.help_text %}
       <p class="help">{{ field.help_text|safe }}</p>
     {% endif %}
-    {{ form.date }}
-  </div>
-  <div class="fieldWrapper">
-    {{ form.meal_type.errors }}
-    {{ form.meal_type.label_tag }}
-    {% if field.help_text %}
-      <p class="help">{{ field.help_text|safe }}</p>
-    {% endif %}
-    {{ form.meal_type }}
+    {{ form.name }}
   </div>
 
-  <!-- ManyToMany fields- Select2 multiple fields -->
-  <div class="fieldWrapper">
-    {{ form.dishes.errors }}
-    {{ form.dishes.label_tag }}
-    {% if field.help_text %}
-      <p class="help">{{ field.help_text|safe }}</p>
-    {% endif %}
-    {{ form.dishes }}
-  </div>
-  <a href="{% url 'dish-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new Dish</a>
 
   <br><br>
 
