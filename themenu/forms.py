@@ -51,8 +51,6 @@ class MealModelForm(forms.ModelForm):
 
 
 class NameSelect2Widget(NameSearchFieldMixin, ModelSelect2Widget):
-    """This just combines the library's Select2 multiple widget
-    with the ability to search by name or pk"""
     pass
 
 
