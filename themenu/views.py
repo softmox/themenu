@@ -198,12 +198,39 @@ class MealDelete(DeleteView):
     success_url = reverse_lazy('calendar', args=(0,))
 
 
-class MealUpdate(UpdateView):
+class MealSaveMixin(ModelFormMixin):
+    """Must do special work to add many-to-many models,
+    especially with the intermediate model Course"""
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+
+        # Only remove tags and tags no longer specified by the form
+        removed_tags = self.object.tags.exclude(id__in=form.cleaned_data['tags'])
+        for t in removed_tags:
+            self.object.tags.remove(t)
+
+        # Intermediate model means you must clear all courses
+        # https://docs.djangoproject.com/en/1.10/topics/db/models/#intermediary-manytomany
+        self.object.dishes.clear()
+
+        for dish in form.cleaned_data['dishes']:
+            course = Course(meal=self.object, dish=dish)
+            course.save()
+        for tag in form.cleaned_data['tags'].exclude(id__in=self.object.tags.all()):
+            self.object.tags.add(tag)
+        return super(ModelFormMixin, self).form_valid(form)
+
+
+class MealUpdate(MealSaveMixin, UpdateView):
     model = Meal
     form_class = MealModelForm
 
+    def form_valid(self, form):
+        return super(MealUpdate, self).form_valid(form)
 
-class MealCreate(CreateView):
+
+class MealCreate(MealSaveMixin, CreateView):
     model = Meal
     form_class = MealModelForm
 
@@ -215,14 +242,7 @@ class MealCreate(CreateView):
         return initial
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.save()
-        for dish in form.cleaned_data['dishes']:
-            course = Course(meal=self.object, dish=dish)
-            course.save()
-        for tag in form.cleaned_data['tags']:
-            self.object.tags.add(tag)
-        return super(ModelFormMixin, self).form_valid(form)
+        return super(MealCreate, self).form_valid(form)
 
 
 class MealDetail(DetailView):
