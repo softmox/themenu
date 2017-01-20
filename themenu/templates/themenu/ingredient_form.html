@@ -2,22 +2,6 @@
 
 {% block body %}
 
-{% if object.id %}
-<div class="row">
-  <div class='col-md-3'>
-    <a href="{% url 'meal-delete' object.id %}" style="color:Gray">
-    <button class="btn btn-default btn-xs" style="background-color:DarkGrey; border:none">
-      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-      Delete
-    </button>
-    </a>
-  </div>
-  <div class="col-md-9">
-  </div>
-</div>
-<br>
-{% endif %}
-
 <form action="" method="post">{% csrf_token %}
   <div class="fieldWrapper">
     {{ form.name.errors }}
