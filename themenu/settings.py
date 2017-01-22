@@ -206,6 +206,7 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = 'index'
 
 LOGIN_EXEMPT_URLS = (
+   r'^register/$',
  # r'^about\.html$',
  # r'^legal/', # allow any URL under /legal/*
 )

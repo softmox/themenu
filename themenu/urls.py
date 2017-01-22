@@ -26,10 +26,10 @@ urlpatterns = [
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
 
     # login / account views
-    url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^admin/', admin.site.urls),
+    url(r'^', include('registration.backends.simple.urls')),
 
     # generic list views
     url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
