@@ -58,6 +58,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'themenu.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'themenu.urls'
@@ -200,3 +201,11 @@ def get_cache():
 CACHES = get_cache()
 
 SELECT2_CACHE_BACKEND = 'select2'
+
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = 'index'
+
+LOGIN_EXEMPT_URLS = (
+ # r'^about\.html$',
+ # r'^legal/', # allow any URL under /legal/*
+)

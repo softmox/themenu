@@ -15,15 +15,24 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from themenu import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^admin/', admin.site.urls),
     url(r'^calendar/(?P<offset>[\-\d]+)/?$', views.calendar, name='calendar'),
     url(r'^courseupdate/?$', views.course_update, name='course-update'),
     url(r'^groceryupdate/?$', views.grocery_update, name='grocery-update'),
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
+
+    # login / account views
+    url(r'^accounts/', include('registration.backends.simple.urls')),
+    url(r'^login/$', auth_views.login, name='login'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^admin/', admin.site.urls),
+
+    # generic list views
+    url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
 
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),

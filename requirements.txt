@@ -6,6 +6,7 @@ Django==1.10.4
 django-appconf==1.0.2
 django-extensions==1.7.5
 django-pylibmc==0.6.1
+django-registration
 Django-Select2==5.8.10
 enum34==1.1.6
 gunicorn==19.6.0

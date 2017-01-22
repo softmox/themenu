@@ -1,13 +1,17 @@
 import calendar
 import random
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse, reverse_lazy
 # from datetime import date
-# from django.contrib.auth.models import User
 
 
 def randcolor():
     return random.choice(Tag.TAG_COLORS)
+
+
+class MyUser(models.Model):
+    user = models.OneToOneField(User)
 
 
 class Tag(models.Model):
