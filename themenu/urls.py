@@ -31,9 +31,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('registration.backends.simple.urls')),
 
-    # generic list views
-    url(r'^tags/$', views.TagListView.as_view(), name='tag-list'),
-
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),
     url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdate.as_view(), name='dish-update'),
