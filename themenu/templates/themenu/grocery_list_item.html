@@ -1,6 +1,6 @@
 <div class="grocery-item">
   <label>
-      <div class="dropdown">
+    <div class="dropdown">
       {% if all_purchased %}
         <s>
       {% endif %}
@@ -16,7 +16,6 @@
         <li><a href="#"><input class="grocery-checkbox" data-grocery-id="{{grocery.id}}" type="checkbox" {{ grocery.purchased|yesno:"checked,false" }} />{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</a></li>
       {% endfor %}
       </ul>
-      </div>
-    </input>
+    </div>
   </label>
 </div>
