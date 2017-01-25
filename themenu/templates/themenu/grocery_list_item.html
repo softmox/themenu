@@ -13,7 +13,7 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       {% for grocery in grocery_list %}
-        <li><a href="#"><input class="grocery-checkbox" data-grocery-id="{{grocery.id}}" type="checkbox" {{ grocery.purchased|yesno:"checked,false" }} />{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</a></li>
+        <li><a href="#" style="cursor: pointer;"><input class="grocery-checkbox" data-grocery-id="{{grocery.id}}" type="checkbox" {{ grocery.purchased|yesno:"checked,false" }} />{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</a></li>
       {% endfor %}
       </ul>
     </div>
