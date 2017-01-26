@@ -10,8 +10,18 @@ def randcolor():
     return random.choice(Tag.TAG_COLORS)
 
 
+class Team(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 class MyUser(models.Model):
     user = models.OneToOneField(User)
+    team = models.ForeignKey(Team)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Tag(models.Model):
@@ -95,6 +105,7 @@ class Meal(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
     date = models.DateField('meal date')
+    team = models.ForeignKey(Team)
 
     def weeknum(self):
         _, weeknum, = self.date.isocalendar()
