@@ -5,7 +5,7 @@ from datetime import timedelta, date
 
 from django.apps import apps
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404, JsonResponse, HttpResponse
+from django.http import Http404, JsonResponse, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.views.generic.edit import CreateView, ModelFormMixin
@@ -20,7 +20,7 @@ from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from themenu.models import Dish, Meal, Course, Tag, Ingredient, GroceryListItem
+from themenu.models import Dish, Meal, Course, Tag, Ingredient, GroceryListItem, MyUser
 from themenu.forms import DishModelForm, MealModelForm, TagModelForm, IngredientModelForm
 
 
@@ -158,6 +158,17 @@ class DishUpdate(UpdateView):
 class DishCreate(CreateView):
     model = Dish
     form_class = DishModelForm
+
+    def get_initial(self):
+      myuser = get_object_or_404(MyUser, user=self.request.user)
+      return {'created_by': myuser}
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        myuser = get_object_or_404(MyUser, user=self.request.user)
+        obj.created_by = myuser
+        obj.save()
+        return HttpResponseRedirect(obj.get_absolute_url())
 
 
 class DishDelete(DeleteView):

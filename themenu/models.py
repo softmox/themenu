@@ -69,6 +69,7 @@ class Dish(models.Model):
     SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
 
     name = models.TextField()
+    created_by = models.ForeignKey(MyUser)
     notes = models.TextField(null=True, blank=True)
     source = models.TextField(null=True, blank=True)
     recipe = models.TextField(null=True, blank=True)
