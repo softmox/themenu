@@ -21,6 +21,30 @@ Once we have a heroku database
     curl -o latest.dump `heroku pg:backups public-url`
     pg_restore --verbose --clean --no-acl --no-owner -d themenu latest.dump
 
+
+## Pulling data from heroku to make local DB match
+
+- Delete the current data
+
+```bash
+for t in themenu_ingredient_tags themenu_dish_tags themenu_dish_ingredients themenu_grocerylistitem themenu_meal_tags themenu_course themenu_meal  themenu_dish themenu_myuser themenu_team themenu_ingredient themenu_tag; do
+echo "Deleting $t"; psql themenu -c "DELETE FROM $t"
+done
+```
+
+- Dump the heroku data
+
+```bash
+heroku run ./manage.py dumpdata --natural-foreign auth.user themenu.myuser themenu.tag themenu.ingredient themenu.team themenu.dish themenu.course themenu.meal themenu.grocerylistitem  > heroku_models.json
+```
+
+- Load this data fixture
+
+```bash
+./manage.py loaddata heroku_models.json
+```
+
+
 ## Heroku Django Starter Template
 
 An utterly fantastic project starter template for Django 1.9.
