@@ -5,21 +5,10 @@
     pip install -r requirements.txt
     ./manage.py run
 
-### Local database setup
+## Local database setup
 
     psql -c 'CREATE DATABASE themenu'
     ./manage.py migrate
-
-(If we make dummy data)
-
-    ./manage.py loaddata fixture.json
-
-
-Once we have a heroku database
-
-    heroku pg:backups capture
-    curl -o latest.dump `heroku pg:backups public-url`
-    pg_restore --verbose --clean --no-acl --no-owner -d themenu latest.dump
 
 
 ## Pulling data from heroku to make local DB match
@@ -43,6 +32,18 @@ heroku run ./manage.py dumpdata --natural-foreign auth.user themenu.myuser theme
 ```bash
 ./manage.py loaddata heroku_models.json
 ```
+
+DONE! The ManyToMany tables get populated despite not specifying them in the `dumpdata`command
+
+
+#### Full backup
+
+To capture a full backup the heroku DB
+
+    heroku pg:backups capture
+    curl -o latest.dump `heroku pg:backups public-url`
+    pg_restore --verbose --clean --no-acl --no-owner -d themenu latest.dump
+
 
 
 ## Heroku Django Starter Template
