@@ -29,7 +29,16 @@ def index(request):
 
 
 def grocery_list(request):
-    grocery_list = GroceryListItem.objects.filter(
+
+    team = request.user.myuser.team
+    if not team:
+        # redirect to a team registration page
+        # if you don't have a team, you can't plan meals
+        # so why would you need a grocery list
+        pass
+
+    grocery_list = GroceryListItem.objects.filter(course__meal__team=team)\
+                    .filter(
                     course__meal__date__gte=date.today()).order_by(
                     'purchased', 'course__meal__date')
     ingredient_to_grocery_list = defaultdict(list)
@@ -59,6 +68,7 @@ def refdate(offset):
 
 def calendar(request, offset):
     offset = offset
+    team = request.user.myuser.team
 
     def weekdays():
         weekdays_list = [refdate(offset) + timedelta(days=i)
@@ -67,7 +77,7 @@ def calendar(request, offset):
 
     def get_meal_by_type_and_date(mealtype, date):
         try:
-            thismeal = Meal.objects.get(date=date, meal_type=mealtype)
+            thismeal = Meal.objects.get(date=date, meal_type=mealtype, team=team)
             return thismeal
         except Meal.DoesNotExist:
             return None
@@ -87,6 +97,11 @@ def calendar(request, offset):
         monday = refdate(offset) + timedelta(days=(7 * valence - refdate(offset).weekday()))
         prettymonday = monday.strftime('%d %B, %Y')
         return prettymonday
+
+    if not team:
+        # redirect to a team register page
+        # if you don't have a team, you can't plan meals
+        pass
 
     context = {}
     offset = int(offset)
