@@ -17,7 +17,7 @@
 
 ```bash
 for t in themenu_ingredient_tags themenu_dish_tags themenu_dish_ingredients themenu_grocerylistitem themenu_meal_tags themenu_course themenu_meal  themenu_dish themenu_myuser themenu_team themenu_ingredient themenu_tag; do
-echo "Deleting $t"; psql themenu -c "DELETE FROM $t"
+  echo "Deleting $t"; psql themenu -c "DELETE FROM $t"
 done
 ```
 
@@ -34,6 +34,10 @@ heroku run ./manage.py dumpdata --natural-foreign auth.user themenu.myuser theme
 ```
 
 DONE! The ManyToMany tables get populated despite not specifying them in the `dumpdata`command
+
+#### Graphing the model relationship
+
+    ./manage.py graph_models -g -o doc/themenu_models.png themenu
 
 
 #### Full backup
