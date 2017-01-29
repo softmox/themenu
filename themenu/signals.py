@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models.signals import (
     pre_save,
     post_save,
@@ -7,7 +8,7 @@ from django.db.models.signals import (
 
 from django.dispatch import receiver
 
-from .models import Course, GroceryListItem
+from .models import Course, GroceryListItem, MyUser
 
 
 def get_course_ingredients(course):
@@ -45,11 +46,7 @@ def notify_course_post_save(sender, **kwargs):
         groceries_to_delete.delete()
 
 
-# @receiver(post_save, sender=Meal)
-# def notify_meal_save(sender, **kwargs):
-#     # print 'Meal post save'
-#     # meal = kwargs['instance']
-#     # import pdb; pdb.set_trace()
-#     # print 'kwargs', kwargs
-#     # print meal
-#     return
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def add_myuser(sender, instance, created, **kwargs):
+    if created:
+        MyUser.objects.create(user=instance)

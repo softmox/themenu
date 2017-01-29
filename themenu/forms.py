@@ -1,12 +1,15 @@
 from django import forms
+from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from django_select2.forms import (
     ModelSelect2MultipleWidget,
     ModelSelect2Widget,
 )
 
+from registration.forms import RegistrationForm
 
-from .models import Dish, Meal, Tag, Ingredient
+from .models import Dish, Meal, Tag, Ingredient, MyUser
 
 
 class NameSearchFieldMixin(object):
@@ -74,3 +77,22 @@ class IngredientModelForm(forms.ModelForm):
             'tags': NameSelect2MultipleWidget,
 
         }
+
+
+# User = get_user_model()
+
+# class TeamRegistrationForm(RegistrationForm):
+#     class Meta(RegistrationForm.Meta):
+#         model = MyUser
+#         fields = [
+#             User.USERNAME_FIELD,
+#             'email',
+#             'password1',
+#             'password2',
+#             'team'
+#         ]
+#         required_css_class = 'required'
+#         widgets = {
+#             'team': NameSelect2MultipleWidget,
+
+#         }

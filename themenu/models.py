@@ -16,9 +16,10 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+
 class MyUser(models.Model):
     user = models.OneToOneField(User)
-    team = models.ForeignKey(Team)
+    team = models.ForeignKey(Team, null=True, blank=True)
 
     def __str__(self):
         return self.user.username

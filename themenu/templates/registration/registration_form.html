@@ -8,7 +8,38 @@
 
 <form method="post" action="/register/">
  {% csrf_token %}
- {{form.as_p}}
+ <div class="fieldWrapper">
+    {{ form.username.errors }}
+    {{ form.username.label_tag }}
+    {% if form.username.help_text %}
+      <p class="help">{{ form.username.help_text|safe }}</p>
+    {% endif %}
+    {{ form.username }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.email.errors }}
+    {{ form.email.label_tag }}
+    {% if form.email.help_text %}
+      <p class="help">{{ form.email.help_text|safe }}</p>
+    {% endif %}
+    {{ form.email }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.password1.errors }}
+    {{ form.password1.label_tag }}
+    {% if form.password1.help_text %}
+      <p class="help">{{ form.password1.help_text|safe }}</p>
+    {% endif %}
+    {{ form.password1 }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.password2.errors }}
+    {{ form.password2.label_tag }}
+    {% if form.password2.help_text %}
+      <p class="help">{{ form.password2.help_text|safe }}</p>
+    {% endif %}
+    {{ form.password2 }}
+  </div>
  <input type="submit" value="Register" />
 </form>
 

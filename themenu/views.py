@@ -14,14 +14,29 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView, DeleteView
 
 
-
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 
 from django.db.models import Count
 
-from themenu.models import Dish, Meal, Course, Tag, Ingredient, GroceryListItem, MyUser
-from themenu.forms import DishModelForm, MealModelForm, TagModelForm, IngredientModelForm
+from registration.views import RegistrationView
+
+from themenu.models import (
+    Dish,
+    Meal,
+    Course,
+    Tag,
+    Ingredient,
+    GroceryListItem,
+    MyUser
+)
+
+from themenu.forms import (
+    DishModelForm,
+    MealModelForm,
+    TagModelForm,
+    IngredientModelForm
+)
 
 
 def index(request):
