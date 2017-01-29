@@ -43,6 +43,19 @@ def index(request):
     return redirect('calendar', offset=0)
 
 
+def scores(request):
+    fast_dishes = Dish.objects.all().filter(speed=3)
+    easy_dishes = Dish.objects.all().filter(ease=3)
+    tasty_dishes = Dish.objects.all().filter(results=3)
+    perfect_dishes = Dish.objects.all().filter(speed=3,ease=3,results=3)
+    context = {
+        'fast_dishes': fast_dishes,
+        'easy_dishes': easy_dishes,
+        'tasty_dishes': tasty_dishes
+    }
+    return render(request, 'themenu/scores.html', context)
+
+
 def grocery_list(request):
 
     team = request.user.myuser.team

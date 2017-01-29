@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^courseupdate/?$', views.course_update, name='course-update'),
     url(r'^groceryupdate/?$', views.grocery_update, name='grocery-update'),
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),
+    url(r'^scores/$', views.scores, name='scores'),
 
     # login / account views
     url(r'^login/$', auth_views.login, name='login'),
