@@ -79,6 +79,20 @@ class IngredientModelForm(forms.ModelForm):
         }
 
 
+class IngredientSelect2Widget(NameSelect2Widget):
+    def get_queryset(self):
+        return Ingredient.objects.all()
+
+class IngredientSearchForm(forms.ModelForm):
+    # name = forms.CharField(label='Ingredient Name', max_length=100)
+
+    class Meta:
+        model = Ingredient
+        fields = ['name']
+        widgets = {
+            'name': IngredientSelect2Widget,
+        }
+
 # User = get_user_model()
 
 # class TeamRegistrationForm(RegistrationForm):

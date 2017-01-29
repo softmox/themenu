@@ -35,7 +35,8 @@ from themenu.forms import (
     DishModelForm,
     MealModelForm,
     TagModelForm,
-    IngredientModelForm
+    IngredientModelForm,
+    IngredientSearchForm
 )
 
 
@@ -376,6 +377,7 @@ class IngredientList(ListView):
     def get_context_data(self, **kwargs):
         context = super(IngredientList, self).get_context_data(**kwargs)
         context['ingredients'] = Ingredient.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
+        context['form'] = IngredientSearchForm
         return context
 
 
