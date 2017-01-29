@@ -377,8 +377,15 @@ class IngredientList(ListView):
     def get_context_data(self, **kwargs):
         context = super(IngredientList, self).get_context_data(**kwargs)
         context['ingredients'] = Ingredient.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
+        # Form is to search for ingredient details
         context['form'] = IngredientSearchForm
         return context
+
+    def post(self, request, *args, **kwargs):
+        ingredient_id = request.POST.get('name')
+        return HttpResponseRedirect(reverse('ingredient-detail',
+                                    args=(ingredient_id,)))
+
 
 
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
