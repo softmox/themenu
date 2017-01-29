@@ -3,21 +3,51 @@
 {% block body %}
 
 <div class="container">
-
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <div class="page-header">
-      <h1>{{object.name}}    <span><a href="{% url 'ingredient-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
-            </a></span></h1>
+        <h1>{{object.name}}    <span><a href="{% url 'ingredient-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
+              </a></span></h1>
       </div>
     </div>
   </div>
-
-  <p>Tags:
+  <div class="tag thumbs">
     {% for t in object.tags.all %}
-      {{ t.name }}
+      <div class="col-md-2">
+          <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a>
+      </div>
     {% endfor %}
-  </p>
+  </div>
+</div>
+<br>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-lg-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">Dishes with {{ object.name }} as an ingredient
+        </div>
+        <div class="panel-body">
+          <ul>
+            {% for d in object.dish_set.all %}
+              <li>
+                <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 col-lg-8">
+      <img src="http://media.rhythm-of-food.net/cards/2400/{{object.name}}.png"
+      class="col-md-12">
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-md-12 col-lg-12">
+      <iframe src="https://en.wikipedia.org/wiki/{{object.name}}" class="col-md-12 col-lg-12" height="400"></iframe>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
