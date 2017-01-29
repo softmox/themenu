@@ -355,6 +355,15 @@ class IngredientDelete(DeleteView):
     success_url = reverse_lazy('calendar', args=(0,))
 
 
+class IngredientList(ListView):
+    model = Ingredient
+
+    def get_context_data(self, **kwargs):
+        context = super(IngredientList, self).get_context_data(**kwargs)
+        context['ingredients'] = Ingredient.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
+        return context
+
+
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
 def get_fields(model):
     return list(set(chain.from_iterable(

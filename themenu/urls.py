@@ -51,6 +51,7 @@ urlpatterns = [
     url(r'^tags/(?P<pk>[\d]+)/?$', views.TagDetail.as_view(), name='tag-detail'),
 
     # Generic ingredient views
+    url(r'^ingredients/$', views.IngredientList.as_view(), name='ingredient-list'),
     url(r'^ingredients/create/?$', views.IngredientCreate.as_view(), name='ingredient-create'),
     url(r'^ingredients/(?P<pk>[\d]+)/update/?$', views.IngredientUpdate.as_view(), name='ingredient-update'),
     url(r'^ingredients/(?P<pk>[\d]+)/delete/?$', views.IngredientDelete.as_view(), name='ingredient-delete'),
