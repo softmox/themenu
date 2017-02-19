@@ -28,7 +28,8 @@ from themenu.models import (
     Tag,
     Ingredient,
     GroceryListItem,
-    MyUser
+    MyUser,
+    Team
 )
 
 from themenu.forms import (
@@ -290,12 +291,18 @@ class MealCreate(MealSaveMixin, CreateView):
 
     def get_initial(self):
         """Get all the url params that are field names"""
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
         initial = {}
+        initial['team_id'] = team.id
         for field in get_fields(Meal):
             initial[field] = self.request.GET.get(field)
         return initial
 
     def form_valid(self, form):
+        obj = form.save(commit=False)
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        obj.team = team
+        obj.save()
         return super(MealCreate, self).form_valid(form)
 
 
