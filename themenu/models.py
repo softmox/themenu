@@ -121,7 +121,7 @@ class Meal(models.Model):
         return weekday
 
     def get_absolute_url(self):
-        return reverse('meal-detail', args=[str(self.id)])
+        return reverse('calendar', kwargs={'offset': 0})
 
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
