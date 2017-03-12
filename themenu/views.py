@@ -59,9 +59,14 @@ def scores(request):
 
 
 def grocery_list(request):
+    def _get_meal_groceries(team):
+        return GroceryListItem.objects.filter(course__meal__team=team)\
+                                      .filter(course__meal__date__gte=date.today())\
+                                      .order_by('purchased', 'course__meal__date')
+
     def _get_random_groceries(team):
         return RandomGroceryItem.objects.filter(team=team)\
-                                        .filter(date__gte=date.today())\
+                                        .filter(purchased=False)\
                                         .order_by('purchased')
 
     team = request.user.myuser.team
@@ -71,10 +76,7 @@ def grocery_list(request):
         # so why would you need a grocery list
         pass
 
-    grocery_list = GroceryListItem.objects.filter(course__meal__team=team)\
-                    .filter(
-                    course__meal__date__gte=date.today()).order_by(
-                    'purchased', 'course__meal__date')
+    grocery_list = _get_meal_groceries(team)
     ingredient_to_grocery_list = defaultdict(list)
     for grocery_item in grocery_list:
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
