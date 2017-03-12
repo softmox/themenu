@@ -149,3 +149,15 @@ class GroceryListItem(models.Model):
     def __unicode__(self):
         return 'Ingredient: %s, %s, Purchased: %s' % \
             (self.ingredient.id, self.ingredient.name, self.purchased)
+
+
+class RandomGroceryItem(models.Model):
+    """For things like paper towels, random snacks..."""
+    name = models.TextField()
+    date = models.DateField('random grocery item date')
+    team = models.ForeignKey(Team)
+    purchased = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return 'Ingredient: %s, %s, Purchased: %s' % \
+            (self.ingredient.id, self.ingredient.name, self.purchased)
