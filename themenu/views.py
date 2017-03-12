@@ -28,6 +28,7 @@ from themenu.models import (
     Tag,
     Ingredient,
     GroceryListItem,
+    RandomGroceryItem,
     MyUser,
     Team
 )
@@ -58,6 +59,10 @@ def scores(request):
 
 
 def grocery_list(request):
+    def _get_random_groceries(team):
+        return RandomGroceryItem.objects.filter(team=team)\
+                                        .filter(date__gte=date.today())\
+                                        .order_by('purchased')
 
     team = request.user.myuser.team
     if not team:
@@ -83,8 +88,10 @@ def grocery_list(request):
     # ones where everything has been purchased last
     sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
 
+    random_grocery_list = _get_random_groceries(team)
     context = {
-        'ingredient_to_grocery_list': sorted_items
+        'ingredient_to_grocery_list': sorted_items,
+        'random_grocery_list': random_grocery_list,
     }
     return render(request, 'themenu/grocery_list.html', context)
 
@@ -167,7 +174,13 @@ def course_update(request):
 @require_http_methods(["POST"])
 def grocery_update(request):
     posted_data = json.loads(request.body)
-    grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    if posted_data['groceryType'] == 'meal':
+        grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    elif posted_data['groceryType'] == 'random':
+        grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
+    else:
+         JsonResponse({"OK": False})
+
     value = posted_data['checked']
     grocery.purchased = value
     grocery.save(update_fields=['purchased'])

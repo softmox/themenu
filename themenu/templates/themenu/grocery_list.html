@@ -9,8 +9,13 @@
       <div class="panel-heading text-center">
         <span>Grocery List</span>
         <a href="{% url 'grocery-list' %}">
-  <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
         </a>
+      </div>
+      <div class="panel-body">
+        {% for item in random_grocery_list %}
+          {% include "themenu/random_grocery_item.html" %}
+        {% endfor %}
       </div>
       <div class="panel-body">
         {% for ingredient_name, grocery_list, all_purchased in ingredient_to_grocery_list %}

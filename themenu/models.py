@@ -159,5 +159,5 @@ class RandomGroceryItem(models.Model):
     purchased = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Ingredient: %s, %s, Purchased: %s' % \
-            (self.ingredient.id, self.ingredient.name, self.purchased)
+        return 'Random Grocery Item: %s for %s, Purchased: %s' % \
+            (self.name, self.date, self.purchased)
