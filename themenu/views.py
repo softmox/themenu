@@ -37,7 +37,7 @@ from themenu.forms import (
     DishModelForm,
     MealModelForm,
     TagModelForm,
-    IngredientModelForm
+    IngredientModelForm,
 )
 
 
@@ -187,6 +187,25 @@ def grocery_update(request):
     grocery.purchased = value
     grocery.save(update_fields=['purchased'])
     return JsonResponse({"OK": True})
+
+
+class RandomGroceryItemCreate(CreateView):
+    model = RandomGroceryItem
+    fields = ['name']
+
+    def get_initial(self):
+        """Get all the url params that are field names"""
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        initial = {}
+        initial['team_id'] = team.id
+        return initial
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        obj.team = team
+        obj.save()
+        return super(RandomGroceryItemCreate, self).form_valid(form)
 
 
 class DishDetail(DetailView):

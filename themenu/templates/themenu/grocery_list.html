@@ -12,6 +12,9 @@
           <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
         </a>
       </div>
+      <a href="{% url 'random-grocery-create' %}">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Random Grocery Item
+      </a>
       <div class="panel-body">
         {% for item in random_grocery_list %}
           {% include "themenu/random_grocery_item.html" %}

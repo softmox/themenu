@@ -157,6 +157,9 @@ class RandomGroceryItem(models.Model):
     team = models.ForeignKey(Team)
     purchased = models.BooleanField(default=False)
 
+    def get_absolute_url(self):
+        return reverse('grocery-list')
+
     def __unicode__(self):
         return 'Random Grocery Item: %s, Purchased: %s' % \
             (self.name, self.purchased)
