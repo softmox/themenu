@@ -1,0 +1,21 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<form action="" method="post">{% csrf_token %}
+  <div class="fieldWrapper">
+
+    {{ form.name.errors }}
+    {{ form.name.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.name }}
+  </div>
+
+  <input type="submit" value="Submit" />
+
+</form>
+
+{% endblock %}
+

@@ -28,6 +28,7 @@ from themenu.models import (
     Tag,
     Ingredient,
     GroceryListItem,
+    RandomGroceryItem,
     MyUser,
     Team
 )
@@ -36,7 +37,7 @@ from themenu.forms import (
     DishModelForm,
     MealModelForm,
     TagModelForm,
-    IngredientModelForm
+    IngredientModelForm,
 )
 
 
@@ -58,6 +59,15 @@ def scores(request):
 
 
 def grocery_list(request):
+    def _get_meal_groceries(team):
+        return GroceryListItem.objects.filter(course__meal__team=team)\
+                                      .filter(course__meal__date__gte=date.today())\
+                                      .order_by('purchased', 'course__meal__date')
+
+    def _get_random_groceries(team):
+        return RandomGroceryItem.objects.filter(team=team)\
+                                        .filter(purchased=False)\
+                                        .order_by('purchased')
 
     team = request.user.myuser.team
     if not team:
@@ -66,25 +76,24 @@ def grocery_list(request):
         # so why would you need a grocery list
         pass
 
-    grocery_list = GroceryListItem.objects.filter(course__meal__team=team)\
-                    .filter(
-                    course__meal__date__gte=date.today()).order_by(
-                    'purchased', 'course__meal__date')
+    grocery_list = _get_meal_groceries(team)
     ingredient_to_grocery_list = defaultdict(list)
     for grocery_item in grocery_list:
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
     # Add a third item to the tuples:
     # a bool if all groceries have been purchased
     mark_all_purchased = [
-        (ing, g_list, all(g.purchased for g in g_list))
-        for ing, g_list in ingredient_to_grocery_list.items()
+        (ingredient, grocery_items, all(g.purchased for g in grocery_items))
+        for ingredient, grocery_items in ingredient_to_grocery_list.items()
     ]
     # Sort the (ingrdient, [grocery,..], purchased) tuples with
     # ones where everything has been purchased last
     sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
 
+    random_grocery_list = _get_random_groceries(team)
     context = {
-        'ingredient_to_grocery_list': sorted_items
+        'ingredient_to_grocery_list': sorted_items,
+        'random_grocery_list': random_grocery_list,
     }
     return render(request, 'themenu/grocery_list.html', context)
 
@@ -167,11 +176,36 @@ def course_update(request):
 @require_http_methods(["POST"])
 def grocery_update(request):
     posted_data = json.loads(request.body)
-    grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    if posted_data['groceryType'] == 'meal':
+        grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    elif posted_data['groceryType'] == 'random':
+        grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
+    else:
+         JsonResponse({"OK": False})
+
     value = posted_data['checked']
     grocery.purchased = value
     grocery.save(update_fields=['purchased'])
     return JsonResponse({"OK": True})
+
+
+class RandomGroceryItemCreate(CreateView):
+    model = RandomGroceryItem
+    fields = ['name']
+
+    def get_initial(self):
+        """Get all the url params that are field names"""
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        initial = {}
+        initial['team_id'] = team.id
+        return initial
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        obj.team = team
+        obj.save()
+        return super(RandomGroceryItemCreate, self).form_valid(form)
 
 
 class DishDetail(DetailView):

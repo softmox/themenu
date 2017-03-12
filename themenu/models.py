@@ -149,3 +149,17 @@ class GroceryListItem(models.Model):
     def __unicode__(self):
         return 'Ingredient: %s, %s, Purchased: %s' % \
             (self.ingredient.id, self.ingredient.name, self.purchased)
+
+
+class RandomGroceryItem(models.Model):
+    """For things like paper towels, random snacks..."""
+    name = models.TextField()
+    team = models.ForeignKey(Team)
+    purchased = models.BooleanField(default=False)
+
+    def get_absolute_url(self):
+        return reverse('grocery-list')
+
+    def __unicode__(self):
+        return 'Random Grocery Item: %s, Purchased: %s' % \
+            (self.name, self.purchased)

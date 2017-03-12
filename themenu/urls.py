@@ -58,6 +58,8 @@ urlpatterns = [
     url(r'^ingredients/(?P<pk>[\d]+)/delete/?$', views.IngredientDelete.as_view(), name='ingredient-delete'),
     url(r'^ingredients/(?P<pk>[\d]+)/?$', views.IngredientDetail.as_view(), name='ingredient-detail'),
 
+    url(r'^randomgrocery/create/?$', views.RandomGroceryItemCreate.as_view(), name='random-grocery-create'),
+
     url(r'^api/(?P<model_name>[\w]+)/?$', views.model_json, name='model-json'),
     url(r'^select2/', include('django_select2.urls')),
 ]
