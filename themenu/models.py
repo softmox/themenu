@@ -154,10 +154,9 @@ class GroceryListItem(models.Model):
 class RandomGroceryItem(models.Model):
     """For things like paper towels, random snacks..."""
     name = models.TextField()
-    date = models.DateField('random grocery item date')
     team = models.ForeignKey(Team)
     purchased = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Random Grocery Item: %s for %s, Purchased: %s' % \
-            (self.name, self.date, self.purchased)
+        return 'Random Grocery Item: %s, Purchased: %s' % \
+            (self.name, self.purchased)
