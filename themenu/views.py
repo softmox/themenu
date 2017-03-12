@@ -76,8 +76,8 @@ def grocery_list(request):
     # Add a third item to the tuples:
     # a bool if all groceries have been purchased
     mark_all_purchased = [
-        (ing, g_list, all(g.purchased for g in g_list))
-        for ing, g_list in ingredient_to_grocery_list.items()
+        (ingredient, grocery_items, all(g.purchased for g in grocery_items))
+        for ingredient, grocery_items in ingredient_to_grocery_list.items()
     ]
     # Sort the (ingrdient, [grocery,..], purchased) tuples with
     # ones where everything has been purchased last
