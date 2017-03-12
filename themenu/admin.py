@@ -1,6 +1,15 @@
 from django.contrib import admin
 
-from .models import Tag, Ingredient, Dish, Meal, Course, MyUser, Team
+from .models import (
+    Tag,
+    Ingredient,
+    Dish,
+    Meal,
+    Course,
+    MyUser,
+    Team,
+    RandomGroceryItem
+)
 
 
 class CourseInline(admin.TabularInline):
@@ -22,3 +31,4 @@ admin.site.register(Dish, DishAdmin)
 admin.site.register(Meal, MealAdmin)
 admin.site.register(MyUser)
 admin.site.register(Team)
+admin.site.register(RandomGroceryItem)
