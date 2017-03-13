@@ -16,7 +16,13 @@
   <div class="row">
     <div class="dish-info col-md-7 col-md-offset-1">
       <p>created by {{object.created_by}}</p>
-      <p>Source: {{object.source}}</p>
+
+      {% if 'http' in object.source %}
+          <p>Source: <a href="{{object.source}}">{{object.source}}</a></p>
+      {% else %}
+          <p>Source: {{object.source}}</p>
+      {% endif %}
+
       <p>{{object.notes}}</p>
       <div class="tag thumbs">
         {% for t in object.tags.all %}
