@@ -237,15 +237,12 @@ class DishCreate(CreateView):
     model = Dish
     form_class = DishModelForm
 
-    def get_initial(self):
-      myuser = get_object_or_404(MyUser, user=self.request.user)
-      return {'created_by': myuser}
-
     def form_valid(self, form):
         obj = form.save(commit=False)
         myuser = get_object_or_404(MyUser, user=self.request.user)
         obj.created_by = myuser
         obj.save()
+        form.save_m2m()
         return HttpResponseRedirect(obj.get_absolute_url())
 
 
