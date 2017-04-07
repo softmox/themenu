@@ -181,7 +181,7 @@ def grocery_update(request):
     elif posted_data['groceryType'] == 'random':
         grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
     else:
-         JsonResponse({"OK": False})
+        JsonResponse({"OK": False})
 
     value = posted_data['checked']
     grocery.purchased = value
@@ -190,7 +190,13 @@ def grocery_update(request):
 
 
 def dish_search(request):
-    return JsonResponse({"OK": True})
+    search_term = request.GET.get('text', '')
+    matching_dishes = Dish.objects.filter(name__icontains=search_term)
+    context = {
+        'search_term': search_term,
+        'matching_dishes': matching_dishes,
+    }
+    return render(request, 'themenu/dish_search.html', context)
 
 
 class RandomGroceryItemCreate(CreateView):

@@ -1,0 +1,30 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container width=95%">
+  <div class="row">
+    <div class="dish-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Dishes like "{{ search_term }}"</h4>
+        </div>
+        <div class="panel-body">
+        {% if matching_dishes %}
+          <ul>
+            {% for dish in matching_dishes %}
+              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+        <p>No dishes match<p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
