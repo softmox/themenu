@@ -189,6 +189,10 @@ def grocery_update(request):
     return JsonResponse({"OK": True})
 
 
+def dish_search(request):
+    return JsonResponse({"OK": True})
+
+
 class RandomGroceryItemCreate(CreateView):
     model = RandomGroceryItem
     fields = ['name']

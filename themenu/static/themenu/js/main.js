@@ -27,6 +27,16 @@ $(document).ready(function() {
 
     // }
 
+    // Search bar: pass to the /dishes/search url
+    $('#dish-search-form').submit(function(event) {
+        event.preventDefault();
+        let dishSearchText = $('#dish-search-input').val();
+        urlParams = $.param({ text: dishSearchText });
+        newUrl = '/dishes/search?' + urlParams;
+        console.log(newUrl);
+        window.location.href = newUrl;
+    })
+
     $('.grocery-checkbox').change(function() {
         var groceryId = $(this).data('grocery-id');
         var groceryType = $(this).data('grocery-type');
