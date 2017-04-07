@@ -31,10 +31,12 @@ $(document).ready(function() {
     $('#dish-search-form').submit(function(event) {
         event.preventDefault();
         let dishSearchText = $('#dish-search-input').val();
-        urlParams = $.param({ text: dishSearchText });
-        newUrl = '/dishes/search?' + urlParams;
-        console.log(newUrl);
-        window.location.href = newUrl;
+        if (dishSearchText) {
+            urlParams = $.param({ text: dishSearchText });
+            newUrl = '/dishes/search?' + urlParams;
+            console.log(newUrl);
+            window.location.href = newUrl;
+        }
     })
 
     $('.grocery-checkbox').change(function() {
