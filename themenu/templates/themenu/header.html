@@ -15,10 +15,10 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        {% if request.user %}
+        {% if request.user.myuser %}
           <li><a href="{% url 'user-profile' request.user.myuser.id %}">Profile</a></li>
         {% else %}
-          <li><a href="{% url 'login' %}"
+          <li><a href="{% url 'login' %}">Login</a></li>
         {% endif %}
         <li class="active"><a href="{% url 'index' %}">Calendar <span class="sr-only">(current)</span></a></li>
         <li><a href="{% url 'grocery-list' %}">Groceries</a></li>
