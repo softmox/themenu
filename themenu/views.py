@@ -264,6 +264,9 @@ class DishList(ListView):
         context['dishes'] = self.dishes_by_source()
         return context
 
+class MyUserDetail(DetailView):
+    model = MyUser
+
 
 # Including this for when we want to only allow the owner to
 # Delete the item

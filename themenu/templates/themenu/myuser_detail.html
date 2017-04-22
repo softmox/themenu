@@ -1,0 +1,46 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="page-header">
+        <h1>{{object.user.username}}</h1>
+        {% if object.user == request.user %}
+          <p>That's you!<p>
+        {% endif %}
+      </div>
+    </div>
+  </div><!-- close row -->
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h2>
+        {% if object.team %}
+          Team {{object.team}}
+        {% else %}
+          <a href="" class="btn btn-primary btn-lg">Join a team!</a>
+        {% endif %}
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <p>{{object.user.first_name}} {{object.user.last_name}}</p>
+      <p>Date joined: {{object.user.date_joined}}</p>
+      <p>Last active: {{object.user.last_login}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h4>Dishes {{object}} has added</h4>
+      <ul>
+        {% for dish in object.dish_set.all %}
+          <li>{{dish}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

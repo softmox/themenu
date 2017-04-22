@@ -31,6 +31,8 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^admin/', admin.site.urls),
     url(r'^', include('registration.backends.simple.urls')),
+    url(r'^profile/(?P<pk>[\d]+)/?$', views.MyUserDetail.as_view(),
+    name='user-profile'),
 
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),

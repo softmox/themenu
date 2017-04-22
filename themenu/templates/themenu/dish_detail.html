@@ -15,7 +15,9 @@
 
   <div class="row">
     <div class="dish-info col-md-7 col-md-offset-1">
-      <p>created by {{object.created_by}}</p>
+      <p>created by:
+        <a href="{% url 'user-profile' object.created_by.id %}">{{object.created_by}}</a>
+      </p>
 
       {% if 'http' in object.source %}
           <p>Source: <a href="{{object.source}}">{{object.source}}</a></p>
