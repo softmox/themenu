@@ -67,19 +67,11 @@ class Dish(models.Model):
         verbose_name_plural = "dishes"
         ordering = ['name']
 
-    SPEED_CHOICES = [(1, 'more than 1 hour'), (2, '30 min - 1 hour'), (3, 'less than 30 min')]
-    EASE_CHOICES = [(1, 'complex'), (2, 'moderate'), (3, 'simple')]
-    RESULTS_CHOICES = [(1, 'not so good'), (2, 'okay'), (3, 'tasty')]
-
     name = models.TextField()
     created_by = models.ForeignKey(MyUser)
     notes = models.TextField(null=True, blank=True)
     source = models.TextField(null=True, blank=True)
     recipe = models.TextField(null=True, blank=True)
-    # Scores to rate the dishes on
-    speed = models.IntegerField(choices=SPEED_CHOICES, null=True)
-    ease = models.IntegerField(choices=EASE_CHOICES, null=True)
-    results = models.IntegerField(choices=RESULTS_CHOICES, null=True)
 
     ingredients = models.ManyToManyField(Ingredient, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
