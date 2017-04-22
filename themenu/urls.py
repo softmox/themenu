@@ -20,7 +20,7 @@ from themenu import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^calendar/(?P<offset>[\-\d]+)/?$', views.calendar, name='calendar'),
+    url(r'^calendar/(?P<view_date>[\-\d]+)/?$', views.calendar, name='calendar'),
     url(r'^courseupdate/?$', views.course_update, name='course-update'),
     url(r'^groceryupdate/?$', views.grocery_update, name='grocery-update'),
     url(r'^grocery_list/$', views.grocery_list, name='grocery-list'),

@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict, OrderedDict
 from itertools import chain
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 
 from django.apps import apps
 from django.shortcuts import render, get_object_or_404
@@ -42,7 +42,7 @@ from themenu.forms import (
 
 
 def index(request):
-    return redirect('calendar', offset=0)
+    return redirect('calendar', view_date=datetime.strftime(date.today(), '%Y%m%d'))
 
 
 def scores(request):
@@ -91,19 +91,13 @@ def grocery_list(request):
     return render(request, 'themenu/grocery_list.html', context)
 
 
-def refdate(offset):
-    today = date.today()
-    ref_date = today + timedelta(days=7 * offset)
-    return ref_date
-
-
-def calendar(request, offset):
-    offset = offset
+def calendar(request, view_date):
+    parsed_date = datetime.strptime(str(view_date), '%Y%m%d')
     team = request.user.myuser.team
 
     def weekdays():
-        weekdays_list = [refdate(offset) + timedelta(days=i)
-                         for i in range(0 - refdate(offset).weekday(), 7 - refdate(offset).weekday())]
+        weekdays_list = [parsed_date + timedelta(days=i)
+                         for i in range(0 - parsed_date.weekday(), 7 - parsed_date.weekday())]
         return weekdays_list
 
     def get_meal_by_type_and_date(mealtype, date):
@@ -125,9 +119,9 @@ def calendar(request, offset):
         return weekplan
 
     def monday(valence):
-        monday = refdate(offset) + timedelta(days=(7 * valence - refdate(offset).weekday()))
+        monday = parsed_date + timedelta(days=(7 * valence - parsed_date.weekday()))
         prettymonday = monday.strftime('%d %B, %Y')
-        return prettymonday
+        return monday
 
     if not team:
         # redirect to a team register page
@@ -135,14 +129,13 @@ def calendar(request, offset):
         pass
 
     context = {}
-    offset = int(offset)
     context['weekplan'] = weekplan(weekdays())
-    context['lastoffset'] = offset - 1
-    context['nextoffset'] = offset + 1
     context['meal_choices'] = Meal.MEAL_TYPE_CHOICES
-    context['thisweekmonday'] = monday(0)
-    context['lastweekmonday'] = monday(-1)
-    context['nextweekmonday'] = monday(1)
+    context['thisweekmonday'] = monday(0).strftime('%d %B %Y')
+    context['lastmondaydate'] = monday(-1).strftime('%Y%m%d')
+    context['lastweekmonday'] = monday(-1).strftime('%d %B %Y')
+    context['nextmondaydate'] = monday(1).strftime('%Y%m%d')
+    context['nextweekmonday'] = monday(1).strftime('%d %B %Y')
     context['today'] = date.today()
 
     return render(request, 'themenu/calendar.html', context)

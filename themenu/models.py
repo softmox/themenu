@@ -3,7 +3,7 @@ import random
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse, reverse_lazy
-# from datetime import date
+from datetime import date, datetime
 
 
 def randcolor():
@@ -113,7 +113,11 @@ class Meal(models.Model):
         return weekday
 
     def get_absolute_url(self):
-        return reverse('calendar', kwargs={'offset': 0})
+        return reverse('calendar',
+            kwargs={
+                'view_date': datetime.strftime(self.date, '%Y%m%d')
+            }
+        )
 
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
