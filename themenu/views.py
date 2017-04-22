@@ -267,6 +267,28 @@ class DishList(ListView):
 class MyUserDetail(DetailView):
     model = MyUser
 
+class TeamCreate(CreateView):
+    model = Team
+    fields = ['name']
+
+    def form_valid(self, form):
+        obj = form.save(commit=True)
+        myuser = get_object_or_404(MyUser, user=self.request.user)
+        myuser.team = obj
+        myuser.save()
+        return HttpResponseRedirect(obj.get_absolute_url())
+
+class TeamDetail(DetailView):
+    model = Team
+
+    def get_context_data(self, **kwargs):
+        this_team = self.object
+        context = super(TeamDetail, self).get_context_data(**kwargs)
+        team_members = MyUser.objects.filter(team=this_team)
+        context['member_count'] = team_members.count()
+        context['team_members'] = team_members
+        context['team'] = this_team
+        return context
 
 # Including this for when we want to only allow the owner to
 # Delete the item

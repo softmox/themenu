@@ -34,6 +34,10 @@ urlpatterns = [
     url(r'^profile/(?P<pk>[\d]+)/?$', views.MyUserDetail.as_view(),
     name='user-profile'),
 
+    # team views
+    url(r'^teams/create/$', views.TeamCreate.as_view(), name='team-create'),
+    url(r'^teams/(?P<pk>[\d]+)/?$', views.TeamDetail.as_view(), name='team-detail'),
+
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),
     url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdate.as_view(), name='dish-update'),

@@ -17,9 +17,10 @@
     <div class="col-md-10 col-md-offset-1">
       <h2>
         {% if object.team %}
-          Team {{object.team}}
+          Team <a href="{% url 'team-detail' object.team.id %}">{{object.team}}</a>
         {% else %}
           <a href="" class="btn btn-primary btn-lg">Join a team!</a>
+          <a href="{% url 'team-create' %}" class="btn btn-primary btn-lg">Start a new team!</a>
         {% endif %}
       </h2>
     </div>
