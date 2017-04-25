@@ -177,3 +177,5 @@ class DishReview(models.Model):
     fastness = models.IntegerField(choices=FASTNESS_CHOICES, null=True, blank=True)
     ease = models.IntegerField(choices=EASE_CHOICES, null=True, blank=True)
     results = models.IntegerField(choices=RESULTS_CHOICES, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True)
