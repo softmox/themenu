@@ -173,7 +173,7 @@ class DishReview(models.Model):
 
     myuser = models.ForeignKey(MyUser)
     dish = models.ForeignKey(Dish)
-    notes = models.CharField(max_length=1000)
+    notes = models.TextField(null=True, blank=True)
     fastness = models.IntegerField(choices=FASTNESS_CHOICES, null=True, blank=True)
     ease = models.IntegerField(choices=EASE_CHOICES, null=True, blank=True)
     results = models.IntegerField(choices=RESULTS_CHOICES, null=True, blank=True)
