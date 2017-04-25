@@ -7,14 +7,18 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <div class="page-header">
-      <h1>{{object.name}}    <span><a href="{% url 'dish-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
-            </a></span></h1>
+      <h1>{{object.name}}    <span>
+          <a href="{% url 'dish-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button></a>
+          {% if not user_review %}
+            <a href="{% url 'review-create' dish_id=object.id %}"><button type="button" class="btn btn-success">Create review</button></a>
+          {% endif %}
+      </span></h1>
       </div>
     </div>
   </div>
 
   <div class="row">
-    <div class="dish-info col-md-7 col-md-offset-1">
+    <div class="dish-info col-md-6 col-md-offset-1">
       <p>created by:
         <a href="{% url 'user-profile' object.created_by.id %}">{{object.created_by}}</a>
       </p>
@@ -34,10 +38,22 @@
         {% endfor %}
       </div>
     </div>
-    <div class="dish-ratings col-md-3">
-      <div class="panel panel-default">
+    <div class="dish-ratings col-md-4">
+      {% if user_review %}
+      <div class="panel panel-info">
         <div class="panel-heading">
+          <h4>Your Review</h4>
+          <p>Created at: {{ user_review.created_at }}</p>
+          <p>Last edited at: {{ user_review.updated_at }}</p>
         </div>
+        <div class="panel-body">
+          <h4>Notes</h4>
+          <p>{{ user_review.notes | linebreaks }}</p>
+          <h4>Speed: {{ user_review.fastness }}</h4>
+          <h4>Ease: {{ user_review.ease }}</h4>
+          <h4>Results: {{ user_review.results }}</h4>
+        </div>
+      {% endif %}
       </div>
     </div>
   </div>

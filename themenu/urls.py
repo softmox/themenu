@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^dishes/(?P<pk>[\d]+)/delete/?$', views.DishDelete.as_view(), name='dish-delete'),
     url(r'^dishes/(?P<pk>[\d]+)/?$', views.DishDetail.as_view(), name='dish-detail'),
     url(r'^dishes/search/?$', views.dish_search, name='dish-search'),
+    url(r'^dishes/(?P<dish_id>[\d]+)/reviews/create/$', views.DishReviewCreate.as_view(), name='review-create'),
 
     # Generic meal views (with select2 widgets)
     url(r'^meals/create/?$', views.MealCreate.as_view(), name='meal-create'),

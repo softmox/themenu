@@ -21,17 +21,7 @@ from django.db.models import Count
 
 from registration.views import RegistrationView
 
-from themenu.models import (
-    Dish,
-    Meal,
-    Course,
-    Tag,
-    Ingredient,
-    GroceryListItem,
-    RandomGroceryItem,
-    MyUser,
-    Team
-)
+from themenu.models import *
 
 from themenu.forms import (
     DishModelForm,
@@ -209,8 +199,8 @@ class DishDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DishDetail, self).get_context_data(**kwargs)
-        # If we need to add extra items to what passes to the template
-        # context['now'] = timezone.now()
+        this_dish = self.object
+        context['user_review'] = this_dish.dishreview_set.filter(myuser=self.request.user.myuser).first()
         return context
 
 
@@ -450,6 +440,17 @@ class IngredientList(ListView):
         context['ingredients'] = Ingredient.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
         return context
 
+class DishReviewCreate(CreateView):
+    model = DishReview
+    fields = ['notes', 'fastness', 'ease', 'results']
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.myuser = get_object_or_404(MyUser, user=self.request.user)
+        obj.dish = get_object_or_404(Dish, id=self.kwargs['dish_id'])
+        obj.save()
+        form.save_m2m()
+        return HttpResponseRedirect(reverse('dish-detail', kwargs={'pk': self.kwargs['dish_id']}))
 
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api
 def get_fields(model):

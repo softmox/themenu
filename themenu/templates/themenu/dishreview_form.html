@@ -1,0 +1,42 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<form action="" method="post">{% csrf_token %}
+  <div class="fieldWrapper">
+    {{ form.notes.errors }}
+    {{ form.notes.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.notes }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.fastness.errors }}
+    {{ form.fastness.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.fastness }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.ease.errors }}
+    {{ form.ease.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.ease }}
+  </div>
+  <div class="fieldWrapper">
+    {{ form.results.errors }}
+    {{ form.results.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.results }}
+  </div>
+  <input type="submit" value="Submit" />
+
+</form>
+
+{% endblock %}
