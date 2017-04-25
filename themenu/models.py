@@ -162,3 +162,18 @@ class RandomGroceryItem(models.Model):
     def __unicode__(self):
         return 'Random Grocery Item: %s, Purchased: %s' % \
             (self.name, self.purchased)
+
+class DishReview(models.Model):
+    class Meta:
+        unique_together = ('myuser', 'dish')
+
+    FASTNESS_CHOICES = [(1, 'over 1 hour'), (2, '30 min - 1 hour'), (3, 'less than 30 min')]
+    EASE_CHOICES = [(1, 'complicated'), (2, 'moderate'), (3, 'simple')]
+    RESULTS_CHOICES = [(1, 'not so good'), (2, 'okay'), (3, 'tasty')]
+
+    myuser = models.ForeignKey(MyUser)
+    dish = models.ForeignKey(Dish)
+    notes = models.CharField(max_length=1000)
+    fastness = models.IntegerField(choices=FASTNESS_CHOICES, null=True, blank=True)
+    ease = models.IntegerField(choices=EASE_CHOICES, null=True, blank=True)
+    results = models.IntegerField(choices=RESULTS_CHOICES, null=True, blank=True)
