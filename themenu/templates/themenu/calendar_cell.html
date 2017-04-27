@@ -9,17 +9,9 @@
           {% for course in day.daymeal.course_set.all %}
               <div class="course">
                 <a href="{% url 'dish-detail' course.dish.id %}">
-                  {% if day.daymeal.meal_prep == 'cook' %}
-                      <span style="color:GoldenRod" class="glyphicon glyphicon-fire" aria-hidden="true"></span>
-                  {% elif day.daymeal.meal_prep == 'leftover' %}
-                      <span style="color:LightSkyBlue" class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
-                  {% elif day.daymeal.meal_prep == 'buy' %}
-                      <span style="color:MediumAquaMarine" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
-                  {% endif %}
                   {{course.dish.name}}
                 </a>
               </div>
-              <br>
               <div class="checkbox">
               {% if day.daymeal.meal_prep == 'cook' %}
                 <label>
@@ -38,6 +30,14 @@
         {% for t in day.daymeal.tags.all %}
           <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-default btn-xs" style="background-color:{{t.color}}; border:none">{{t.name}}</button></a>
         {% endfor %}
+      {% endif %}
+      <br>
+      {% if day.daymeal.meal_prep == 'cook' %}
+          <span style="color:GoldenRod" class="glyphicon glyphicon-fire" aria-hidden="true"></span>
+      {% elif day.daymeal.meal_prep == 'leftover' %}
+          <span style="color:LightSkyBlue" class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+      {% elif day.daymeal.meal_prep == 'buy' %}
+          <span style="color:MediumAquaMarine" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
       {% endif %}
     {% else %}
     <a href="{% url 'meal-create' %}?date={{ day.date | date:"Y-m-d"}}&meal_type={{meal_type}}">
