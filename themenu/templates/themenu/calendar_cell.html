@@ -7,10 +7,20 @@
       <a href="{% url 'meal-update' day.daymeal.id %}" style="color:DarkGray"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edit</a>
       {% if day.daymeal.course_set.all %}
           {% for course in day.daymeal.course_set.all %}
-              <div class="checkbox">
-              <a href="{% url 'dish-detail' course.dish.id %}">{{course.dish.name}}</a>
+              <div class="course">
+                <a href="{% url 'dish-detail' course.dish.id %}">
+                  {% if day.daymeal.meal_prep == 'cook' %}
+                      <span style="color:GoldenRod" class="glyphicon glyphicon-fire" aria-hidden="true"></span>
+                  {% elif day.daymeal.meal_prep == 'leftover' %}
+                      <span style="color:LightSkyBlue" class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+                  {% elif day.daymeal.meal_prep == 'buy' %}
+                      <span style="color:MediumAquaMarine" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
+                  {% endif %}
+                  {{course.dish.name}}
+                </a>
+              </div>
               <br>
-
+              <div class="checkbox">
               {% if day.daymeal.meal_prep == 'cook' %}
                 <label>
                   <input class="course-checkbox" {{ course.prepared|yesno:"checked,false" }} data-attribute="prepared" data-meal-id="{{course.meal.id}}" data-dish-id="{{course.dish.id}}" type="checkbox">
