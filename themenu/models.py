@@ -100,9 +100,17 @@ class Meal(models.Model):
         ('snack', 'snack'),
         ('tapas', 'tapas'),
     ]
+
+    MEAL_PREP_CHOICES = [
+        ('cook', 'cook'),
+        ('buy', 'buy'),
+        ('leftover', 'leftover')
+    ]
+
     dishes = models.ManyToManyField(Dish, blank=True, through='Course')
     tags = models.ManyToManyField(Tag, blank=True)
     meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
+    meal_prep = models.CharField(max_length=40, choices=MEAL_PREP_CHOICES, null=True)
     date = models.DateField('meal date')
     team = models.ForeignKey(Team)
 
