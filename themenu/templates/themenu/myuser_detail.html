@@ -33,11 +33,19 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-5 col-md-offset-1">
       <h4>Dishes {{object}} has added</h4>
       <ul>
         {% for dish in object.dish_set.all %}
-          <li>{{dish}}</li>
+          <li><a href="{% url 'dish-detail' dish.id %}">{{dish}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-5">
+      <h4>Reviews {{object}} has written</h4>
+      <ul>
+        {% for review in object.dishreview_set.all %}
+          <li><a href="{% url 'dish-detail' review.dish.id %}"> {{review.dish}}</a></li>
         {% endfor %}
       </ul>
     </div>
