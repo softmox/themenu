@@ -82,11 +82,37 @@
           <h4>Recipe</h4>
         </div>
         <div class="panel-body">
-          <p>{{object.recipe | linebreaks }}<p>
+          <p>{{object.recipe | linebreaks }}</p>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h2>Other Users' Reviews</h2>
+    </div>
+  </div>
+{% for review in other_reviews %}
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h4>{{ review.myuser }}</h4>
+          <p><em>{{ review.updated_at }}</em></p>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-2">Speed: {{review.fastness}}</div>
+          <div class="col-md-2">Results: {{review.results}}</div>
+          <div class="col-md-2">Simplicity: {{review.ease}}</div>
+          <div class="col-md-10">
+            <p>{{ review.notes }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
 
 </div>
 
