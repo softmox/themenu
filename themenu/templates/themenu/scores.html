@@ -24,7 +24,7 @@
           {% if perfect_dishes %}
             <ul>
               {% for d in perfect_dishes %}
-                <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+                <li><a href="{% url 'dish-detail' d.id %}">{{d.name}}</a>
                 </li>
               {% endfor %}
             </ul>

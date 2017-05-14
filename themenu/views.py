@@ -17,7 +17,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 
-from django.db.models import Count
+from django.db.models import Count, Avg
 
 from registration.views import RegistrationView
 
@@ -36,7 +36,23 @@ def index(request):
 
 
 def scores(request):
+    fast_dishes = Dish.objects.annotate(avg_speed=Avg('dishreview__fastness'))\
+        .filter(avg_speed__gte=2.5).order_by('-avg_speed')
+    tasty_dishes = Dish.objects.annotate(avg_results=Avg('dishreview__results'))\
+        .filter(avg_results__gte=2.5).order_by('-avg_results')
+    easy_dishes = Dish.objects.annotate(avg_ease=Avg('dishreview__ease'))\
+        .filter(avg_ease__gte=2.5).order_by('-avg_ease')
+
+    hall_of_fame = []
+    for dish in fast_dishes:
+        if dish in tasty_dishes and dish in easy_dishes:
+            hall_of_fame.append(dish)
+
     context = {
+        'fast_dishes': fast_dishes,
+        'tasty_dishes': tasty_dishes,
+        'easy_dishes': easy_dishes,
+        'perfect_dishes': hall_of_fame,
     }
     return render(request, 'themenu/scores.html', context)
 
