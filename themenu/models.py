@@ -1,6 +1,7 @@
 import calendar
 import random
 from django.db import models
+from django.db.models import Count, Min, Avg, Sum, Case, When, IntegerField, DateField, Q
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse, reverse_lazy
 from datetime import date, datetime
@@ -19,6 +20,85 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+    def common_ingredients(self):
+        '''Return a list ingredient objects,
+        ordered by those the team most commonly uses'''
+
+        ingredients = Ingredient.objects.filter(dish__meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('dish__meal')).order_by('-num_meals')[:10]
+        return ingredients
+
+    def common_dishes(self):
+        dishes = Dish.objects.filter(meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('meal')).order_by('-num_meals')[:10]
+        return dishes
+
+    def cooked_dishes(self):
+        dishes = Dish.objects.\
+            annotate(cooked_meals=Sum(
+                Case(
+                    When(~Q(meal__team=self), then=0),
+                    When(~Q(meal__meal_prep='cook'), then=0),
+                    When(meal__course__prepared=True, then=1),
+                    output_field=IntegerField()
+                )
+            ))\
+            .filter(cooked_meals__gte=1)\
+            .order_by('-cooked_meals')[:10]
+        return dishes
+
+    def eaten_dishes(self):
+        dishes = Dish.objects.\
+            annotate(eaten_meals=Sum(
+                Case(
+                    When(~Q(meal__team=self), then=0),
+                    When(meal__course__eaten=True, then=1),
+                    output_field=IntegerField()
+                )
+            ))\
+            .filter(eaten_meals__gte=1)\
+            .order_by('-eaten_meals')[:10]
+        return dishes
+
+    def prep_rate(self):
+        prep = self.meal_set.filter(meal_prep='cook').aggregate(
+            rate=Avg(
+                Case(
+                When(course__prepared=False, then=0),
+                When(course__prepared=True, then=1),
+                output_field=IntegerField()
+                )
+            )
+        )
+        return int(prep['rate'] * 100)
+
+    def eat_rate(self):
+        eat = self.meal_set.filter(meal_prep='cook')\
+        .aggregate(
+            rate=Avg(
+                Case(
+                When(course__eaten=False, then=0),
+                When(course__eaten=True, then=1),
+                output_field=IntegerField()
+                )
+            )
+        )
+        return int(eat['rate'] * 100)
+
+    def plan_rate(self):
+        min_date = self.meal_set.aggregate(min_date=Min('date'))['min_date']
+        days_planning = (date.today() - min_date).days
+        breakfasts = self.meal_set.filter(meal_type='breakfast').count()
+        lunches = self.meal_set.filter(meal_type='lunch').count()
+        dinners = self.meal_set.filter(meal_type='dinner').count()
+        snacks = self.meal_set.filter(meal_type='snack').count()
+        all_meals = breakfasts + lunches + dinners + snacks
+        planning = {}
+        planning['breakfasts'] = breakfasts*100/days_planning
+        planning['lunches'] = lunches*100/days_planning
+        planning['dinners'] = dinners*100/days_planning
+        planning['snacks'] = snacks*100/days_planning
+        planning['all'] = (breakfasts + lunches + dinners + snacks) * 100/(days_planning * 4)
+        return planning
+        
 
 class MyUser(models.Model):
     user = models.OneToOneField(User)

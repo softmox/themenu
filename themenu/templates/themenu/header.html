@@ -32,7 +32,9 @@
             <li><a href="#" class='disabled'>by source</a></li>
           </ul>
         </li>
-        <li><a href="#" class='disabled'>Analytics</a></li>
+        {% if request.user.myuser.team %}
+        <li><a href="{% url 'team-detail' request.user.myuser.team.id %}">Team page</a></li>
+        {% endif %}
       </ul>
       <form id="dish-search-form" class="navbar-form navbar-left">
         <div class="form-group">

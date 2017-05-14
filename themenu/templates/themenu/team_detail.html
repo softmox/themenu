@@ -18,7 +18,7 @@
 </div>
 <div class="container width=95%">
   <div class="row">
-    <div class="team-panel col-md-4">
+    <div class="team-panel col-md-3">
       <div class="panel panel-default">
         <div class="panel-heading">{{member_count}} members in team {{team.name}}</div>
         <div class="panel-body">
@@ -29,6 +29,79 @@
               </li>
             {% endfor %}
           </ul>
+        </div>
+      </div>
+    </div>
+    <div class="team-panel col-md-9">
+      <div class="panel panel-success">
+        <div class="panel-heading">Team Stats</div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-xs-6 col-md-3 col-lg-3">
+              <div class="thumbnail">
+                <h4>Most-used ingredients</h4>
+                <ul>
+                  {% for i in team.common_ingredients %}
+                    <li><a href="{% url 'ingredient-detail' i.id %}">{{ i.name }}</a> <em>({{ i.num_meals }} meals)</em></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <div class="col-xs-6 col-md-3 col-lg-3">
+              <div class="thumbnail">
+                <h4>Most-planned dishes</h4>
+                <ul>
+                  {% for d in team.common_dishes %}
+                    <li><a href="{% url 'dish-detail' d.id %}">{{ d.name }}</a> <em>({{ d.num_meals }} meals)</em></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <div class="col-xs-6 col-md-3 col-lg-3">
+              <div class="thumbnail">
+                <h4>Most-cooked dishes</h4>
+                <ul>
+                  {% for d in team.cooked_dishes %}
+                    <li><a href="{% url 'dish-detail' d.id %}">{{ d.name }}</a> <em>({{ d.cooked_meals }} cooked meals)</em></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <div class="col-xs-6 col-md-3 col-lg-3">
+              <div class="thumbnail">
+                <h4>Most-eaten dishes</h4>
+                <ul>
+                  {% for d in team.eaten_dishes %}
+                    <li><a href="{% url 'dish-detail' d.id %}">{{ d.name }}</a> <em>({{ d.eaten_meals }} eaten meals)</em></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-md-3 col-lg-3">
+            <div class="thumbnail">
+              <h4>Plan Rate</h4>
+              <ul>
+                <li>{{team.plan_rate.all}}% of meals are planned</li>
+                <li>{{team.plan_rate.breakfasts}}% of breakfasts</li>
+                <li>{{team.plan_rate.lunches}}% of lunches</li>
+                <li>{{team.plan_rate.dinners}}% of dinners</li>
+                <li>{{team.plan_rate.snacks}}% of snacks</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-6 col-md-3 col-lg-3">
+            <div class="thumbnail">
+              <h4>Prep rate</h4>
+              <p>{{team.prep_rate}}% of cooked meals are prepared once planned</p>
+            </div>
+          </div>
+          <div class="col-xs-6 col-md-3 col-lg-3">
+            <div class="thumbnail">
+              <h4>Eating rate</h4>
+              <p>{{team.eat_rate}}% of all meals are eaten</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
