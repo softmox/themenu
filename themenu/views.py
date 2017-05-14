@@ -54,10 +54,10 @@ def grocery_list(request):
 
     team = request.user.myuser.team
     if not team:
+        return HttpResponseRedirect(reverse('team-list'))
         # redirect to a team registration page
         # if you don't have a team, you can't plan meals
         # so why would you need a grocery list
-        pass
 
     grocery_list = _get_meal_groceries(team)
     ingredient_to_grocery_list = defaultdict(list)
@@ -84,6 +84,11 @@ def grocery_list(request):
 def calendar(request, view_date):
     parsed_date = datetime.strptime(str(view_date), '%Y%m%d')
     team = request.user.myuser.team
+
+    if not team:
+        return HttpResponseRedirect(reverse('team-list'))
+        # redirect to a team register page
+        # if you don't have a team, you can't plan meals
 
     def weekdays():
         weekdays_list = [parsed_date + timedelta(days=i)
@@ -112,11 +117,6 @@ def calendar(request, view_date):
         monday = parsed_date + timedelta(days=(7 * valence - parsed_date.weekday()))
         prettymonday = monday.strftime('%d %B, %Y')
         return monday
-
-    if not team:
-        # redirect to a team register page
-        # if you don't have a team, you can't plan meals
-        pass
 
     context = {}
     context['weekplan'] = weekplan(weekdays())
@@ -279,6 +279,17 @@ class TeamDetail(DetailView):
         context['team_members'] = team_members
         context['team'] = this_team
         return context
+
+class TeamList(ListView):
+    model = Team
+
+def team_join(request, **kwargs):
+    team_id = kwargs['pk']
+    team = Team.objects.filter(id=team_id).first()
+    myuser = request.user.myuser
+    myuser.team = team
+    myuser.save()
+    return HttpResponseRedirect(reverse('team-detail', kwargs={'pk': team_id}))
 
 # Including this for when we want to only allow the owner to
 # Delete the item

@@ -37,6 +37,8 @@ urlpatterns = [
     # team views
     url(r'^teams/create/$', views.TeamCreate.as_view(), name='team-create'),
     url(r'^teams/(?P<pk>[\d]+)/?$', views.TeamDetail.as_view(), name='team-detail'),
+    url(r'teams/$', views.TeamList.as_view(), name='team-list'),
+    url(r'^teams/(?P<pk>[\d]+)/join$', views.team_join, name='team-join'),
 
     # Generic dish views (with select2 widgets)
     url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),

@@ -1,0 +1,18 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h3>Teams</h3>
+      <ul>
+        {% for team in object_list %}
+          <li><a href="{% url 'team-detail' team.id %}">{{team.name}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
