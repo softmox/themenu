@@ -1,9 +1,10 @@
 import calendar
 import random
 from django.db import models
+from django.db.models import Count, Min, Avg, Sum, Case, When, IntegerField, DateField, Q
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse, reverse_lazy
-# from datetime import date
+from datetime import date, datetime
 
 
 def randcolor():
@@ -11,11 +12,93 @@ def randcolor():
 
 
 class Team(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
+
+    def get_absolute_url(self):
+        return reverse('team-detail', args=[str(self.id)])
 
     def __str__(self):
         return self.name
 
+    def common_ingredients(self):
+        '''Return a list ingredient objects,
+        ordered by those the team most commonly uses'''
+
+        ingredients = Ingredient.objects.filter(dish__meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('dish__meal')).order_by('-num_meals')[:10]
+        return ingredients
+
+    def common_dishes(self):
+        dishes = Dish.objects.filter(meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('meal')).order_by('-num_meals')[:10]
+        return dishes
+
+    def cooked_dishes(self):
+        dishes = Dish.objects.\
+            annotate(cooked_meals=Sum(
+                Case(
+                    When(~Q(meal__team=self), then=0),
+                    When(~Q(meal__meal_prep='cook'), then=0),
+                    When(meal__course__prepared=True, then=1),
+                    output_field=IntegerField()
+                )
+            ))\
+            .filter(cooked_meals__gte=1)\
+            .order_by('-cooked_meals')[:10]
+        return dishes
+
+    def eaten_dishes(self):
+        dishes = Dish.objects.\
+            annotate(eaten_meals=Sum(
+                Case(
+                    When(~Q(meal__team=self), then=0),
+                    When(meal__course__eaten=True, then=1),
+                    output_field=IntegerField()
+                )
+            ))\
+            .filter(eaten_meals__gte=1)\
+            .order_by('-eaten_meals')[:10]
+        return dishes
+
+    def prep_rate(self):
+        prep = self.meal_set.filter(meal_prep='cook').aggregate(
+            rate=Avg(
+                Case(
+                When(course__prepared=False, then=0),
+                When(course__prepared=True, then=1),
+                output_field=IntegerField()
+                )
+            )
+        )
+        return int(prep['rate'] * 100)
+
+    def eat_rate(self):
+        eat = self.meal_set.filter(meal_prep='cook')\
+        .aggregate(
+            rate=Avg(
+                Case(
+                When(course__eaten=False, then=0),
+                When(course__eaten=True, then=1),
+                output_field=IntegerField()
+                )
+            )
+        )
+        return int(eat['rate'] * 100)
+
+    def plan_rate(self):
+        min_date = self.meal_set.aggregate(min_date=Min('date'))['min_date']
+        days_planning = (date.today() - min_date).days
+        breakfasts = self.meal_set.filter(meal_type='breakfast').count()
+        lunches = self.meal_set.filter(meal_type='lunch').count()
+        dinners = self.meal_set.filter(meal_type='dinner').count()
+        snacks = self.meal_set.filter(meal_type='snack').count()
+        all_meals = breakfasts + lunches + dinners + snacks
+        planning = {}
+        planning['breakfasts'] = breakfasts*100/days_planning
+        planning['lunches'] = lunches*100/days_planning
+        planning['dinners'] = dinners*100/days_planning
+        planning['snacks'] = snacks*100/days_planning
+        planning['all'] = (breakfasts + lunches + dinners + snacks) * 100/(days_planning * 4)
+        return planning
+        
 
 class MyUser(models.Model):
     user = models.OneToOneField(User)
@@ -67,17 +150,11 @@ class Dish(models.Model):
         verbose_name_plural = "dishes"
         ordering = ['name']
 
-    SCORE_CHOICES = [(1, 'one star'), (2, 'two stars'), (3, 'three stars')]
-
     name = models.TextField()
     created_by = models.ForeignKey(MyUser)
     notes = models.TextField(null=True, blank=True)
     source = models.TextField(null=True, blank=True)
     recipe = models.TextField(null=True, blank=True)
-    # Scores to rate the dishes on
-    speed = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
-    ease = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
-    results = models.IntegerField(choices=SCORE_CHOICES, default=1, null=True)
 
     ingredients = models.ManyToManyField(Ingredient, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
@@ -103,9 +180,17 @@ class Meal(models.Model):
         ('snack', 'snack'),
         ('tapas', 'tapas'),
     ]
+
+    MEAL_PREP_CHOICES = [
+        ('cook', 'cook'),
+        ('buy', 'buy'),
+        ('leftover', 'leftover')
+    ]
+
     dishes = models.ManyToManyField(Dish, blank=True, through='Course')
     tags = models.ManyToManyField(Tag, blank=True)
     meal_type = models.CharField(max_length=40, choices=MEAL_TYPE_CHOICES, null=True)
+    meal_prep = models.CharField(max_length=40, choices=MEAL_PREP_CHOICES, null=True)
     date = models.DateField('meal date')
     team = models.ForeignKey(Team)
 
@@ -119,7 +204,11 @@ class Meal(models.Model):
         return weekday
 
     def get_absolute_url(self):
-        return reverse('meal-detail', args=[str(self.id)])
+        return reverse('calendar',
+            kwargs={
+                'view_date': datetime.strftime(self.date, '%Y%m%d')
+            }
+        )
 
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
@@ -147,3 +236,34 @@ class GroceryListItem(models.Model):
     def __unicode__(self):
         return 'Ingredient: %s, %s, Purchased: %s' % \
             (self.ingredient.id, self.ingredient.name, self.purchased)
+
+
+class RandomGroceryItem(models.Model):
+    """For things like paper towels, random snacks..."""
+    name = models.TextField()
+    team = models.ForeignKey(Team)
+    purchased = models.BooleanField(default=False)
+
+    def get_absolute_url(self):
+        return reverse('grocery-list')
+
+    def __unicode__(self):
+        return 'Random Grocery Item: %s, Purchased: %s' % \
+            (self.name, self.purchased)
+
+class DishReview(models.Model):
+    class Meta:
+        unique_together = ('myuser', 'dish')
+
+    FASTNESS_CHOICES = [(1, 'over 1 hour'), (2, '30 min - 1 hour'), (3, 'less than 30 min')]
+    EASE_CHOICES = [(1, 'complicated'), (2, 'moderate'), (3, 'simple')]
+    RESULTS_CHOICES = [(1, 'not so good'), (2, 'okay'), (3, 'tasty')]
+
+    myuser = models.ForeignKey(MyUser)
+    dish = models.ForeignKey(Dish)
+    notes = models.TextField(null=True, blank=True)
+    fastness = models.IntegerField(choices=FASTNESS_CHOICES, null=True, blank=True)
+    ease = models.IntegerField(choices=EASE_CHOICES, null=True, blank=True)
+    results = models.IntegerField(choices=RESULTS_CHOICES, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True)

@@ -1,0 +1,65 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="page-header">
+        <h1>{{object.user.username}}</h1>
+        {% if object.user == request.user %}
+          <p>That's you!<p>
+        {% endif %}
+      </div>
+    </div>
+  </div><!-- close row -->
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h2>
+        {% if object.team %}
+          Team <a href="{% url 'team-detail' object.team.id %}">{{object.team}}</a>
+        {% endif %}
+      </h2>
+      <a href="{% url 'team-list' %}" class="btn btn-primary btn-lg">
+        Join or change teams
+      </a>
+      <a href="{% url 'team-create' %}" class="btn btn-primary btn-lg">
+        Start a new team
+      </a>
+      <p><em>
+      {% if object.team %}
+        You can only be a member of one team at once. If you are a member of a team and you start a new team or join a different team, you will no longer belong to your current team.
+      {% else %}
+        You must start or join a team in order to use the calendar view.
+      {% endif %}
+      </em></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <p>{{object.user.first_name}} {{object.user.last_name}}</p>
+      <p>Date joined: {{object.user.date_joined}}</p>
+      <p>Last active: {{object.user.last_login}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-5 col-md-offset-1">
+      <h4>Dishes {{object}} has added</h4>
+      <ul>
+        {% for dish in object.dish_set.all %}
+          <li><a href="{% url 'dish-detail' dish.id %}">{{dish}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-5">
+      <h4>Reviews {{object}} has written</h4>
+      <ul>
+        {% for review in object.dishreview_set.all %}
+          <li><a href="{% url 'dish-detail' review.dish.id %}"> {{review.dish}}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

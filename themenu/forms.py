@@ -30,8 +30,7 @@ class DishModelForm(forms.ModelForm):
     use the prettier select2 multiple fields"""
     class Meta:
         model = Dish
-        fields = ['name', 'notes', 'source', 'recipe', 'speed',
-                  'ease', 'results', 'ingredients', 'tags']
+        fields = ['name', 'notes', 'source', 'recipe', 'ingredients', 'tags']
 
         widgets = {
             'ingredients': NameSelect2MultipleWidget,
@@ -44,7 +43,7 @@ class MealModelForm(forms.ModelForm):
     use the prettier select2 multiple fields"""
     class Meta:
         model = Meal
-        fields = ['meal_type', 'date', 'dishes', 'tags', 'meal_type']
+        fields = ['meal_type', 'date', 'dishes', 'tags', 'meal_type', 'meal_prep']
 
         widgets = {
             'dishes': NameSelect2MultipleWidget,

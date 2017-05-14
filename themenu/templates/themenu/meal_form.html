@@ -35,6 +35,14 @@
     {% endif %}
     {{ form.meal_type }}
   </div>
+  <div class="fieldWrapper">
+    {{ form.meal_prep.errors }}
+    {{ form.meal_prep.label_tag }}
+    {% if field.help_text %}
+      <p class="help">{{ field.help_text|safe }}</p>
+    {% endif %}
+    {{ form.meal_prep }}
+  </div>
 
   <!-- ManyToMany fields- Select2 multiple fields -->
   <div class="fieldWrapper">
@@ -65,4 +73,3 @@
 </form>
 
 {% endblock %}
-

@@ -1,0 +1,14 @@
+<div class="grocery-item">
+  <label>
+    <div class="dropdown">
+      {% if item.purchased %}
+        <s>
+      {% endif %}
+      <span><a href="#" style="cursor: pointer;"><input class="grocery-checkbox" data-grocery-id="{{item.id}}" data-grocery-type="random" type="checkbox" {{ item.purchased|yesno:"checked,false" }} />{{ item.name }}</a></span>
+
+      {% if all_purchased %}
+        </s>
+      {% endif %}
+    </div>
+  </label>
+</div>

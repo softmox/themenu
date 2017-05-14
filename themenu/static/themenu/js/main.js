@@ -27,11 +27,24 @@ $(document).ready(function() {
 
     // }
 
+    // Search bar: pass to the /dishes/search url
+    $('#dish-search-form').submit(function(event) {
+        event.preventDefault();
+        let dishSearchText = $('#dish-search-input').val();
+        if (dishSearchText) {
+            urlParams = $.param({ text: dishSearchText });
+            newUrl = '/dishes/search?' + urlParams;
+            console.log(newUrl);
+            window.location.href = newUrl;
+        }
+    })
+
     $('.grocery-checkbox').change(function() {
         var groceryId = $(this).data('grocery-id');
+        var groceryType = $(this).data('grocery-type');
         var checked = this.checked;
         console.log('clicked', groceryId, checked);
-        postGroceryUpdate(groceryId, checked)
+        postGroceryUpdate(groceryId, groceryType, checked)
     });
 
      $('.course-checkbox').change(function() {
@@ -62,7 +75,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function postGroceryUpdate(groceryId, checked) {
+function postGroceryUpdate(groceryId, groceryType, checked) {
     var $posting = $.ajax({
             type: 'POST',
             url: '/groceryupdate/',
@@ -70,6 +83,7 @@ function postGroceryUpdate(groceryId, checked) {
             dataType: 'json',
             data: JSON.stringify({
                 groceryId: groceryId,
+                groceryType: groceryType,
                 checked: checked
             })
     });

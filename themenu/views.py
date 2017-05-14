@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict, OrderedDict
 from itertools import chain
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 
 from django.apps import apps
 from django.shortcuts import render, get_object_or_404
@@ -17,78 +17,99 @@ from django.views.generic.edit import UpdateView, DeleteView
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
 
-from django.db.models import Count
+from django.db.models import Count, Avg
 
 from registration.views import RegistrationView
 
-from themenu.models import (
-    Dish,
-    Meal,
-    Course,
-    Tag,
-    Ingredient,
-    GroceryListItem,
-    MyUser
-)
+from themenu.models import *
 
 from themenu.forms import (
     DishModelForm,
     MealModelForm,
     TagModelForm,
     IngredientModelForm,
-    IngredientSearchForm
+    IngredientSearchForm,
 )
 
 
 def index(request):
-    return redirect('calendar', offset=0)
+    return redirect('calendar', view_date=datetime.strftime(date.today(), '%Y%m%d'))
+
+
+def scores(request):
+    fast_dishes = Dish.objects.annotate(avg_speed=Avg('dishreview__fastness'))\
+        .filter(avg_speed__gte=2.5).order_by('-avg_speed')
+    tasty_dishes = Dish.objects.annotate(avg_results=Avg('dishreview__results'))\
+        .filter(avg_results__gte=2.5).order_by('-avg_results')
+    easy_dishes = Dish.objects.annotate(avg_ease=Avg('dishreview__ease'))\
+        .filter(avg_ease__gte=2.5).order_by('-avg_ease')
+
+    hall_of_fame = []
+    for dish in fast_dishes:
+        if dish in tasty_dishes and dish in easy_dishes:
+            hall_of_fame.append(dish)
+
+    context = {
+        'fast_dishes': fast_dishes,
+        'tasty_dishes': tasty_dishes,
+        'easy_dishes': easy_dishes,
+        'perfect_dishes': hall_of_fame,
+    }
+    return render(request, 'themenu/scores.html', context)
 
 
 def grocery_list(request):
+    def _get_meal_groceries(team):
+        return GroceryListItem.objects.filter(course__meal__team=team)\
+                                      .filter(course__meal__date__gte=date.today())\
+                                      .order_by('purchased', 'course__meal__date')
+
+    def _get_random_groceries(team):
+        return RandomGroceryItem.objects.filter(team=team)\
+                                        .filter(purchased=False)\
+                                        .order_by('purchased')
 
     team = request.user.myuser.team
     if not team:
+        return HttpResponseRedirect(reverse('team-list'))
         # redirect to a team registration page
         # if you don't have a team, you can't plan meals
         # so why would you need a grocery list
-        pass
 
-    grocery_list = GroceryListItem.objects.filter(course__meal__team=team)\
-                    .filter(
-                    course__meal__date__gte=date.today()).order_by(
-                    'purchased', 'course__meal__date')
+    grocery_list = _get_meal_groceries(team)
     ingredient_to_grocery_list = defaultdict(list)
     for grocery_item in grocery_list:
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
     # Add a third item to the tuples:
     # a bool if all groceries have been purchased
     mark_all_purchased = [
-        (ing, g_list, all(g.purchased for g in g_list))
-        for ing, g_list in ingredient_to_grocery_list.items()
+        (ingredient, grocery_items, all(g.purchased for g in grocery_items))
+        for ingredient, grocery_items in ingredient_to_grocery_list.items()
     ]
     # Sort the (ingrdient, [grocery,..], purchased) tuples with
     # ones where everything has been purchased last
     sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
 
+    random_grocery_list = _get_random_groceries(team)
     context = {
-        'ingredient_to_grocery_list': sorted_items
+        'ingredient_to_grocery_list': sorted_items,
+        'random_grocery_list': random_grocery_list,
     }
     return render(request, 'themenu/grocery_list.html', context)
 
 
-def refdate(offset):
-    today = date.today()
-    ref_date = today + timedelta(days=7 * offset)
-    return ref_date
-
-
-def calendar(request, offset):
-    offset = offset
+def calendar(request, view_date):
+    parsed_date = datetime.strptime(str(view_date), '%Y%m%d')
     team = request.user.myuser.team
 
+    if not team:
+        return HttpResponseRedirect(reverse('team-list'))
+        # redirect to a team register page
+        # if you don't have a team, you can't plan meals
+
     def weekdays():
-        weekdays_list = [refdate(offset) + timedelta(days=i)
-                         for i in range(0 - refdate(offset).weekday(), 7 - refdate(offset).weekday())]
+        weekdays_list = [parsed_date + timedelta(days=i)
+                         for i in range(0 - parsed_date.weekday(), 7 - parsed_date.weekday())]
         return weekdays_list
 
     def get_meal_by_type_and_date(mealtype, date):
@@ -110,24 +131,18 @@ def calendar(request, offset):
         return weekplan
 
     def monday(valence):
-        monday = refdate(offset) + timedelta(days=(7 * valence - refdate(offset).weekday()))
+        monday = parsed_date + timedelta(days=(7 * valence - parsed_date.weekday()))
         prettymonday = monday.strftime('%d %B, %Y')
-        return prettymonday
-
-    if not team:
-        # redirect to a team register page
-        # if you don't have a team, you can't plan meals
-        pass
+        return monday
 
     context = {}
-    offset = int(offset)
     context['weekplan'] = weekplan(weekdays())
-    context['lastoffset'] = offset - 1
-    context['nextoffset'] = offset + 1
     context['meal_choices'] = Meal.MEAL_TYPE_CHOICES
-    context['thisweekmonday'] = monday(0)
-    context['lastweekmonday'] = monday(-1)
-    context['nextweekmonday'] = monday(1)
+    context['thisweekmonday'] = monday(0).strftime('%d %B %Y')
+    context['lastmondaydate'] = monday(-1).strftime('%Y%m%d')
+    context['lastweekmonday'] = monday(-1).strftime('%d %B %Y')
+    context['nextmondaydate'] = monday(1).strftime('%Y%m%d')
+    context['nextweekmonday'] = monday(1).strftime('%d %B %Y')
     context['today'] = date.today()
 
     return render(request, 'themenu/calendar.html', context)
@@ -154,11 +169,46 @@ def course_update(request):
 @require_http_methods(["POST"])
 def grocery_update(request):
     posted_data = json.loads(request.body)
-    grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    if posted_data['groceryType'] == 'meal':
+        grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+    elif posted_data['groceryType'] == 'random':
+        grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
+    else:
+        JsonResponse({"OK": False})
+
     value = posted_data['checked']
     grocery.purchased = value
     grocery.save(update_fields=['purchased'])
     return JsonResponse({"OK": True})
+
+
+def dish_search(request):
+    search_term = request.GET.get('text', '')
+    matching_dishes = Dish.objects.filter(name__icontains=search_term)
+    context = {
+        'search_term': search_term,
+        'matching_dishes': matching_dishes,
+    }
+    return render(request, 'themenu/dish_search.html', context)
+
+
+class RandomGroceryItemCreate(CreateView):
+    model = RandomGroceryItem
+    fields = ['name']
+
+    def get_initial(self):
+        """Get all the url params that are field names"""
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        initial = {}
+        initial['team_id'] = team.id
+        return initial
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        obj.team = team
+        obj.save()
+        return super(RandomGroceryItemCreate, self).form_valid(form)
 
 
 class DishDetail(DetailView):
@@ -166,8 +216,9 @@ class DishDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(DishDetail, self).get_context_data(**kwargs)
-        # If we need to add extra items to what passes to the template
-        # context['now'] = timezone.now()
+        this_dish = self.object
+        context['user_review'] = this_dish.dishreview_set.filter(myuser=self.request.user.myuser).first()
+        context['other_reviews'] = this_dish.dishreview_set.exclude(myuser=self.request.user.myuser)
         return context
 
 
@@ -190,15 +241,12 @@ class DishCreate(CreateView):
     model = Dish
     form_class = DishModelForm
 
-    def get_initial(self):
-      myuser = get_object_or_404(MyUser, user=self.request.user)
-      return {'created_by': myuser}
-
     def form_valid(self, form):
         obj = form.save(commit=False)
         myuser = get_object_or_404(MyUser, user=self.request.user)
         obj.created_by = myuser
         obj.save()
+        form.save_m2m()
         return HttpResponseRedirect(obj.get_absolute_url())
 
 
@@ -224,6 +272,42 @@ class DishList(ListView):
         context['dishes'] = self.dishes_by_source()
         return context
 
+class MyUserDetail(DetailView):
+    model = MyUser
+
+class TeamCreate(CreateView):
+    model = Team
+    fields = ['name']
+
+    def form_valid(self, form):
+        obj = form.save(commit=True)
+        myuser = get_object_or_404(MyUser, user=self.request.user)
+        myuser.team = obj
+        myuser.save()
+        return HttpResponseRedirect(obj.get_absolute_url())
+
+class TeamDetail(DetailView):
+    model = Team
+
+    def get_context_data(self, **kwargs):
+        this_team = self.object
+        context = super(TeamDetail, self).get_context_data(**kwargs)
+        team_members = MyUser.objects.filter(team=this_team)
+        context['member_count'] = team_members.count()
+        context['team_members'] = team_members
+        context['team'] = this_team
+        return context
+
+class TeamList(ListView):
+    model = Team
+
+def team_join(request, **kwargs):
+    team_id = kwargs['pk']
+    team = Team.objects.filter(id=team_id).first()
+    myuser = request.user.myuser
+    myuser.team = team
+    myuser.save()
+    return HttpResponseRedirect(reverse('team-detail', kwargs={'pk': team_id}))
 
 # Including this for when we want to only allow the owner to
 # Delete the item
@@ -278,12 +362,18 @@ class MealCreate(MealSaveMixin, CreateView):
 
     def get_initial(self):
         """Get all the url params that are field names"""
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
         initial = {}
+        initial['team_id'] = team.id
         for field in get_fields(Meal):
             initial[field] = self.request.GET.get(field)
         return initial
 
     def form_valid(self, form):
+        obj = form.save(commit=False)
+        team = get_object_or_404(Team, myuser=self.request.user.myuser)
+        obj.team = team
+        obj.save()
         return super(MealCreate, self).form_valid(form)
 
 
@@ -386,6 +476,18 @@ class IngredientList(ListView):
         return HttpResponseRedirect(reverse('ingredient-detail',
                                     args=(ingredient_id,)))
 
+
+class DishReviewCreate(CreateView):
+    model = DishReview
+    fields = ['notes', 'fastness', 'ease', 'results']
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.myuser = get_object_or_404(MyUser, user=self.request.user)
+        obj.dish = get_object_or_404(Dish, id=self.kwargs['dish_id'])
+        obj.save()
+        form.save_m2m()
+        return HttpResponseRedirect(reverse('dish-detail', kwargs={'pk': self.kwargs['dish_id']}))
 
 
 # From https://docs.djangoproject.com/en/1.9/ref/models/meta/#migrating-from-the-old-api

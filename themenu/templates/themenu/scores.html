@@ -1,0 +1,104 @@
+{% extends "themenu/layout.html" %}
+
+{% block body %}
+
+<div class="container width=95%">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="page-header">
+        <h1>Highly rated dishes</h1>
+      </div>
+      <p>
+        Trying to cook something quickly on a work night? Cooking to impress? Cooking with a child? Check out dishes that are quick, tasty, or easy to find exactly what you're looking for. Not willing to compromise? Check out the "Hall of Fame" for dishes that score highly in all three categories.
+      </p>
+      <br>
+      <br>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4>Hall of Fame</h4>
+          <p>Dishes that got top scores in all categories</h4>
+        </div>
+        <div class="panel-body">
+          {% if perfect_dishes %}
+            <ul>
+              {% for d in perfect_dishes %}
+                <li><a href="{% url 'dish-detail' d.id %}">{{d.name}}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p>There's nothing here yet!<p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container width=95%">
+  <div class="row">
+    <div class="dish-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Dishes that are fast</h4>
+          <p>Find dishes that take less than 30 minutes</p>
+        </div>
+        <div class="panel-body">
+        {% if fast_dishes %}
+          <ul>
+            {% for dish in fast_dishes %}
+              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+        <p>No dishes fit this criteria<p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="ingredient-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Dishes that are easy</h4>
+          <p>View dishes that are simple to prepare</p>
+        </div>
+        <div class="panel-body">
+        {% if easy_dishes %}
+          <ul>
+            {% for dish in easy_dishes %}
+              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+        <p>No dishes fit this criteria<p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="meal-panel col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Dishes that taste great</h4>
+          <p>View dishes that are guaranteed delicious</p>
+        </div>
+        <div class="panel-body">
+          {% if tasty_dishes %}
+            <ul>
+              {% for dish in tasty_dishes %}
+                <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+          <p>No dishes fit this criteria<p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

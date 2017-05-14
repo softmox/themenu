@@ -4,11 +4,11 @@
 
 <div class="panel panel-primary">
   <div class="panel-heading text-center">
-          <a href="{% url 'calendar' lastoffset %}" aria-label="Previous"  class="btn btn-default">
+          <a href="{% url 'calendar' lastmondaydate %}" aria-label="Previous"  class="btn btn-default">
             <span aria-hidden="true">&laquo;</span>
           </a>
         <span>week of {{thisweekmonday}}</span>
-          <a href="{% url 'calendar' nextoffset %}" aria-label="Next"  class="btn btn-default">
+          <a href="{% url 'calendar' nextmondaydate %}" aria-label="Next"  class="btn btn-default">
             <span aria-hidden="true">&raquo;</span>
           </a>
   </div>
@@ -41,4 +41,3 @@
 </div>
 
 {% endblock %}
-
