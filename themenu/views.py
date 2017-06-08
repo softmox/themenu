@@ -252,7 +252,7 @@ class DishCreate(CreateView):
 
 class DishDelete(DeleteView):
     model = Dish
-    success_url = reverse_lazy('calendar', args=(0,))
+    success_url = reverse_lazy('index')
 
 
 class DishList(ListView):
@@ -321,7 +321,7 @@ def team_join(request, **kwargs):
 
 class MealDelete(DeleteView):
     model = Meal
-    success_url = reverse_lazy('calendar', args=(0,))
+    success_url = reverse_lazy('index')
 
 
 class MealSaveMixin(ModelFormMixin):
@@ -432,7 +432,7 @@ class TagCreate(CreateView):
 
 class TagDelete(DeleteView):
     model = Tag
-    success_url = reverse_lazy('calendar', args=(0,))
+    success_url = reverse_lazy('index')
 
 
 class IngredientUpdate(UpdateView):
@@ -458,7 +458,7 @@ class IngredientDetail(DetailView):
 
 class IngredientDelete(DeleteView):
     model = Ingredient
-    success_url = reverse_lazy('calendar', args=(0,))
+    success_url = reverse_lazy('index')
 
 
 class IngredientList(ListView):
