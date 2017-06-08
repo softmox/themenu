@@ -39,7 +39,7 @@ $(document).ready(function() {
         }
     })
 
-    $('.grocery-checkbox').change(function() {
+    $('.grocery-checkbox').on('click touch', function() {
         var groceryId = $(this).data('grocery-id');
         var groceryType = $(this).data('grocery-type');
         var checked = this.checked;
@@ -47,7 +47,7 @@ $(document).ready(function() {
         postGroceryUpdate(groceryId, groceryType, checked)
     });
 
-     $('.course-checkbox').change(function() {
+     $('.course-checkbox').on('click touch', function() {
         var dishId = $(this).data('dish-id');
         var mealId = $(this).data('meal-id');
         var attribute = $(this).data('attribute');
