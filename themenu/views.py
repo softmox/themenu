@@ -69,6 +69,17 @@ def grocery_list(request):
                                         .filter(purchased=False)\
                                         .order_by('purchased')
 
+#  id  | purchased | ingredient_id | course_id | id  |       name
+# ------+-----------+---------------+-----------+-----+-------------------
+#  4847 | f         |            64 |       260 |  64 | honey
+#  4846 | f         |           129 |       260 | 129 | gelatin
+#  4845 | f         |            43 |       260 |  43 | cream
+#  4844 | f         |             7 |       260 |   7 | beet
+#  4843 | f         |             9 |       259 |   9 | parsley
+#  4842 | f         |             8 |       259 |   8 | feta
+#  4841 | f         |             7 |       259 |   7 | beet
+# I want "beet": [4844, 4841]
+# GroceryListItem.objects.filter(id__in=[4844, 4841])
     team = request.user.myuser.team
     if not team:
         return HttpResponseRedirect(reverse('team-list'))
