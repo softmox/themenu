@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import calendar
 import random
 from django.db import models
