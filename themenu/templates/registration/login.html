@@ -1,12 +1,22 @@
 {% extends 'themenu/layout.html' %}
 
 {% block body %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <h2>Login to NOMplan.life</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+      </form>
 
-<p>Don't have an account? <a href="{% url 'registration_register' %}">Create one here.</a></p>
-{% endblock %}
+      <p>Don't have an account? <a href="{% url 'registration_register' %}">Create one here.</a></p>
+    </div>
+  <div class="row">
+    <img class="col-md-7" alt="homepage" src="https://d2fcjrtizqatsy.cloudfront.net/calendar.png">
+  </div>
+  </div>
+</div>
+
+  {% endblock %}
