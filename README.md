@@ -5,6 +5,13 @@
     pip install -r requirements.txt
     ./manage.py run
 
+or on linux
+
+    sudo apt install postgresql postgresql-contrib
+    sudo apt install -y libmemcached-dev graphviz libgraphviz-dev
+    pip install -r requirements.txt
+
+
 ## Local database setup
 
     psql -c 'CREATE DATABASE themenu'
