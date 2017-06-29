@@ -173,7 +173,7 @@ class Dish(models.Model):
 class Meal(models.Model):
     '''A collection of dishes to be eaten at one time'''
     class Meta:
-        unique_together = ('date', 'meal_type')
+        unique_together = ('date', 'meal_type', 'team')
         ordering = ['date']
 
     MEAL_TYPE_CHOICES = [
