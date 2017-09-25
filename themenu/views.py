@@ -204,11 +204,25 @@ class RandomGroceryItemCreate(CreateView):
         return initial
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
+        comma_separated_items = form.data['name']
         team = get_object_or_404(Team, myuser=self.request.user.myuser)
-        obj.team = team
-        obj.save()
-        return super(RandomGroceryItemCreate, self).form_valid(form)
+        if ',' not in comma_separated_items:
+            # User has only added one item, no commas
+            obj = form.save(commit=False)
+            obj.team = team
+            obj.save()
+            return super(RandomGroceryItemCreate, self).form_valid(form)
+        else:
+            # Otherwise, split the single string,
+            # Saving one new grocery item per name
+            item_names = [item.strip() for item in comma_separated_items.split(",")]
+            new_object = None
+            for name in item_names:
+                new_object = RandomGroceryItem(name=name, team=team)
+                new_object.save()
+            return HttpResponseRedirect(new_object.get_absolute_url())
+
+
 
 
 class DishDetail(DetailView):
