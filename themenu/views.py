@@ -64,12 +64,20 @@ def scores(request):
 
 
 def grocery_list(request):
+    """Logic for populating the grocery list
+
+    Much has to do with the fact that we have one item for each meal
+    that uses the same ingredient.
+    This is so that on the shopping list, you can see which meals you are
+    getting an item for"""
     def _get_meal_groceries(team):
+        """Fetches the future meals for a team, unpurchased first"""
         return GroceryListItem.objects.filter(course__meal__team=team)\
                                       .filter(course__meal__date__gte=date.today())\
                                       .order_by('purchased', 'course__meal__date')
 
     def _get_random_groceries(team):
+        """Returns a queryset with all unpurchased RandomGroceryItems"""
         return RandomGroceryItem.objects.filter(team=team)\
                                         .filter(purchased=False)\
                                         .order_by('purchased')
@@ -93,7 +101,16 @@ def grocery_list(request):
         # so why would you need a grocery list
 
     grocery_list = _get_meal_groceries(team)
+
+    # This variables looks is a list with 3-tuples:
+    # (u'frozen berries',
+    #   [<GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>,
+    #    <GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>],
+    #  False)
+    # The whole GroveryListItem model is included so the template can get the
+    # dish name, meal type, number of meals, and meal date
     ingredient_to_grocery_list = defaultdict(list)
+
     for grocery_item in grocery_list:
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
     # Add a third item to the tuples:
@@ -102,7 +119,7 @@ def grocery_list(request):
         (ingredient, grocery_items, all(g.purchased for g in grocery_items))
         for ingredient, grocery_items in ingredient_to_grocery_list.items()
     ]
-    # Sort the (ingrdient, [grocery,..], purchased) tuples with
+    # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
     # ones where everything has been purchased last
     sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
 
@@ -111,6 +128,8 @@ def grocery_list(request):
         'ingredient_to_grocery_list': sorted_items,
         'random_grocery_list': random_grocery_list,
     }
+    import ipdb
+    ipdb.set_trace()
     return render(request, 'themenu/grocery_list.html', context)
 
 
