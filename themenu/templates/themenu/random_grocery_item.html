@@ -1,8 +1,8 @@
-<li class="list-group-item">
+<li class="list-group-item"  data-grocery-id="{{item.id}}" data-grocery-type="random">
     {% if item.purchased %}
       <s>
     {% endif %}
-    <span><a href="#" style="cursor: pointer;"><input class="grocery-checkbox" data-grocery-id="{{item.id}}" data-grocery-type="random" type="checkbox" {{ item.purchased|yesno:"checked,false" }} />{{ item.name }}</a></span>
+    <span>{{ item.name }}</span>
 
     {% if all_purchased %}
       </s>

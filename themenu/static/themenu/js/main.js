@@ -62,8 +62,10 @@ $(document).ready(function() {
     // Settings
     var $widget = $(this),
       $checkbox = $('<input type="checkbox" class="hidden" />'),
-      color = ($widget.data('color') ? $widget.data('color') : "success"),
-      style = ($widget.data('style') == "button" ? "btn-" : "list-group-item-"),
+      // If we want different colors, add a "data-danger"
+      // color = ($widget.data('color') ? $widget.data('color') : "success"),
+      color = "success",
+      style = "list-group-item-",
       settings = {
         on: {
           icon: 'glyphicon glyphicon-check'
@@ -78,17 +80,28 @@ $(document).ready(function() {
 
     // Event Handlers
     $widget.on('click', function (event) {
+      // Ignore the click if it was on the dropdown button (checking meals)
       if (event.target.type != 'button') {
         console.log('---------------');
         console.log(event.target.type);
         console.log('---------------');
-        console.log(event.target);
-        console.log('---------------');
         console.log(event);
         console.log('---------------');
+
+        // First handle change in style to set checked
         $checkbox.prop('checked', !$checkbox.is(':checked'));
         $checkbox.triggerHandler('change');
         updateDisplay();
+
+        console.log('============');
+        console.log($widget);
+        console.log('============');
+        // Now handle data posting actions
+        var groceryId = $widget.data('grocery-id');
+        var groceryType = $widget.data('grocery-type');
+        var checked = $checkbox.prop('checked');
+        console.log('clicked', groceryId, checked);
+        postGroceryUpdate(groceryId, groceryType, checked)
       }
     });
     $checkbox.on('change', function () {
