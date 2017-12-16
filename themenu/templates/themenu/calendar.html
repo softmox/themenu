@@ -30,7 +30,9 @@
 
  {% for meal_type, meal_plan in weekplan.items %}
   <tr>
-    <td>{{ meal_type.title }}</td>
+    <td>{{ meal_type.title }}
+      <img src="https://d2fcjrtizqatsy.cloudfront.net/{{meal_type.title | lower}}.png" height=96px>
+    </td>
       {% for day in meal_plan %}
         {% include "themenu/calendar_cell.html" %}
       {% endfor %}

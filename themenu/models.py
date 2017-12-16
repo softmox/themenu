@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import calendar
 import random
 from django.db import models
@@ -68,7 +69,7 @@ class Team(models.Model):
                 )
             )
         )
-        return int(prep['rate'] * 100)
+        return int((prep['rate'] or 0) * 100)
 
     def eat_rate(self):
         eat = self.meal_set.filter(meal_prep='cook')\
@@ -81,11 +82,14 @@ class Team(models.Model):
                 )
             )
         )
-        return int(eat['rate'] * 100)
+        return int((eat['rate'] or 0) * 100)
 
     def plan_rate(self):
         min_date = self.meal_set.aggregate(min_date=Min('date'))['min_date']
-        days_planning = (date.today() - min_date).days
+        if not min_date:
+            days_planning = 1
+        else:
+            days_planning = (date.today() - min_date).days
         breakfasts = self.meal_set.filter(meal_type='breakfast').count()
         lunches = self.meal_set.filter(meal_type='lunch').count()
         dinners = self.meal_set.filter(meal_type='dinner').count()
@@ -98,7 +102,7 @@ class Team(models.Model):
         planning['snacks'] = snacks*100/days_planning
         planning['all'] = (breakfasts + lunches + dinners + snacks) * 100/(days_planning * 4)
         return planning
-        
+
 
 class MyUser(models.Model):
     user = models.OneToOneField(User)
@@ -169,7 +173,7 @@ class Dish(models.Model):
 class Meal(models.Model):
     '''A collection of dishes to be eaten at one time'''
     class Meta:
-        unique_together = ('date', 'meal_type')
+        unique_together = ('date', 'meal_type', 'team')
         ordering = ['date']
 
     MEAL_TYPE_CHOICES = [

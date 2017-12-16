@@ -95,9 +95,7 @@ else:
 if DB_ENV == 'local':
     DATABASES = {'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'themenu',
-        'HOST': 'localhost',
-        'PORT': '5432'},
+        'NAME': 'themenu'},
     }
 else:
     db_from_env = dj_database_url.config(conn_max_age=500)
