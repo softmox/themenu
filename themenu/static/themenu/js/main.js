@@ -81,7 +81,7 @@ $(document).ready(function() {
     // Event Handlers
     $widget.on('click', function (event) {
       // Ignore the click if it was on the dropdown button (checking meals)
-      if (event.target.type != 'button') {
+      if (event.target.type != 'button' && !dropdownsOpen()) {
         // First handle change in style to set checked
         $checkbox.prop('checked', !$checkbox.is(':checked'));
         $checkbox.triggerHandler('change');
@@ -139,6 +139,17 @@ $(document).ready(function() {
 
 
 });
+
+
+function dropdownsOpen() {
+  var dropIsOpen = false;
+	$(".list-group-item").each(function(idx, li) {
+    if ($(li).hasClass('open')) {
+      dropIsOpen = true;
+    }
+  })
+  return dropIsOpen;
+}
 
 
 function getCookie(name) {

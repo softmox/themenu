@@ -5,10 +5,10 @@
       </span>
 
       <!-- second part is the dropdown button for listing meals of this grocery item -->
-      <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <ul class="dropdown-menu meal-dropdown" aria-labelledby="dropdownMenu1">
       {% for grocery in grocery_list %}
           <li>{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</li>
       {% endfor %}
