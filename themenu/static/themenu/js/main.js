@@ -82,20 +82,11 @@ $(document).ready(function() {
     $widget.on('click', function (event) {
       // Ignore the click if it was on the dropdown button (checking meals)
       if (event.target.type != 'button') {
-        console.log('---------------');
-        console.log(event.target.type);
-        console.log('---------------');
-        console.log(event);
-        console.log('---------------');
-
         // First handle change in style to set checked
         $checkbox.prop('checked', !$checkbox.is(':checked'));
         $checkbox.triggerHandler('change');
         updateDisplay();
 
-        console.log('============');
-        console.log($widget);
-        console.log('============');
         // Now handle data posting actions
         var groceryId = $widget.data('grocery-id');
         var groceryType = $widget.data('grocery-type');

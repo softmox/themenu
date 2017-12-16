@@ -1,10 +1,3 @@
 <li class="list-group-item"  data-grocery-id="{{item.id}}" data-grocery-type="random">
-    {% if item.purchased %}
-      <s>
-    {% endif %}
     <span>{{ item.name }}</span>
-
-    {% if all_purchased %}
-      </s>
-    {% endif %}
 </li>

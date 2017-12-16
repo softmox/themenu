@@ -1,24 +1,16 @@
-<li class="list-group-item" data-grocery-id="{{ids_string}}" data-grocery-type="meal" >
-      <!-- first part is the grocery name and checkbox -->
-      {% if all_purchased %}
-      <!-- add a strikethrough: TODO make this just a class  for purchased -->
-      <s>
-      {% endif %}
-        <span>
-            <em>{{ ingredient_name }} ({{grocery_list | length}} meal{{grocery_list | length | pluralize }})</em>
+<li class="list-group-item" data-grocery-id="{{ids_string}}" data-grocery-type="meal" data-checked="{{all_purchased|yesno:'true,false'}}" >
+      <span>
+          <em>{{ ingredient_name }} ({{grocery_list | length}} meal{{grocery_list | length | pluralize }})</em>
 
-        </span>
-      {% if all_purchased %}
-      </s>
-      {% endif %}
+      </span>
 
-      <!-- second part is the list of meals for this grocery item -->
+      <!-- second part is the dropdown button for listing meals of this grocery item -->
       <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span class="caret"></span>
+          <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       {% for grocery in grocery_list %}
-        <li>{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</li>
+          <li>{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</li>
       {% endfor %}
       </ul>
 </li>
