@@ -102,11 +102,12 @@ def grocery_list(request):
 
     grocery_list = _get_meal_groceries(team)
 
-    # This variables looks is a list with 3-tuples:
+    # This variables looks is a list with 4-tuples:
     # (u'frozen berries',
     #   [<GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>,
     #    <GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>],
-    #  False)
+    #  False,
+    #  '245,267')
     # The whole GroveryListItem model is included so the template can get the
     # dish name, meal type, number of meals, and meal date
     ingredient_to_grocery_list = defaultdict(list)
@@ -115,8 +116,11 @@ def grocery_list(request):
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
     # Add a third item to the tuples:
     # a bool if all groceries have been purchased
+    # Also add a fourth: comma separated string of grocery ids (to update all at once)
     mark_all_purchased = [
-        (ingredient, grocery_items, all(g.purchased for g in grocery_items))
+        (ingredient, grocery_items,
+            all(g.purchased for g in grocery_items),
+            ','.join(str(g.id) for g in grocery_items))
         for ingredient, grocery_items in ingredient_to_grocery_list.items()
     ]
     # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
@@ -128,8 +132,7 @@ def grocery_list(request):
         'ingredient_to_grocery_list': sorted_items,
         'random_grocery_list': random_grocery_list,
     }
-    import ipdb
-    ipdb.set_trace()
+    # import ipdb; ipdb.set_trace()
     return render(request, 'themenu/grocery_list.html', context)
 
 
@@ -203,18 +206,28 @@ def course_update(request):
 
 @require_http_methods(["POST"])
 def grocery_update(request):
+
+    def save_grocery(grocery, checked_value):
+        grocery.purchased = checked_value
+        grocery.save(update_fields=['purchased'])
+
     posted_data = json.loads(request.body)
+    id_list = [int(item) for item in str(posted_data['groceryId']).split(',')]
+    checked_value = posted_data['checked']
     if posted_data['groceryType'] == 'meal':
-        grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+        print(posted_data)
+
+        grocery_list = GroceryListItem.objects.filter(id__in=id_list)
+        # Now save each one individually
+        for grocery in grocery_list:
+            save_grocery(grocery, checked_value)
     elif posted_data['groceryType'] == 'random':
         print(posted_data)
         grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
+        save_grocery(grocery, checked_value)
     else:
         JsonResponse({"OK": False})
 
-    value = posted_data['checked']
-    grocery.purchased = value
-    grocery.save(update_fields=['purchased'])
     return JsonResponse({"OK": True})
 
 

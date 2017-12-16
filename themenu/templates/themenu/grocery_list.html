@@ -21,7 +21,7 @@
         {% endfor %}
       </div>
       <div class="panel-body">
-        {% for ingredient_name, grocery_list, all_purchased in ingredient_to_grocery_list %}
+        {% for ingredient_name, grocery_list, all_purchased, ids_string in ingredient_to_grocery_list %}
           {% include "themenu/grocery_list_item.html" %}
         {% endfor %}
       </div>
