@@ -24,7 +24,7 @@
           {% if perfect_dishes %}
             <ul>
               {% for d in perfect_dishes %}
-                <li><a href="{% url 'dish-detail' d.id %}">{{d.name}}</a>
+                <li><a href="{% url 'dish-detail' d.id %}">{{d.name|title}}</a>
                 </li>
               {% endfor %}
             </ul>
@@ -48,7 +48,7 @@
         {% if fast_dishes %}
           <ul>
             {% for dish in fast_dishes %}
-              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name|title}}</a>
               </li>
             {% endfor %}
           </ul>
@@ -68,7 +68,7 @@
         {% if easy_dishes %}
           <ul>
             {% for dish in easy_dishes %}
-              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+              <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name|title}}</a>
               </li>
             {% endfor %}
           </ul>
@@ -88,7 +88,7 @@
           {% if tasty_dishes %}
             <ul>
               {% for dish in tasty_dishes %}
-                <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name}}</a>
+                <li><a href="{% url 'dish-detail' dish.id %}">{{dish.name|title}}</a>
                 </li>
               {% endfor %}
             </ul>

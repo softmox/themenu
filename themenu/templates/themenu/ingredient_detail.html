@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <div class="page-header">
-        <h1>{{object.name}}    <span><a href="{% url 'ingredient-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
+        <h1>{{object.name|title}}    <span><a href="{% url 'ingredient-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button>
               </a></span></h1>
       </div>
     </div>
@@ -14,7 +14,7 @@
   <div class="tag thumbs">
     {% for t in object.tags.all %}
       <div class="col-md-2">
-          <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a>
+          <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name |title }}</button></a>
       </div>
     {% endfor %}
   </div>
@@ -30,7 +30,7 @@
           <ul>
             {% for d in object.dish_set.all %}
               <li>
-                <a href="{% url 'dish-detail' d.id %}">{{d.name}}</a>
+                <a href="{% url 'dish-detail' d.id %}">{{d.name | title }}</a>
               </li>
             {% endfor %}
           </ul>

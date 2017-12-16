@@ -9,7 +9,7 @@
           {% for course in day.daymeal.course_set.all %}
               <div class="checkbox">
                 <a href="{% url 'dish-detail' course.dish.id %}">
-                  {{course.dish.name}}
+                  {{course.dish.name | title }}
                 </a>
               {% if day.daymeal.meal_prep == 'cook' %}
                 <label>
