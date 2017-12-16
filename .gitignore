@@ -2,3 +2,4 @@ venv
 *.pyc
 staticfiles
 heroku_models.json
+*.swp

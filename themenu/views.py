@@ -5,7 +5,7 @@ from datetime import timedelta, date, datetime
 
 from django.apps import apps
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404, JsonResponse, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect  # , Http404
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.views.generic.edit import CreateView, ModelFormMixin
@@ -19,9 +19,14 @@ from django.shortcuts import redirect
 
 from django.db.models import Count, Avg
 
-from registration.views import RegistrationView
+# from registration.views import RegistrationView
 
-from themenu.models import *
+from themenu.models import (
+    Team, MyUser, Tag,
+    Ingredient, Dish, Meal,
+    Course, GroceryListItem,
+    RandomGroceryItem, DishReview
+)
 
 from themenu.forms import (
     DishModelForm,
@@ -59,16 +64,35 @@ def scores(request):
 
 
 def grocery_list(request):
+    """Logic for populating the grocery list
+
+    Much has to do with the fact that we have one item for each meal
+    that uses the same ingredient.
+    This is so that on the shopping list, you can see which meals you are
+    getting an item for"""
     def _get_meal_groceries(team):
+        """Fetches the future meals for a team, unpurchased first"""
         return GroceryListItem.objects.filter(course__meal__team=team)\
                                       .filter(course__meal__date__gte=date.today())\
                                       .order_by('purchased', 'course__meal__date')
 
     def _get_random_groceries(team):
+        """Returns a queryset with all unpurchased RandomGroceryItems"""
         return RandomGroceryItem.objects.filter(team=team)\
                                         .filter(purchased=False)\
                                         .order_by('purchased')
 
+#  id  | purchased | ingredient_id | course_id | id  |       name
+# ------+-----------+---------------+-----------+-----+-------------------
+#  4847 | f         |            64 |       260 |  64 | honey
+#  4846 | f         |           129 |       260 | 129 | gelatin
+#  4845 | f         |            43 |       260 |  43 | cream
+#  4844 | f         |             7 |       260 |   7 | beet
+#  4843 | f         |             9 |       259 |   9 | parsley
+#  4842 | f         |             8 |       259 |   8 | feta
+#  4841 | f         |             7 |       259 |   7 | beet
+# I want "beet": [4844, 4841]
+# GroceryListItem.objects.filter(id__in=[4844, 4841])
     team = request.user.myuser.team
     if not team:
         return HttpResponseRedirect(reverse('team-list'))
@@ -77,16 +101,29 @@ def grocery_list(request):
         # so why would you need a grocery list
 
     grocery_list = _get_meal_groceries(team)
+
+    # This variables looks is a list with 4-tuples:
+    # (u'frozen berries',
+    #   [<GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>,
+    #    <GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>],
+    #  False,
+    #  '245,267')
+    # The whole GroveryListItem model is included so the template can get the
+    # dish name, meal type, number of meals, and meal date
     ingredient_to_grocery_list = defaultdict(list)
+
     for grocery_item in grocery_list:
         ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
     # Add a third item to the tuples:
     # a bool if all groceries have been purchased
+    # Also add a fourth: comma separated string of grocery ids (to update all at once)
     mark_all_purchased = [
-        (ingredient, grocery_items, all(g.purchased for g in grocery_items))
+        (ingredient, grocery_items,
+            all(g.purchased for g in grocery_items),
+            ','.join(str(g.id) for g in grocery_items))
         for ingredient, grocery_items in ingredient_to_grocery_list.items()
     ]
-    # Sort the (ingrdient, [grocery,..], purchased) tuples with
+    # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
     # ones where everything has been purchased last
     sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
 
@@ -95,6 +132,7 @@ def grocery_list(request):
         'ingredient_to_grocery_list': sorted_items,
         'random_grocery_list': random_grocery_list,
     }
+    # import ipdb; ipdb.set_trace()
     return render(request, 'themenu/grocery_list.html', context)
 
 
@@ -132,7 +170,7 @@ def calendar(request, view_date):
 
     def monday(valence):
         monday = parsed_date + timedelta(days=(7 * valence - parsed_date.weekday()))
-        prettymonday = monday.strftime('%d %B, %Y')
+        # prettymonday = monday.strftime('%d %B, %Y')
         return monday
 
     context = {}
@@ -168,17 +206,28 @@ def course_update(request):
 
 @require_http_methods(["POST"])
 def grocery_update(request):
+
+    def save_grocery(grocery, checked_value):
+        grocery.purchased = checked_value
+        grocery.save(update_fields=['purchased'])
+
     posted_data = json.loads(request.body)
+    id_list = [int(item) for item in str(posted_data['groceryId']).split(',')]
+    checked_value = posted_data['checked']
     if posted_data['groceryType'] == 'meal':
-        grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
+        print(posted_data)
+
+        grocery_list = GroceryListItem.objects.filter(id__in=id_list)
+        # Now save each one individually
+        for grocery in grocery_list:
+            save_grocery(grocery, checked_value)
     elif posted_data['groceryType'] == 'random':
+        print(posted_data)
         grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
+        save_grocery(grocery, checked_value)
     else:
         JsonResponse({"OK": False})
 
-    value = posted_data['checked']
-    grocery.purchased = value
-    grocery.save(update_fields=['purchased'])
     return JsonResponse({"OK": True})
 
 
@@ -221,8 +270,6 @@ class RandomGroceryItemCreate(CreateView):
                 new_object = RandomGroceryItem(name=name, team=team)
                 new_object.save()
             return HttpResponseRedirect(new_object.get_absolute_url())
-
-
 
 
 class DishDetail(DetailView):
@@ -286,8 +333,10 @@ class DishList(ListView):
         context['dishes'] = self.dishes_by_source()
         return context
 
+
 class MyUserDetail(DetailView):
     model = MyUser
+
 
 class TeamCreate(CreateView):
     model = Team
@@ -299,6 +348,7 @@ class TeamCreate(CreateView):
         myuser.team = obj
         myuser.save()
         return HttpResponseRedirect(obj.get_absolute_url())
+
 
 class TeamDetail(DetailView):
     model = Team
@@ -312,8 +362,10 @@ class TeamDetail(DetailView):
         context['team'] = this_team
         return context
 
+
 class TeamList(ListView):
     model = Team
+
 
 def team_join(request, **kwargs):
     team_id = kwargs['pk']
@@ -332,6 +384,7 @@ def team_join(request, **kwargs):
 #         if not obj.owner == self.request.user:
 #             raise Http404
 #         return obj
+
 
 class MealDelete(DeleteView):
     model = Meal
@@ -512,8 +565,8 @@ def get_fields(model):
         # For complete backwards compatibility, you may want to exclude
         # GenericForeignKey from the results.
         if not field.is_relation
-            or field.one_to_one
-            or (field.many_to_one and field.related_model)
+           or field.one_to_one
+           or (field.many_to_one and field.related_model)
         # if not (field.many_to_one and field.related_model is None)
     )))
 
