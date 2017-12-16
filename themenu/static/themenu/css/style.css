@@ -5,3 +5,12 @@
 .select2-container.select2-container-multi  {
   width: 100% !important;
 }
+
+.state-icon {
+    left: -5px;
+}
+
+.list-group-item-primary {
+    color: rgb(255, 255, 255);
+    background-color: rgb(66, 139, 202);
+}

@@ -1,28 +1,19 @@
-<li class="list-group-item">
+<li class="list-group-item" data-grocery-id="{{ids_string}}" data-grocery-type="meal" type="checkbox">
       <!-- first part is the grocery name and checkbox -->
       {% if all_purchased %}
       <!-- add a strikethrough: TODO make this just a class  for purchased -->
       <s>
       {% endif %}
         <span>
-          <a href="#" style="cursor: pointer;">
-            {% if ids_string %}
-            <input class="grocery-checkbox" data-grocery-id="{{ids_string}}" data-grocery-type="meal" type="checkbox" {{ all_purchased|yesno:"checked,false" }} />
             <em>{{ ingredient_name }} ({{grocery_list | length}} meal{{grocery_list | length | pluralize }})</em>
 
-            {% else %}
-            <input class="grocery-checkbox" data-grocery-id="{{item.id}}" data-grocery-type="random" type="checkbox" />
-            <em>{{ ingredient_name }} ({{grocery_list | length}} meal{{grocery_list | length | pluralize }})</em>
-
-            {% endif %}
-          </a>
         </span>
       {% if all_purchased %}
       </s>
       {% endif %}
 
       <!-- second part is the list of meals for this grocery item -->
-      <button class="btn btn-default btn-xs dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
