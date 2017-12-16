@@ -22,8 +22,8 @@ class Team(models.Model):
         return self.name
 
     def common_ingredients(self):
-        '''Return a list ingredient objects,
-        ordered by those the team most commonly uses'''
+        """Return a list ingredient objects,
+        ordered by those the team most commonly uses"""
 
         ingredients = Ingredient.objects.filter(dish__meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('dish__meal')).order_by('-num_meals')[:10]
         return ingredients
@@ -63,9 +63,9 @@ class Team(models.Model):
         prep = self.meal_set.filter(meal_prep='cook').aggregate(
             rate=Avg(
                 Case(
-                When(course__prepared=False, then=0),
-                When(course__prepared=True, then=1),
-                output_field=IntegerField()
+                    When(course__prepared=False, then=0),
+                    When(course__prepared=True, then=1),
+                    output_field=IntegerField()
                 )
             )
         )
@@ -113,7 +113,7 @@ class MyUser(models.Model):
 
 
 class Tag(models.Model):
-    '''Any label for a Menu, Dish, or Ingredient'''
+    """Any label for a Menu, Dish, or Ingredient"""
     class Meta:
         ordering = ['name']
 
@@ -134,7 +134,7 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    '''Some food thing in a dish'''
+    """Some food thing in a dish"""
     class Meta:
         ordering = ['name']
 
@@ -149,7 +149,7 @@ class Ingredient(models.Model):
 
 
 class Dish(models.Model):
-    '''A collection of dishes to be eaten at one time'''
+    """A single dish to be eaten as part of a meal"""
     class Meta:
         verbose_name_plural = "dishes"
         ordering = ['name']
@@ -171,7 +171,7 @@ class Dish(models.Model):
 
 
 class Meal(models.Model):
-    '''A collection of dishes to be eaten at one time'''
+    """A collection of dishes to be eaten at one time"""
     class Meta:
         unique_together = ('date', 'meal_type', 'team')
         ordering = ['date']
@@ -209,10 +209,7 @@ class Meal(models.Model):
 
     def get_absolute_url(self):
         return reverse('calendar',
-            kwargs={
-                'view_date': datetime.strftime(self.date, '%Y%m%d')
-            }
-        )
+                       kwargs={'view_date': datetime.strftime(self.date, '%Y%m%d')})
 
     def __unicode__(self):
         return '{type} on {date}: {menu}'.format(type=self.meal_type,
@@ -222,6 +219,7 @@ class Meal(models.Model):
 
 
 class Course(models.Model):
+    """The intermediate model connecting dishes and meals"""
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
     prepared = models.BooleanField(default=False)
@@ -233,6 +231,7 @@ class Course(models.Model):
 
 
 class GroceryListItem(models.Model):
+    """An item to buy, automatically populated from a new meal"""
     ingredient = models.ForeignKey(Ingredient)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     purchased = models.BooleanField(default=False)
@@ -254,6 +253,7 @@ class RandomGroceryItem(models.Model):
     def __unicode__(self):
         return 'Random Grocery Item: %s, Purchased: %s' % \
             (self.name, self.purchased)
+
 
 class DishReview(models.Model):
     class Meta:

@@ -5,7 +5,7 @@ from datetime import timedelta, date, datetime
 
 from django.apps import apps
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404, JsonResponse, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect  # , Http404
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.views.generic.edit import CreateView, ModelFormMixin
@@ -19,9 +19,14 @@ from django.shortcuts import redirect
 
 from django.db.models import Count, Avg
 
-from registration.views import RegistrationView
+# from registration.views import RegistrationView
 
-from themenu.models import *
+from themenu.models import (
+    Team, MyUser, Tag,
+    Ingredient, Dish, Meal,
+    Course, GroceryListItem,
+    RandomGroceryItem, DishReview
+)
 
 from themenu.forms import (
     DishModelForm,
@@ -143,7 +148,7 @@ def calendar(request, view_date):
 
     def monday(valence):
         monday = parsed_date + timedelta(days=(7 * valence - parsed_date.weekday()))
-        prettymonday = monday.strftime('%d %B, %Y')
+        # prettymonday = monday.strftime('%d %B, %Y')
         return monday
 
     context = {}
@@ -183,6 +188,7 @@ def grocery_update(request):
     if posted_data['groceryType'] == 'meal':
         grocery = get_object_or_404(GroceryListItem, id=posted_data['groceryId'])
     elif posted_data['groceryType'] == 'random':
+        print(posted_data)
         grocery = get_object_or_404(RandomGroceryItem, id=posted_data['groceryId'])
     else:
         JsonResponse({"OK": False})
@@ -232,8 +238,6 @@ class RandomGroceryItemCreate(CreateView):
                 new_object = RandomGroceryItem(name=name, team=team)
                 new_object.save()
             return HttpResponseRedirect(new_object.get_absolute_url())
-
-
 
 
 class DishDetail(DetailView):
@@ -297,8 +301,10 @@ class DishList(ListView):
         context['dishes'] = self.dishes_by_source()
         return context
 
+
 class MyUserDetail(DetailView):
     model = MyUser
+
 
 class TeamCreate(CreateView):
     model = Team
@@ -310,6 +316,7 @@ class TeamCreate(CreateView):
         myuser.team = obj
         myuser.save()
         return HttpResponseRedirect(obj.get_absolute_url())
+
 
 class TeamDetail(DetailView):
     model = Team
@@ -323,8 +330,10 @@ class TeamDetail(DetailView):
         context['team'] = this_team
         return context
 
+
 class TeamList(ListView):
     model = Team
+
 
 def team_join(request, **kwargs):
     team_id = kwargs['pk']
@@ -343,6 +352,7 @@ def team_join(request, **kwargs):
 #         if not obj.owner == self.request.user:
 #             raise Http404
 #         return obj
+
 
 class MealDelete(DeleteView):
     model = Meal
@@ -523,8 +533,8 @@ def get_fields(model):
         # For complete backwards compatibility, you may want to exclude
         # GenericForeignKey from the results.
         if not field.is_relation
-            or field.one_to_one
-            or (field.many_to_one and field.related_model)
+           or field.one_to_one
+           or (field.many_to_one and field.related_model)
         # if not (field.many_to_one and field.related_model is None)
     )))
 
