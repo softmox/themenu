@@ -1,6 +1,4 @@
-<div class="grocery-item">
-  <label>
-    <div class="dropdown">
+<li class="list-group-item">
       <!-- first part is the grocery name and checkbox -->
       {% if all_purchased %}
       <!-- add a strikethrough: TODO make this just a class  for purchased -->
@@ -32,6 +30,4 @@
         <li>{{ grocery.course.dish.name }}: {{grocery.course.meal.meal_type.title}} {{grocery.course.meal.date|date:"l (d M)"}}</li>
       {% endfor %}
       </ul>
-    </div>
-  </label>
-</div>
+</li>
