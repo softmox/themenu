@@ -5,4 +5,4 @@ class ThemenuConfig(AppConfig):
     name = 'themenu'
 
     def ready(self):
-        import signals
+        from themenu import signals
