@@ -21,7 +21,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = os.environ.get('DEBUG') or True  # For use on heroku to run in debug sometimes
+DEBUG = os.environ.get('DEBUG') or False  # For use on heroku to run in debug sometimes
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if DEBUG is False:
@@ -58,7 +58,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'themenu.middleware.LoginRequiredMiddleware',
+    # 'themenu.middleware.LoginRequiredMiddleware',
+    'themenu.middleware.RestrictPagesMiddleware',
 ]
 
 ROOT_URLCONF = 'themenu.urls'
@@ -136,7 +137,7 @@ ALLOWED_HOSTS = ['*']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
@@ -146,7 +147,8 @@ STATICFILES_DIRS = [
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 
 LOGGING = {
@@ -203,8 +205,22 @@ SELECT2_CACHE_BACKEND = 'select2'
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = 'index'
 
-LOGIN_EXEMPT_URLS = (
+LOGIN_EXEMPT_URLS = (  # Used in middleware.py
    r'^register/$',
  # r'^about\.html$',
  # r'^legal/', # allow any URL under /legal/*
 )
+
+LOGIN_RESTRICTED_URLS = (  # Used in middleware.py
+   r'^calendar/',
+   r'^grocery_list/$',
+   r'.*create.*',
+   r'.*update.*',
+   r'.*delete.*',
+   r'^password/',  # These are password reset/ change urls
+   r'^courseupdate/',
+   r'^groceryupdate/',
+   r'^teams.*/join',  # Cant join team without signup, but can view
+   r'^select2/',
+)
+
