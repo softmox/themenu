@@ -288,7 +288,20 @@ class DishDetail(DetailView):
         return context
 
 
-class DishUpdate(UpdateView):
+class PermissionMixin:
+    def get_object(self, *args, **kwargs):
+        """Overridden to allow only team members to change dish,meal,..."""
+        obj = super().get_object(*args, **kwargs)
+        if not obj.created_by.team == self.request.user.myuser.team:
+            # Either return back to previous page, or to home if browser is stubborn
+            messages.error(self.request, 'You do not have permission to alter this object')
+            messages.error(self.request, "You can only alter your team's objects")
+            # return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
+            raise PermissionDenied
+        return obj
+
+
+class DishUpdate(PermissionMixin, UpdateView):
     model = Dish
     form_class = DishModelForm
 
@@ -297,17 +310,6 @@ class DishUpdate(UpdateView):
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
-
-    def get_object(self, *args, **kwargs):
-        """Overridden to allow only team members to change dish"""
-        obj = super(DishUpdate, self).get_object(*args, **kwargs)
-        if not obj.created_by.team == self.request.user.myuser.team:
-            # Either return back to previous page, or to home if browser is stubborn
-            messages.error(self.request, 'You do not have permission to alter this Dish')
-            messages.error(self.request, "You can only alter your team's Dish")
-            # return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
-            raise PermissionDenied
-        return obj
 
 
 class DishCreate(CreateView):
