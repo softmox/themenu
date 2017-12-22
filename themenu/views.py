@@ -278,8 +278,11 @@ class DishDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(DishDetail, self).get_context_data(**kwargs)
         this_dish = self.object
-        context['user_review'] = this_dish.dishreview_set.filter(myuser=self.request.user.myuser).first()
-        context['other_reviews'] = this_dish.dishreview_set.exclude(myuser=self.request.user.myuser)
+        try:
+            context['user_review'] = this_dish.dishreview_set.filter(myuser=self.request.user.myuser).first()
+            context['other_reviews'] = this_dish.dishreview_set.exclude(myuser=self.request.user.myuser)
+        except AttributeError:  # Anonymous user
+            pass
         return context
 
 

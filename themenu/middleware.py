@@ -2,9 +2,35 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from re import compile
 
+
+if hasattr(settings, 'LOGIN_RESTRICTED_URLS'):
+    LOGIN_RESTRICTED_URLS = [compile(expr) for expr in settings.LOGIN_RESTRICTED_URLS]
+
+
+class RestrictPagesMiddleware:
+    """Only restrict certain pages for anonymous users
+
+    These will be listed under settings.RESTRICTED_PAGES"""
+
+    def process_request(self, request):
+        assert hasattr(request, 'user'), "The Login Required middleware\
+ requires authentication middleware to be installed. Edit your\
+ MIDDLEWARE_CLASSES setting to insert\
+ 'django.contrib.auth.middleware.AuthenticationMiddleware'. If that doesn't\
+ work, ensure your TEMPLATE_CONTEXT_PROCESSORS setting includes\
+ 'django.core.context_processors.auth'."
+
+        if not request.user.is_authenticated():
+            path = request.path_info.lstrip('/')
+            if any(m.match(path) for m in LOGIN_RESTRICTED_URLS):
+                return HttpResponseRedirect(settings.LOGIN_URL)
+
+
+# If we want to go back to "restrict all urls if you aren't signed up":
 EXEMPT_URLS = [compile(settings.LOGIN_URL.lstrip('/'))]
 if hasattr(settings, 'LOGIN_EXEMPT_URLS'):
     EXEMPT_URLS += [compile(expr) for expr in settings.LOGIN_EXEMPT_URLS]
+
 
 class LoginRequiredMiddleware:
     """
