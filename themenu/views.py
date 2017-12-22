@@ -327,6 +327,15 @@ class DishDelete(DeleteView):
     model = Dish
     success_url = reverse_lazy('index')
 
+    def get_object(self, *args, **kwargs):
+        """Overridden to allow only team members to delete dish"""
+        obj = super(DishDelete, self).get_object(*args, **kwargs)
+        if not obj.created_by.team == self.request.user.myuser.team:
+            messages.error(self.request, 'You do not have permission to alter this object')
+            messages.error(self.request, "You can only alter your team's objects")
+            raise PermissionDenied
+        return obj
+
 
 class DishList(ListView):
     model = Dish
