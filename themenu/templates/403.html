@@ -1,0 +1,16 @@
+{% extends "themenu/layout.html" %}
+{% block body %}
+
+<h1>403 Forbidden</h1>
+
+<!-- "messages" comes from django's messages.error -->
+<div class="container">
+	{% if messages %}
+	<ul class="messages">
+			{% for message in messages %}
+			<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+			{% endfor %}
+	</ul>
+	{% endif %}
+
+{% endblock %}

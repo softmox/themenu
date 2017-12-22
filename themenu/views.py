@@ -5,8 +5,9 @@ from datetime import timedelta, date, datetime
 
 from django.apps import apps
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponseRedirect  # , Http404
+from django.http import JsonResponse, HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.exceptions import PermissionDenied
 
 from django.views.generic.edit import CreateView, ModelFormMixin
 from django.views.generic.detail import DetailView
@@ -16,6 +17,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect
+from django.contrib import messages
 
 from django.db.models import Count, Avg
 
@@ -290,15 +292,22 @@ class DishUpdate(UpdateView):
     model = Dish
     form_class = DishModelForm
 
-    # This now happens in model "get_absolute_url"
-    # def get_success_url(self):
-    #     return reverse('dish-detail', kwargs={'pk': self.object.id})
-
     def get_context_data(self, **kwargs):
         context = super(DishUpdate, self).get_context_data(**kwargs)
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
+
+    def get_object(self, *args, **kwargs):
+        """Overridden to allow only team members to change dish"""
+        obj = super(DishUpdate, self).get_object(*args, **kwargs)
+        if not obj.created_by.team == self.request.user.myuser.team:
+            # Either return back to previous page, or to home if browser is stubborn
+            messages.error(self.request, 'You do not have permission to alter this Dish')
+            messages.error(self.request, "You can only alter your team's Dish")
+            # return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
+            raise PermissionDenied
+        return obj
 
 
 class DishCreate(CreateView):
