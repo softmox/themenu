@@ -170,18 +170,18 @@ class Dish(models.Model):
         return self.name
 
 
-class Quantity(models.Model):
+class Amount(models.Model):
     """An amount of an ingredient that goes into a meal
 
     Used in both the recipe display and grocery list"""
-
     UNITS = [
+        # Weights
         ('oz ', 'ounce'),
         ('lb', 'pound'),
         ('mg', 'milligram'),
         ('g', 'gram'),
         ('kg ', 'kilogram'),
-
+        # Volumes
         ('c', 'cup'),
         ('gill', 'gill'),
         ('ml ', 'milliliter'),
@@ -191,35 +191,43 @@ class Quantity(models.Model):
         ('gal', 'gallon'),
         ('tsp ', 'teaspoon'),
         ('tbsp', 'tablespoon'),
-        ('fl oz', 'fluid ounces'),
+        ('fl oz', 'fluid ounce'),
         ('dash', 'dash'),
         ('pinch', 'pinch'),
-
+        # Lengths
         ('mm', 'millimeter'),
         ('cm', 'centimeter'),
         ('m', 'meter'),
         ('in', 'inch'),
         ('ft', 'foot'),
-
+        # Randoms
+        ('strip', 'strip'),
+        ('stick', 'stick'),
 
     ]
 
     unit = models.CharField(max_length=40, choices=UNITS, blank=True, null=True)
-
-    # This is for things like a "medium size" tomato
+    # This is for things like a "medium" tomato
     descriptor = models.CharField(max_length=256, blank=True, null=True)
+
     # This is a charfield, since it could be "3", "1.5", "1 2/3", "Two"
-    value = models.CharField(max_length=40, blank=True, null=True)
+    # maybe this should just be a DecimalField
+    quantity = models.CharField(max_length=40, blank=True, null=True)
+
+    # TODO: if we want to start using some kind of pluralizing engine for these,
+    # https://stackoverflow.com/questions/21872366/plural-string-formatting
+    def __unicode__(self):
+        return '%s %s (%s)' % (self.quantity, self.unit, self.descriptor)
 
 
 class IngredientAmount(models.Model):
     """The intermediate model ingredients and quantities"""
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    quantity = models.ForeignKey(Quantity, on_delete=models.CASCADE)
+    amount = models.ForeignKey(Amount, on_delete=models.CASCADE)
     other_info = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Ingredient: %s, Quantity: %s' % (self.ingredient, self.quantity)
+        return 'Ingredient: %s, Amount: %s' % (self.ingredient, self.amount)
 
 
 class Meal(models.Model):
