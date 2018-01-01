@@ -25,7 +25,10 @@ class Team(models.Model):
         """Return a list ingredient objects,
         ordered by those the team most commonly uses"""
 
-        ingredients = Ingredient.objects.filter(dish__meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('dish__meal')).order_by('-num_meals')[:10]
+        ingredients = Ingredient.objects.filter(ingredientamount__dish__meal__team=self)\
+                                .values("name", "id").distinct()\
+                                .annotate(num_meals=Count('ingredientamount__dish__meal'))\
+                                .order_by('-num_meals')[:10]
         return ingredients
 
     def common_dishes(self):
