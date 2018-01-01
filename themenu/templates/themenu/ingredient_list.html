@@ -30,10 +30,10 @@
   <br>
 
   <div class="row">
-  {% for i in ingredients %}
+  {% for i in ingredient_amounts %}
     <div class="col-sm-6 col-md-3">
       <div class="thumbnail">
-        <p><a href="{% url 'ingredient-detail' i.id %}" class="h4">{{i.name}}</a></p>
+        <p><a href="{% url 'ingredient-detail' i.ingredient.id %}" class="h4">{{i.ingredient.name}}</a></p>
           <p><em>{{i.num_dishes}} dishes</em></p>
       </div>
     </div>

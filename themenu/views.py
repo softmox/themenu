@@ -575,7 +575,7 @@ class IngredientList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IngredientList, self).get_context_data(**kwargs)
-        context['ingredients'] = IngredientAmount.objects.distinct('ingredient').annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
+        context['ingredient_amounts'] = IngredientAmount.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
         # Form is to search for ingredient details
         context['form'] = IngredientSearchForm
         return context
