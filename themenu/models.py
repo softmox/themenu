@@ -141,7 +141,6 @@ class Ingredient(models.Model):
     def get_absolute_url(self):
         return reverse('ingredient-detail', args=[str(self.id)])
 
-    ingredient_amounts = models.ManyToManyField('Amount', blank=True, through='IngredientAmount')
     name = models.CharField(max_length=96, unique=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
@@ -149,8 +148,8 @@ class Ingredient(models.Model):
         return self.name
 
 
-class Amount(models.Model):
-    """An amount of an ingredient that goes into a meal
+class IngredientAmount(models.Model):
+    """An ingredient tied to a specific amount
 
     Used in both the recipe display and grocery list"""
     UNITS = [
@@ -185,6 +184,7 @@ class Amount(models.Model):
 
     ]
 
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     unit = models.CharField(max_length=40, choices=UNITS, blank=True, null=True)
     # This is for things like a "medium" tomato
     descriptor = models.CharField(max_length=256, blank=True, null=True)
@@ -196,17 +196,10 @@ class Amount(models.Model):
     # TODO: if we want to start using some kind of pluralizing engine for these,
     # https://stackoverflow.com/questions/21872366/plural-string-formatting
     def __unicode__(self):
-        return '%s %s (%s)' % (self.quantity, self.unit, self.descriptor)
-
-
-class IngredientAmount(models.Model):
-    """The intermediate model ingredients and quantities"""
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    amount = models.ForeignKey(Amount, null=True, on_delete=models.CASCADE)
-
-    def __unicode__(self):
-        return 'Ingredient: %s, Amount: %s' % (self.ingredient, self.amount)
-
+        return '%s %s of (%s) %s (%s)' % (self.quantity,
+                                          self.unit,
+                                          self.ingredient.name,
+                                          self.descriptor)
 
 class Dish(models.Model):
     """A single dish to be eaten as part of a meal"""
