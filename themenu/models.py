@@ -141,30 +141,9 @@ class Ingredient(models.Model):
     def get_absolute_url(self):
         return reverse('ingredient-detail', args=[str(self.id)])
 
+    ingredient_amounts = models.ManyToManyField('Amount', blank=True, through='IngredientAmount')
     name = models.CharField(max_length=96, unique=True)
     tags = models.ManyToManyField(Tag, blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-
-class Dish(models.Model):
-    """A single dish to be eaten as part of a meal"""
-    class Meta:
-        verbose_name_plural = "dishes"
-        ordering = ['name']
-
-    name = models.TextField()
-    created_by = models.ForeignKey(MyUser)
-    notes = models.TextField(null=True, blank=True)
-    source = models.TextField(null=True, blank=True)
-    recipe = models.TextField(null=True, blank=True)
-
-    ingredients = models.ManyToManyField(Ingredient, blank=True)
-    tags = models.ManyToManyField(Tag, blank=True)
-
-    def get_absolute_url(self):
-        return reverse('dish-detail', args=[str(self.id)])
 
     def __unicode__(self):
         return self.name
@@ -224,10 +203,32 @@ class IngredientAmount(models.Model):
     """The intermediate model ingredients and quantities"""
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.ForeignKey(Amount, on_delete=models.CASCADE)
-    other_info = models.BooleanField(default=False)
 
     def __unicode__(self):
         return 'Ingredient: %s, Amount: %s' % (self.ingredient, self.amount)
+
+
+class Dish(models.Model):
+    """A single dish to be eaten as part of a meal"""
+    class Meta:
+        verbose_name_plural = "dishes"
+        ordering = ['name']
+
+    name = models.TextField()
+    created_by = models.ForeignKey(MyUser)
+    notes = models.TextField(null=True, blank=True)
+    source = models.TextField(null=True, blank=True)
+    recipe = models.TextField(null=True, blank=True)
+
+    ingredients = models.ManyToManyField(Ingredient, blank=True)
+    ingredient_amounts = models.ManyToManyField(IngredientAmount, blank=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('dish-detail', args=[str(self.id)])
+
+    def __unicode__(self):
+        return self.name
 
 
 class Meal(models.Model):
@@ -293,6 +294,7 @@ class Course(models.Model):
 class GroceryListItem(models.Model):
     """An item to buy, automatically populated from a new meal"""
     ingredient = models.ForeignKey(Ingredient)
+    ingredient_amount = models.ForeignKey(IngredientAmount, default=None, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     purchased = models.BooleanField(default=False)
 
