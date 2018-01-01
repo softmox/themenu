@@ -42,6 +42,7 @@
         {% if ingredients %}
           <ul>
             {% for ing in ingredients %}
+            <!-- TODO: bad link below https://github.com/goobers/themenu/issues/90 -->
               <li><a href="">{{ing.name}}</a><em> (In {{ing.num_dishes}} dishes)</em>
               </li>
             {% endfor %}

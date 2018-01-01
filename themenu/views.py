@@ -501,7 +501,8 @@ class TagDetail(DetailView):
         context['dish_count'] = tag_dishes.count()
         context['dishes'] = tag_dishes.annotate(num_meals=Count('meal')).order_by('-num_meals')[:15]
         context['ingredient_count'] = tag_ing.count()
-        context['ingredients'] = tag_ing.annotate(num_dishes=Count('dish')).order_by('-num_dishes')[:15]
+        # TODO: https://github.com/goobers/themenu/issues/90
+        # context['ingredients'] = tag_ing.annotate(num_dishes=Count('dish')).order_by('-num_dishes')[:15]
         context['meal_count'] = tag_meals.count()
         context['meals'] = tag_meals.order_by('-date')[:15]
         # If we need to add extra items to what passes to the template
