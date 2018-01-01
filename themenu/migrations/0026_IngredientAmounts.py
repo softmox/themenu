@@ -12,12 +12,20 @@ def replace_dish_ingredients(apps, schema_editor):
     Add an IngredientAmount with empty amount (already created) for every Ingredient"""
     IngredientAmount = apps.get_model('themenu', 'IngredientAmount')
     Dish = apps.get_model('themenu', 'Dish')
-    for dish in Dish.objets.all():
+    GroceryListItem = apps.get_model('themenu', 'GroceryListItem')
+    for dish in Dish.objects.all():
         for ingredient in dish.ingredients.all():
-            ia = IngredientAmount(ingredient=ingredient)
-            ia.save()
+            # For these, there will be 0 IngredientAmounts, so all will be new
+            ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient)
             dish.ingredient_amounts.add(ia)
             dish.save()
+
+    for grocery in GroceryListItem.objects.all():
+        ingredient = grocery.ingredient
+        # Don't double up if they've already been made
+        ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient)
+        grocery.ingredient_amount = ia
+        grocery.save()
 
 
 class Migration(migrations.Migration):

@@ -196,10 +196,11 @@ class IngredientAmount(models.Model):
     # TODO: if we want to start using some kind of pluralizing engine for these,
     # https://stackoverflow.com/questions/21872366/plural-string-formatting
     def __unicode__(self):
-        return '%s %s of (%s) %s (%s)' % (self.quantity,
-                                          self.unit,
-                                          self.ingredient.name,
-                                          self.descriptor)
+        return '%s %s of %s (%s)' % (self.quantity,
+                                     self.unit,
+                                     self.ingredient.name,
+                                     self.descriptor)
+
 
 class Dish(models.Model):
     """A single dish to be eaten as part of a meal"""
@@ -290,8 +291,8 @@ class GroceryListItem(models.Model):
     purchased = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Ingredient: %s, %s, Purchased: %s' % \
-            (self.ingredient.id, self.ingredient.name, self.purchased)
+        return 'IngredientAmount: %s, Purchased: %s' % \
+            (self.ingredient_amount, self.purchased)
 
 
 class RandomGroceryItem(models.Model):
