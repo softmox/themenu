@@ -202,7 +202,7 @@ class Amount(models.Model):
 class IngredientAmount(models.Model):
     """The intermediate model ingredients and quantities"""
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    amount = models.ForeignKey(Amount, on_delete=models.CASCADE)
+    amount = models.ForeignKey(Amount, null=True, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return 'Ingredient: %s, Amount: %s' % (self.ingredient, self.amount)
@@ -220,7 +220,6 @@ class Dish(models.Model):
     source = models.TextField(null=True, blank=True)
     recipe = models.TextField(null=True, blank=True)
 
-    ingredients = models.ManyToManyField(Ingredient, blank=True)
     ingredient_amounts = models.ManyToManyField(IngredientAmount, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
@@ -293,7 +292,6 @@ class Course(models.Model):
 
 class GroceryListItem(models.Model):
     """An item to buy, automatically populated from a new meal"""
-    ingredient = models.ForeignKey(Ingredient)
     ingredient_amount = models.ForeignKey(IngredientAmount, default=None, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     purchased = models.BooleanField(default=False)
