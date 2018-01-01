@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                                     on_delete=django.db.models.deletion.CASCADE,
                                     to='themenu.Amount'),
         ),
-        migrations.RunPython(create_dummy_ingredient_amounts),
+        migrations.RunPython(create_dummy_ingredient_amounts, reverse_code=migrations.RunPython.noop),
         migrations.RemoveField(
             model_name='dish',
             name='ingredients',
