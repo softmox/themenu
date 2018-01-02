@@ -92,15 +92,15 @@ def grocery_list(request):
         # so why would you need a grocery list
 
     grocery_list = _get_meal_groceries(team)
-    # import ipdb; ipdb.set_trace()
 
     # Using defaultdict to group same named ingredients together
-    ingredient_grocery_list = defaultdict(list)
+    ingredient_grocery_list = defaultdict(lambda: ([], []))
 
-    # This variables will end up as a list with 4-tuples:
+    # This variables will end up as a list with 5-tuples:
     # (u'frozen berries',  <- The name of the ingredient
     #   [<GroceryListItem: IngredientAmount: 28, frozen berries, Purchased: False>,
     #    <GroceryListItem: IngredientAmount: 28, frozen berries, Purchased: False>],
+    #  '1/4 cup, 1 bowl'  <- a string of the amounts of the ingredients
     #  False,      <- True/False if they have all been purchased already
     #  '245,267')  <- ids of the GroceryListItems as a string list for html data
     # The whole GroceryListItem model is included so the template can get the
@@ -108,16 +108,19 @@ def grocery_list(request):
 
     for grocery_item in grocery_list:
         key = grocery_item.ingredient_amount.ingredient.name
-        ingredient_grocery_list[key].append(grocery_item)
-    # Add the third and fourth items to the tuples:
+        amount = grocery_item.ingredient_amount.amount
+        ingredient_grocery_list[key][0].append(grocery_item)
+        ingredient_grocery_list[key][1].append(amount)
+    # Add the fourth and fifth items to the tuples:
     # a bool if all groceries have been purchased, and
     # a comma separated string of grocery ids (to update all at once)
     mark_all_purchased = [
         (ingredient_name,                                  # name (string)
+         ', '.join(a for a in amount_list if a),  # ids_string
          grocery_items,                               # list of models
          all(g.purchased for g in grocery_items),     # purchased bool
          ','.join(str(g.id) for g in grocery_items))  # ids_string
-        for ingredient_name, grocery_items in ingredient_grocery_list.items()
+        for ingredient_name, (grocery_items, amount_list) in ingredient_grocery_list.items()
     ]
     # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
     # ones where everything has been purchased last

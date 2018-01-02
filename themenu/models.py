@@ -161,7 +161,8 @@ class IngredientAmount(models.Model):
     amount = models.CharField(max_length=256, blank=True, default='')
 
     def __unicode__(self):
-        return '%s of %s' % (self.quantity, self.ingredient.name)
+        return '%s: %s' % (self.ingredient.name, self.amount) if self.amount \
+                else '%s' % self.ingredient.name
 
 
 class Dish(models.Model):
