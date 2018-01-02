@@ -84,17 +84,6 @@ def grocery_list(request):
                                         .filter(purchased=False)\
                                         .order_by('purchased')
 
-#  id  | purchased | ingredient_id | course_id | id  |       name
-# ------+-----------+---------------+-----------+-----+-------------------
-#  4847 | f         |            64 |       260 |  64 | honey
-#  4846 | f         |           129 |       260 | 129 | gelatin
-#  4845 | f         |            43 |       260 |  43 | cream
-#  4844 | f         |             7 |       260 |   7 | beet
-#  4843 | f         |             9 |       259 |   9 | parsley
-#  4842 | f         |             8 |       259 |   8 | feta
-#  4841 | f         |             7 |       259 |   7 | beet
-# I want "beet": [4844, 4841]
-# GroceryListItem.objects.filter(id__in=[4844, 4841])
     team = request.user.myuser.team
     if not team:
         return HttpResponseRedirect(reverse('team-list'))
@@ -103,27 +92,32 @@ def grocery_list(request):
         # so why would you need a grocery list
 
     grocery_list = _get_meal_groceries(team)
+    # import ipdb; ipdb.set_trace()
 
-    # This variables looks is a list with 4-tuples:
-    # (u'frozen berries',
-    #   [<GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>,
-    #    <GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>],
-    #  False,
-    #  '245,267')
-    # The whole GroveryListItem model is included so the template can get the
+    # Using defaultdict to group same named ingredients together
+    ingredient_grocery_list = defaultdict(list)
+
+    # This variables will end up as a list with 4-tuples:
+    # (u'frozen berries',  <- The name of the ingredient
+    #   [<GroceryListItem: IngredientAmount: 28, frozen berries, Purchased: False>,
+    #    <GroceryListItem: IngredientAmount: 28, frozen berries, Purchased: False>],
+    #  False,      <- True/False if they have all been purchased already
+    #  '245,267')  <- ids of the GroceryListItems as a string list for html data
+    # The whole GroceryListItem model is included so the template can get the
     # dish name, meal type, number of meals, and meal date
-    ingredient_to_grocery_list = defaultdict(list)
 
     for grocery_item in grocery_list:
-        ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
-    # Add a third item to the tuples:
-    # a bool if all groceries have been purchased
-    # Also add a fourth: comma separated string of grocery ids (to update all at once)
+        key = grocery_item.ingredient_amount.ingredient.name
+        ingredient_grocery_list[key].append(grocery_item)
+    # Add the third and fourth items to the tuples:
+    # a bool if all groceries have been purchased, and
+    # a comma separated string of grocery ids (to update all at once)
     mark_all_purchased = [
-        (ingredient, grocery_items,
-            all(g.purchased for g in grocery_items),
-            ','.join(str(g.id) for g in grocery_items))
-        for ingredient, grocery_items in ingredient_to_grocery_list.items()
+        (ingredient_name,                                  # name (string)
+         grocery_items,                               # list of models
+         all(g.purchased for g in grocery_items),     # purchased bool
+         ','.join(str(g.id) for g in grocery_items))  # ids_string
+        for ingredient_name, grocery_items in ingredient_grocery_list.items()
     ]
     # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
     # ones where everything has been purchased last
@@ -131,10 +125,9 @@ def grocery_list(request):
 
     random_grocery_list = _get_random_groceries(team)
     context = {
-        'ingredient_to_grocery_list': sorted_items,
+        'ingredient_grocery_list': sorted_items,
         'random_grocery_list': random_grocery_list,
     }
-    # import ipdb; ipdb.set_trace()
     return render(request, 'themenu/grocery_list.html', context)
 
 

@@ -184,6 +184,11 @@ class IngredientAmount(models.Model):
         # Randoms
         ('strip', 'strip'),
         ('stick', 'stick'),
+        ('clove', 'clove'),
+        ('bunch', 'bunch'),
+        ('slice', 'slice'),
+        ('bowl', 'bowl'),
+        ('can', 'can'),
 
     ]
 

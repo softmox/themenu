@@ -21,7 +21,7 @@
         {% endfor %}
       </ul>
       <ul class="list-group checked-list-box">
-        {% for ingredient_name, grocery_list, all_purchased, ids_string in ingredient_to_grocery_list %}
+        {% for ingredient_name, grocery_list, all_purchased, ids_string in ingredient_grocery_list %}
           {% include "themenu/grocery_list_item.html" %}
         {% endfor %}
       </ul>
