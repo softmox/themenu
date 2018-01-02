@@ -155,59 +155,13 @@ class IngredientAmount(models.Model):
     """An ingredient tied to a specific amount
 
     Used in both the recipe display and grocery list"""
-    UNITS = [
-        # Weights
-        ('oz ', 'ounce'),
-        ('lb', 'pound'),
-        ('mg', 'milligram'),
-        ('g', 'gram'),
-        ('kg ', 'kilogram'),
-        # Volumes
-        ('c', 'cup'),
-        ('gill', 'gill'),
-        ('ml ', 'milliliter'),
-        ('L', 'liter'),
-        ('pt ', 'pint'),
-        ('qt', 'quart'),
-        ('gal', 'gallon'),
-        ('tsp ', 'teaspoon'),
-        ('tbsp', 'tablespoon'),
-        ('fl oz', 'fluid ounce'),
-        ('dash', 'dash'),
-        ('pinch', 'pinch'),
-        # Lengths
-        ('mm', 'millimeter'),
-        ('cm', 'centimeter'),
-        ('m', 'meter'),
-        ('in', 'inch'),
-        ('ft', 'foot'),
-        # Randoms
-        ('strip', 'strip'),
-        ('stick', 'stick'),
-        ('clove', 'clove'),
-        ('bunch', 'bunch'),
-        ('slice', 'slice'),
-        ('bowl', 'bowl'),
-        ('can', 'can'),
-
-    ]
-
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    unit = models.CharField(max_length=40, choices=UNITS, blank=True, null=True)
-    # This is for things like a "medium" tomato
-    descriptor = models.CharField(max_length=256, blank=True, null=True)
 
-    # This is a charfield, since it could be "3", "1.5", "1 2/3", "Two"
-    # maybe this should just be a DecimalField
-    quantity = models.CharField(max_length=40, blank=True, null=True)
+    # This can be anything from "1 2/3 lb" to "1 medium" (for a tomato)
+    amount = models.CharField(max_length=256, blank=True, default='')
 
-    # TODO: if we want to start using some kind of pluralizing engine for these,
-    # https://stackoverflow.com/questions/21872366/plural-string-formatting
     def __unicode__(self):
-        return '%s %s of %s (%s)' % (self.quantity,
-                                     self.unit,
-                                     self.ingredient.name,
-                                     self.descriptor)
+        return '%s of %s' % (self.quantity, self.ingredient.name)
 
 
 class Dish(models.Model):
