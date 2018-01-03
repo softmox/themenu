@@ -39,14 +39,14 @@ class DishModelForm(forms.ModelForm):
 
 
 class DishModelForm2(forms.Form):
-    name = forms.CharField(max_length=50)
+    name = forms.CharField(max_length=500, widget=forms.TextInput(attrs={'size': 50}))
     notes = forms.CharField(widget=forms.Textarea)
-    source = forms.CharField(max_length=50)
+    source = forms.CharField(max_length=500, widget=forms.TextInput(attrs={'size': 50}))
     recipe = forms.CharField(widget=forms.Textarea)
     ingredient = forms.MultipleChoiceField(
             widget=NameSelect2Widget(queryset=Ingredient.objects.all()))
-    amount = forms.CharField(max_length=50)
-    tags = forms.MultipleChoiceField(widget=NameSelect2Widget(queryset=Tag.objects.all()))
+    amount = forms.CharField(max_length=100)
+    tags = forms.MultipleChoiceField(widget=NameSelect2MultipleWidget(queryset=Tag.objects.all()))
 
     # Example (originally had "title" as a field'
     # def clean_title(self):
