@@ -9,7 +9,7 @@ from django_select2.forms import (
 
 from registration.forms import RegistrationForm
 
-from .models import Dish, Meal, Tag, Ingredient, MyUser
+from .models import Dish, Meal, Tag, Ingredient, IngredientAmount
 
 
 class NameSearchFieldMixin(object):
@@ -22,6 +22,10 @@ class NameSearchFieldMixin(object):
 class NameSelect2MultipleWidget(NameSearchFieldMixin, ModelSelect2MultipleWidget):
     """This just combines the library's Select2 multiple widget
     with the ability to search by name or pk"""
+    pass
+
+
+class NameSelect2Widget(NameSearchFieldMixin, ModelSelect2Widget):
     pass
 
 
@@ -38,6 +42,22 @@ class DishModelForm(forms.ModelForm):
         }
 
 
+class DishModelForm2(forms.Form):
+    name = forms.CharField(max_length=50)
+    notes = forms.CharField(widget=forms.Textarea)
+    source = forms.CharField(max_length=50)
+    recipe = forms.CharField(widget=forms.Textarea)
+    ingredient_amounts = forms.MultipleChoiceField(
+            widget=NameSelect2Widget(queryset=Ingredient.objects.all()))
+    tags = forms.MultipleChoiceField(widget=NameSelect2Widget(queryset=Tag.objects.all()))
+
+    # Example (originally had "title" as a field'
+    # def clean_title(self):
+    #     if len(self.cleaned_data['title']) < 3:
+    #         raise forms.ValidationError("Title must have more than 3 characters.")
+    #     return self.cleaned_data["title"]
+
+
 class MealModelForm(forms.ModelForm):
     """Like a normal ModelForm, but the Many-to-Many fields
     use the prettier select2 multiple fields"""
@@ -50,10 +70,6 @@ class MealModelForm(forms.ModelForm):
             'tags': NameSelect2MultipleWidget,
             'date': forms.DateInput(attrs={'type': 'date'})
         }
-
-
-class NameSelect2Widget(NameSearchFieldMixin, ModelSelect2Widget):
-    pass
 
 
 # TODO (Anne):  Do we want the colors to be choices? or is a textbox fine?

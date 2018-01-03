@@ -32,6 +32,7 @@ from themenu.models import (
 
 from themenu.forms import (
     DishModelForm,
+    DishModelForm2,
     MealModelForm,
     TagModelForm,
     IngredientModelForm,
@@ -308,7 +309,7 @@ class DishUpdate(UpdateView):
 
 class DishCreate(CreateView):
     model = Dish
-    form_class = DishModelForm
+    form_class = DishModelForm2
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -318,6 +319,24 @@ class DishCreate(CreateView):
         form.save_m2m()
         return HttpResponseRedirect(obj.get_absolute_url())
 
+
+def dish_create(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = DishModelForm2(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = DishModelForm2()
+
+    return render(request, 'themenu/dish_form.html', {'form': form})
 
 class DishDelete(DeleteView):
     model = Dish
