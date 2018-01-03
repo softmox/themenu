@@ -116,7 +116,7 @@ def grocery_list(request):
     # a comma separated string of grocery ids (to update all at once)
     mark_all_purchased = [
         (ingredient_name,                                  # name (string)
-         ', '.join(a for a in amount_list if a),  # ids_string
+         ', '.join(a if a else 'N/A' for a in amount_list),  # ids_string
          grocery_items,                               # list of models
          all(g.purchased for g in grocery_items),     # purchased bool
          ','.join(str(g.id) for g in grocery_items))  # ids_string
