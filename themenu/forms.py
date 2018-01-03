@@ -1,15 +1,11 @@
 from django import forms
-from django.conf import settings
-from django.contrib.auth import get_user_model
 
 from django_select2.forms import (
     ModelSelect2MultipleWidget,
     ModelSelect2Widget,
 )
 
-from registration.forms import RegistrationForm
-
-from .models import Dish, Meal, Tag, Ingredient, IngredientAmount
+from .models import Dish, Meal, Tag, Ingredient
 
 
 class NameSearchFieldMixin(object):
@@ -47,8 +43,9 @@ class DishModelForm2(forms.Form):
     notes = forms.CharField(widget=forms.Textarea)
     source = forms.CharField(max_length=50)
     recipe = forms.CharField(widget=forms.Textarea)
-    ingredient_amounts = forms.MultipleChoiceField(
+    ingredient = forms.MultipleChoiceField(
             widget=NameSelect2Widget(queryset=Ingredient.objects.all()))
+    amount = forms.CharField(max_length=50)
     tags = forms.MultipleChoiceField(widget=NameSelect2Widget(queryset=Tag.objects.all()))
 
     # Example (originally had "title" as a field'
@@ -108,21 +105,3 @@ class IngredientSearchForm(forms.ModelForm):
         widgets = {
             'name': IngredientSelect2Widget,
         }
-
-# User = get_user_model()
-
-# class TeamRegistrationForm(RegistrationForm):
-#     class Meta(RegistrationForm.Meta):
-#         model = MyUser
-#         fields = [
-#             User.USERNAME_FIELD,
-#             'email',
-#             'password1',
-#             'password2',
-#             'team'
-#         ]
-#         required_css_class = 'required'
-#         widgets = {
-#             'team': NameSelect2MultipleWidget,
-
-#         }

@@ -46,7 +46,9 @@
     }
   </script>
 <!-- For select2 forms -->
-{{ form.media.js }}
+  <script src="{% static 'themenu/js/jquery.formset.js' %}"></script>
+  {{ form.media.js }}
+  <script src="{% static 'themenu/js/init_dynamic_formset.js' %}"></script>
   <script type="text/javascript" src="{% static 'themenu/js/bootstrap.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'themenu/js/main.js' %}"></script>
   <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>

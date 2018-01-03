@@ -37,14 +37,25 @@
   </div>
 
   <!-- ManyToMany fields- Select2 multiple fields -->
-  <div class="fieldWrapper">
-    {{ form.ingredient_amounts.errors }}
-    {{ form.ingredient_amounts.label_tag }}
+  <div id="ingredient-div" class="row fieldWrapper">
+    <div class="col-md-6 col-sm-6">
+    {{ form.ingredient.errors }}
+    {{ form.ingredient.label_tag }}
     {% if field.help_text %}
       <p class="help">{{ field.help_text|safe }}</p>
     {% endif %}
-    {{ form.ingredient_amounts }}
+    {{ form.ingredient }}
+    </div>
+    <div id="amounts-div" class="col-md-4 col-sm-4">
+      {{ form.amount.errors }}
+      {{ form.amount.label_tag }}
+      {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+      {% endif %}
+      {{ form.amount }}
+    </div>
   </div>
+  <br><br>
   <a href="{% url 'ingredient-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new ingredient</a>
   <br><br>
 

@@ -27,6 +27,7 @@ $(document).ready(function() {
 
   // }
 
+
   // Search bar: pass to the /dishes/search url
   $('#dish-search-form').submit(function(event) {
     event.preventDefault();
@@ -140,6 +141,25 @@ $(document).ready(function() {
 
 });
 
+function cloneDiv(divId) {
+  //var d2 = $(divId).clone();
+  var $el = $('#id_ingredient_amounts');
+  var d2 = $el.clone();
+  $('#ingredient-div').append(d2);
+  $el.remove();
+
+  var $d2s = $('#ingredient-div .django-select2');
+  $d2s.empty();
+  $d2s.removeData();
+  $d2s.djangoSelect2();
+
+}
+function resetSelect2() {
+  var $d2s = $('.django-select2');
+  $d2s.empty();
+  $d2s.removeData();
+  $d2s.djangoSelect2();
+}
 
 function dropdownsOpen() {
   var dropIsOpen = false;
