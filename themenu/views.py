@@ -560,6 +560,12 @@ class IngredientCreate(CreateView):
 class IngredientDetail(DetailView):
     model = Ingredient
 
+    def get_context_data(self, **kwargs):
+        context = super(IngredientDetail, self).get_context_data(**kwargs)
+        context['dish_set'] = Dish.objects.filter(ingredient_amounts__ingredient=self.object)
+        print(context)
+        return context
+
 
 class IngredientDelete(DeleteView):
     model = Ingredient

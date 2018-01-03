@@ -65,10 +65,14 @@
   </div>
   <div class="ingredients row">
     <div class="col-md-10 col-md-offset-1">
-      {% for i in object.ingredients.all %}
+      {% for i in object.ingredient_amounts.all %}
         <div class="col-sm-4 col-md-3">
           <div class="ingredient">
-            <a href="{% url 'ingredient-detail' i.id %}"><p><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>{{ i.name }}</p></a>
+            <a href="{% url 'ingredient-detail' i.ingredient.id %}">
+              <p><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {{ i.ingredient.name }}: {{ i.amount }}
+              </p>
+            </a>
           </div>
         </div>
       {% endfor %}
