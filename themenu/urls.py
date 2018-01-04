@@ -41,8 +41,8 @@ urlpatterns = [
     url(r'^teams/(?P<pk>[\d]+)/join$', views.team_join, name='team-join'),
 
     # Generic dish views (with select2 widgets)
-    # url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),
-    url(r'^dishes/create/$', views.dish_create, name='dish-create'),
+    url(r'^dishes/create/$', views.DishCreate.as_view(), name='dish-create'),
+    # url(r'^dishes/create/$', views.dish_create, name='dish-create'),
     url(r'^dishes/(?P<pk>[\d]+)/update/$', views.DishUpdate.as_view(), name='dish-update'),
     url(r'^dishes/(?P<pk>[\d]+)/delete/?$', views.DishDelete.as_view(), name='dish-delete'),
     url(r'^dishes/(?P<pk>[\d]+)/?$', views.DishDetail.as_view(), name='dish-detail'),

@@ -312,21 +312,11 @@ class DishCreate(CreateView):
     form_class = DishForm
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
-        myuser = get_object_or_404(MyUser, user=self.request.user)
-        obj.created_by = myuser
-        obj.save()
-        form.save_m2m()
-        return HttpResponseRedirect(obj.get_absolute_url())
+        new_object = self.save_dish(form)
+        return HttpResponseRedirect(new_object.get_absolute_url())
 
-
-def dish_create(request):
-    def save_dish(form):
+    def save_dish(self, form):
         new_dish = form.save(commit=False)
-        # import ipdb; ipdb.set_trace()
-        # form_data = form.data
-        # dfd = dict(form_data)
-        # ias = zip(dfd['ingredient'], dfd['amount'])
         ias = zip(form.data.getlist('ingredient'), form.data.getlist('amount'))
         used_ing_amts = []
         for ia in ias:
@@ -337,11 +327,7 @@ def dish_create(request):
                                                                      amount=ia[1])
             used_ing_amts.append(new_ia)
 
-        # dfd.pop('ingredient')
-        # dfd.pop('amount')
-        # dfd.pop('csrfmiddlewaretoken')
-        # new_dish = Dish(**dfd)
-        myuser = get_object_or_404(MyUser, user=request.user)
+        myuser = get_object_or_404(MyUser, user=self.request.user)
         new_dish.created_by = myuser
         new_dish.save()
         for ia in used_ing_amts:
@@ -349,29 +335,6 @@ def dish_create(request):
         form.save_m2m()  # Save the list of tags, another M2M
 
         return new_dish
-
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = DishForm(request.POST)
-        # check whether it's valid:
-        print('DISH CREATE')
-        print(form.data)
-        print(form.data.getlist('ingredient'))
-
-        if form.is_valid():
-            # redirect to a new URL:
-            new_dish = save_dish(form)
-            return HttpResponseRedirect(reverse('dish-detail', kwargs={'pk': new_dish.id}))
-        else:
-            print('FORM INVALID')
-            print(form.errors)
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = DishForm()
-
-    return render(request, 'themenu/dish_form.html', {'form': form})
 
 
 class DishDelete(DeleteView):
