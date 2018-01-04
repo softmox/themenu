@@ -32,7 +32,7 @@ from themenu.models import (
 
 from themenu.forms import (
     DishModelForm,
-    DishModelForm2,
+    DishForm,
     MealModelForm,
     TagModelForm,
     IngredientModelForm,
@@ -309,7 +309,7 @@ class DishUpdate(UpdateView):
 
 class DishCreate(CreateView):
     model = Dish
-    form_class = DishModelForm2
+    form_class = DishForm
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -321,22 +321,58 @@ class DishCreate(CreateView):
 
 
 def dish_create(request):
+    def save_dish(form):
+        new_dish = form.save(commit=False)
+        # import ipdb; ipdb.set_trace()
+        # form_data = form.data
+        # dfd = dict(form_data)
+        # ias = zip(dfd['ingredient'], dfd['amount'])
+        ias = zip(form.data.getlist('ingredient'), form.data.getlist('amount'))
+        used_ing_amts = []
+        for ia in ias:
+            if not ia[0]:  # no ingredient, blank
+                continue
+            ingredient = Ingredient.objects.get(pk=int(ia[0]))
+            new_ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient,
+                                                                     amount=ia[1])
+            used_ing_amts.append(new_ia)
+
+        # dfd.pop('ingredient')
+        # dfd.pop('amount')
+        # dfd.pop('csrfmiddlewaretoken')
+        # new_dish = Dish(**dfd)
+        myuser = get_object_or_404(MyUser, user=request.user)
+        new_dish.created_by = myuser
+        new_dish.save()
+        for ia in used_ing_amts:
+            new_dish.ingredient_amounts.add(ia)
+        form.save_m2m()  # Save the list of tags, another M2M
+
+        return new_dish
+
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = DishModelForm2(request.POST)
+        form = DishForm(request.POST)
         # check whether it's valid:
+        print('DISH CREATE')
+        print(form.data)
+        print(form.data.getlist('ingredient'))
+
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
             # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
+            new_dish = save_dish(form)
+            return HttpResponseRedirect(reverse('dish-detail', kwargs={'pk': new_dish.id}))
+        else:
+            print('FORM INVALID')
+            print(form.errors)
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = DishModelForm2()
+        form = DishForm()
 
     return render(request, 'themenu/dish_form.html', {'form': form})
+
 
 class DishDelete(DeleteView):
     model = Dish
@@ -582,7 +618,6 @@ class IngredientDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(IngredientDetail, self).get_context_data(**kwargs)
         context['dish_set'] = Dish.objects.filter(ingredient_amounts__ingredient=self.object)
-        print(context)
         return context
 
 

@@ -58,10 +58,18 @@ $(document).ready(function() {
   });
 
   $('#add-ingredient').on('click touch', function(event) {
+    console.log('add-ingredient');
     event.preventDefault();
     //cloneDiv('#ingredient-div');
     cloneDiv();
   });
+
+  // Remove the dummy before submitting to not give blank data
+  $("#dish-create-form").submit(function(event) {
+    event.preventDefault();
+    $("#ingredient-container-0").remove();
+    $(this).unbind('submit').submit();
+  })
 
 
 		$('.list-group.checked-list-box .list-group-item').each(function () {

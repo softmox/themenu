@@ -2,7 +2,8 @@
 
 {% block body %}
 
-<form action="" method="post">{% csrf_token %}
+<form id="dish-create-form" action="." method="post">{% csrf_token %}
+  {{ form.non_field_errors }}
   <div class="fieldWrapper">
     {{ form.name.errors }}
     {{ form.name.label_tag }}
@@ -90,7 +91,7 @@
   <a href="{% url 'tag-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new tag</a>
   <br><br>
   <!-- End select2 multiple fields -->
-  <input type="submit" value="Submit" />
+  <input id="dish-form-submit" type="submit" value="Submit" />
 
 </form>
 
