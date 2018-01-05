@@ -1,9 +1,11 @@
 {% extends "themenu/layout.html" %}
+{% load themenu_extras %}
 
 {% block body %}
 
 <form id="dish-create-form" action="." method="post">{% csrf_token %}
   {{ form.non_field_errors }}
+
   <div class="fieldWrapper">
     {{ form.name.errors }}
     {{ form.name.label_tag }}
@@ -57,24 +59,27 @@
       {{ form.amount }}
     </div>
   </div>
-  <div id="ingredient-container-1" class="ingredient-container row fieldWrapper">
+
+  {% for field in form %}
+  {% if field.name|startswith:'ingredient' and not field.name == 'ingredient' %}
+  {% with idx=field.name|slice:'10:' %}
+  <div id="ingredient-container-{{idx}}" class="ingredient-container row fieldWrapper">
     <div class="ingredient-div col-md-6 col-sm-6">
-    {{ form.ingredient.errors }}
     {{ form.ingredient.label_tag }}
-    {% if field.help_text %}
-      <p class="help">{{ field.help_text|safe }}</p>
-    {% endif %}
-    {{ form.ingredient }}
+    {{ field }}
     </div>
+
     <div class="amounts-div col-md-4 col-sm-4">
-      {{ form.amount.errors }}
-      {{ form.amount.label_tag }}
-      {% if field.help_text %}
-        <p class="help">{{ field.help_text|safe }}</p>
-      {% endif %}
-      {{ form.amount }}
+    {{ form.amount.label_tag }}
+    {% with amountname='amount'|add:idx %}
+    {{form|get:amountname}}
+    {% endwith %}
     </div>
   </div>
+  {% endwith %}
+  {% endif %}
+  {% endfor %}
+
   <br><br>
   <button id="add-ingredient">Add another ingredient</button><br>
   <a href="{% url 'ingredient-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new ingredient</a>
@@ -93,6 +98,11 @@
   <!-- End select2 multiple fields -->
   <input id="dish-form-submit" type="submit" value="Submit" />
 
+
+
+
+
+  <br><br>
 </form>
 
 {% endblock %}
