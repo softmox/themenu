@@ -27,6 +27,7 @@ $(document).ready(function() {
 
   // }
 
+
   // Search bar: pass to the /dishes/search url
   $('#dish-search-form').submit(function(event) {
     event.preventDefault();
@@ -47,7 +48,7 @@ $(document).ready(function() {
     postGroceryUpdate(groceryId, groceryType, checked)
   });
 
-   $('.course-checkbox').on('click touch', function() {
+  $('.course-checkbox').on('click touch', function() {
     var dishId = $(this).data('dish-id');
     var mealId = $(this).data('meal-id');
     var attribute = $(this).data('attribute');
@@ -55,6 +56,20 @@ $(document).ready(function() {
     console.log('clicked', dishId, mealId, attribute, checked);
     postCourseUpdate(dishId, mealId, attribute, checked)
   });
+
+  $('#add-ingredient').on('click touch', function(event) {
+    console.log('add-ingredient');
+    event.preventDefault();
+    //cloneDiv('#ingredient-div');
+    cloneDiv();
+  });
+
+  // Remove the dummy before submitting to not give blank data
+  $("#dish-create-form").submit(function(event) {
+    event.preventDefault();
+    $("#ingredient-container-0").remove();
+    $(this).unbind('submit').submit();
+  })
 
 
 		$('.list-group.checked-list-box .list-group-item').each(function () {
@@ -140,6 +155,45 @@ $(document).ready(function() {
 
 });
 
+function cloneDiv(selector) {
+  //var d2 = $(selector).clone();
+
+  //var $el = $('#id_ingredient');
+
+  //var $el = $('.ingredient-div');
+  var curCount = $('.ingredient-container').length - 1;  // Dont count the dummy
+  curCount++;
+  //var $inContainer = $('.ingredient-container:last');
+  var $inContainer = $('#ingredient-container-0');
+
+  var d2 = $inContainer.clone().prop('id', 'ingredient-container-' + curCount).show();
+  //$('#ingredient-div').append(d2);
+  // $inContainer.after(d2);
+  $('.ingredient-container:last').after(d2)
+  // $el.remove();
+  // $('.ingredient-div .select2-container').each(function() {
+    // $(this).prop('id', 'testing-' + curCount);
+  // });
+
+  function initSelect2() {
+    var $d2s = $('.ingredient-div .django-select2');
+    // $d2s.empty();
+    // $d2s.removeData();
+    // Calling the method below reinitializes the dropdowns, but duplicates
+    $d2s.djangoSelect2();
+    // I have 0 idea why there's just one last one that breaks and duplicates... :(
+    var $elsToRemove = $('.ingredient-div .select2-container');
+    $elsToRemove[$elsToRemove.length - 1].remove();
+  }
+  initSelect2();
+}
+
+function resetSelect2() {
+  var $d2s = $('.django-select2');
+  $d2s.empty();
+  $d2s.removeData();
+  $d2s.djangoSelect2();
+}
 
 function dropdownsOpen() {
   var dropIsOpen = false;

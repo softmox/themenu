@@ -1,8 +1,11 @@
 {% extends "themenu/layout.html" %}
+{% load themenu_extras %}
 
 {% block body %}
 
-<form action="" method="post">{% csrf_token %}
+<form id="dish-create-form" action="." method="post">{% csrf_token %}
+  {{ form.non_field_errors }}
+
   <div class="fieldWrapper">
     {{ form.name.errors }}
     {{ form.name.label_tag }}
@@ -37,14 +40,49 @@
   </div>
 
   <!-- ManyToMany fields- Select2 multiple fields -->
-  <div class="fieldWrapper">
-    {{ form.ingredients.errors }}
-    {{ form.ingredients.label_tag }}
+  <!-- start with a dummy, blank field -->
+  <div style="display: none" id="ingredient-container-0" class="ingredient-container row fieldWrapper">
+    <div class="ingredient-div col-md-6 col-sm-6">
+    {{ form.ingredient.errors }}
+    {{ form.ingredient.label_tag }}
     {% if field.help_text %}
       <p class="help">{{ field.help_text|safe }}</p>
     {% endif %}
-    {{ form.ingredients }}
+    {{ form.ingredient }}
+    </div>
+    <div class="amounts-div col-md-4 col-sm-4">
+      {{ form.amount.errors }}
+      {{ form.amount.label_tag }}
+      {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+      {% endif %}
+      {{ form.amount }}
+    </div>
   </div>
+
+  {% for field in form %}
+  {% if field.name|startswith:'ingredient' and not field.name == 'ingredient' %}
+  {% with idx=field.name|slice:'10:' %}
+  <div id="ingredient-container-{{idx}}" class="ingredient-container row fieldWrapper">
+    <div class="ingredient-div col-md-6 col-sm-6">
+    {{ form.ingredient.label_tag }}
+    {{ field }}
+    </div>
+
+    <div class="amounts-div col-md-4 col-sm-4">
+    {{ form.amount.label_tag }}
+    {% with amountname='amount'|add:idx %}
+    {{form|get:amountname}}
+    {% endwith %}
+    </div>
+  </div>
+  {% endwith %}
+  {% endif %}
+  {% endfor %}
+
+  <br><br>
+  To remove ingredients, click "x" on the ingredient select box. <br>
+  <button id="add-ingredient">Add another ingredient</button><br>
   <a href="{% url 'ingredient-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new ingredient</a>
   <br><br>
 
@@ -59,8 +97,13 @@
   <a href="{% url 'tag-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new tag</a>
   <br><br>
   <!-- End select2 multiple fields -->
-  <input type="submit" value="Submit" />
+  <input id="dish-form-submit" type="submit" value="Submit" />
 
+
+
+
+
+  <br><br>
 </form>
 
 {% endblock %}

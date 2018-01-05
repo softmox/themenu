@@ -3,6 +3,7 @@ from django.contrib import admin
 from .models import (
     Tag,
     Ingredient,
+    IngredientAmount,
     Dish,
     Meal,
     Course,
@@ -27,6 +28,7 @@ class MealAdmin(admin.ModelAdmin):
 
 admin.site.register(Tag)
 admin.site.register(Ingredient)
+admin.site.register(IngredientAmount)
 admin.site.register(Dish, DishAdmin)
 admin.site.register(Meal, MealAdmin)
 admin.site.register(MyUser)

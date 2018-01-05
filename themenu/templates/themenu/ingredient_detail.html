@@ -28,7 +28,7 @@
         </div>
         <div class="panel-body">
           <ul>
-            {% for d in object.dish_set.all %}
+            {% for d in dish_set %}
               <li>
                 <a href="{% url 'dish-detail' d.id %}">{{d.name | title }}</a>
               </li>

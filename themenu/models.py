@@ -25,7 +25,10 @@ class Team(models.Model):
         """Return a list ingredient objects,
         ordered by those the team most commonly uses"""
 
-        ingredients = Ingredient.objects.filter(dish__meal__team=self).values("name", "id").distinct().annotate(num_meals=Count('dish__meal')).order_by('-num_meals')[:10]
+        ingredients = Ingredient.objects.filter(ingredientamount__dish__meal__team=self)\
+                                .values("name", "id").distinct()\
+                                .annotate(num_meals=Count('ingredientamount__dish__meal'))\
+                                .order_by('-num_meals')[:10]
         return ingredients
 
     def common_dishes(self):
@@ -148,6 +151,20 @@ class Ingredient(models.Model):
         return self.name
 
 
+class IngredientAmount(models.Model):
+    """An ingredient tied to a specific amount
+
+    Used in both the recipe display and grocery list"""
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+    # This can be anything from "1 2/3 lb" to "1 medium" (for a tomato)
+    amount = models.CharField(max_length=256, blank=True, default='')
+
+    def __unicode__(self):
+        return '%s: %s' % (self.ingredient.name, self.amount) if self.amount \
+                else '%s' % self.ingredient.name
+
+
 class Dish(models.Model):
     """A single dish to be eaten as part of a meal"""
     class Meta:
@@ -160,7 +177,7 @@ class Dish(models.Model):
     source = models.TextField(null=True, blank=True)
     recipe = models.TextField(null=True, blank=True)
 
-    ingredients = models.ManyToManyField(Ingredient, blank=True)
+    ingredient_amounts = models.ManyToManyField(IngredientAmount, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     def get_absolute_url(self):
@@ -232,13 +249,13 @@ class Course(models.Model):
 
 class GroceryListItem(models.Model):
     """An item to buy, automatically populated from a new meal"""
-    ingredient = models.ForeignKey(Ingredient)
+    ingredient_amount = models.ForeignKey(IngredientAmount, default=None, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     purchased = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'Ingredient: %s, %s, Purchased: %s' % \
-            (self.ingredient.id, self.ingredient.name, self.purchased)
+        return 'IngredientAmount: %s, Purchased: %s' % \
+            (self.ingredient_amount, self.purchased)
 
 
 class RandomGroceryItem(models.Model):

@@ -1,2 +1,3 @@
 export DB_ENV=local
 export DEBUG=True
+export DJANGO_LOG_LEVEL=INFO

@@ -25,13 +25,14 @@ from django.db.models import Count, Avg
 
 from themenu.models import (
     Team, MyUser, Tag,
-    Ingredient, Dish, Meal,
+    Ingredient, IngredientAmount, Dish, Meal,
     Course, GroceryListItem,
     RandomGroceryItem, DishReview
 )
 
 from themenu.forms import (
-    DishModelForm,
+    # DishModelForm,
+    DishForm,
     MealModelForm,
     TagModelForm,
     IngredientModelForm,
@@ -84,17 +85,6 @@ def grocery_list(request):
                                         .filter(purchased=False)\
                                         .order_by('purchased')
 
-#  id  | purchased | ingredient_id | course_id | id  |       name
-# ------+-----------+---------------+-----------+-----+-------------------
-#  4847 | f         |            64 |       260 |  64 | honey
-#  4846 | f         |           129 |       260 | 129 | gelatin
-#  4845 | f         |            43 |       260 |  43 | cream
-#  4844 | f         |             7 |       260 |   7 | beet
-#  4843 | f         |             9 |       259 |   9 | parsley
-#  4842 | f         |             8 |       259 |   8 | feta
-#  4841 | f         |             7 |       259 |   7 | beet
-# I want "beet": [4844, 4841]
-# GroceryListItem.objects.filter(id__in=[4844, 4841])
     team = request.user.myuser.team
     if not team:
         return HttpResponseRedirect(reverse('team-list'))
@@ -104,26 +94,34 @@ def grocery_list(request):
 
     grocery_list = _get_meal_groceries(team)
 
-    # This variables looks is a list with 4-tuples:
-    # (u'frozen berries',
-    #   [<GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>,
-    #    <GroceryListItem: Ingredient: 28, frozen berries, Purchased: False>],
-    #  False,
-    #  '245,267')
-    # The whole GroveryListItem model is included so the template can get the
+    # Using defaultdict to group same named ingredients together
+    ingredient_grocery_list = defaultdict(lambda: ([], []))
+
+    # This variables will end up as a list with 5-tuples:
+    # (u'frozen berries',  <- The name of the ingredient
+    #   [<GroceryListItem: IngredientAmount: 28, frozen berries, Purchased: False>,
+    #    <GroceryListItem: IngredientAmount: 28, frozen berries, Purchased: False>],
+    #  '1/4 cup, 1 bowl'  <- a string of the amounts of the ingredients
+    #  False,      <- True/False if they have all been purchased already
+    #  '245,267')  <- ids of the GroceryListItems as a string list for html data
+    # The whole GroceryListItem model is included so the template can get the
     # dish name, meal type, number of meals, and meal date
-    ingredient_to_grocery_list = defaultdict(list)
 
     for grocery_item in grocery_list:
-        ingredient_to_grocery_list[grocery_item.ingredient.name].append(grocery_item)
-    # Add a third item to the tuples:
-    # a bool if all groceries have been purchased
-    # Also add a fourth: comma separated string of grocery ids (to update all at once)
+        key = grocery_item.ingredient_amount.ingredient.name
+        amount = grocery_item.ingredient_amount.amount
+        ingredient_grocery_list[key][0].append(grocery_item)
+        ingredient_grocery_list[key][1].append(amount)
+    # Add the fourth and fifth items to the tuples:
+    # a bool if all groceries have been purchased, and
+    # a comma separated string of grocery ids (to update all at once)
     mark_all_purchased = [
-        (ingredient, grocery_items,
-            all(g.purchased for g in grocery_items),
-            ','.join(str(g.id) for g in grocery_items))
-        for ingredient, grocery_items in ingredient_to_grocery_list.items()
+        (ingredient_name,                                  # name (string)
+         ', '.join(a if a else 'N/A' for a in amount_list),  # ids_string
+         grocery_items,                               # list of models
+         all(g.purchased for g in grocery_items),     # purchased bool
+         ','.join(str(g.id) for g in grocery_items))  # ids_string
+        for ingredient_name, (grocery_items, amount_list) in ingredient_grocery_list.items()
     ]
     # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
     # ones where everything has been purchased last
@@ -131,10 +129,9 @@ def grocery_list(request):
 
     random_grocery_list = _get_random_groceries(team)
     context = {
-        'ingredient_to_grocery_list': sorted_items,
+        'ingredient_grocery_list': sorted_items,
         'random_grocery_list': random_grocery_list,
     }
-    # import ipdb; ipdb.set_trace()
     return render(request, 'themenu/grocery_list.html', context)
 
 
@@ -288,15 +285,71 @@ class DishDetail(DetailView):
         return context
 
 
+def save_dish(form, request):
+    """ Used by both DishCreate and DishUpdate"""
+    new_dish = form.save(commit=False)
+    # Ingredient and amounts in HTML template may be called "ingredient2", etc.
+    ingredient_keys = [k for k in form.data.keys() if k.startswith('ingredient')]
+    amount_keys = [k for k in form.data.keys() if k.startswith('amount')]
+
+    # Gather all ingredients and the corresponding amounts to filter empties
+    ias = zip(chain.from_iterable(form.data.getlist(key) for key in ingredient_keys),
+              chain.from_iterable(form.data.getlist(key) for key in amount_keys))
+
+    used_ing_amts = []
+    for ia in ias:
+        if not ia[0]:  # no ingredient, skip, don't care about amounts
+            continue
+        ingredient = Ingredient.objects.get(pk=int(ia[0]))
+        new_ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient,
+                                                                 amount=ia[1])
+        used_ing_amts.append(new_ia)
+
+    myuser = get_object_or_404(MyUser, user=request.user)
+    new_dish.created_by = myuser
+    new_dish.save()
+
+    # only keep the ones that survived on this form submit (for updates)
+    new_dish.ingredient_amounts.clear()
+    for ia in used_ing_amts:
+        new_dish.ingredient_amounts.add(ia)
+    form.save_m2m()  # Save the list of tags, another M2M
+
+    return new_dish
+
+
 class DishUpdate(UpdateView):
     model = Dish
-    form_class = DishModelForm
+    form_class = DishForm
 
-    def get_context_data(self, **kwargs):
-        context = super(DishUpdate, self).get_context_data(**kwargs)
-        # If we need to add extra items to what passes to the template
-        # context['now'] = timezone.now()
-        return context
+    def form_valid(self, form):
+        new_object = save_dish(form, self.request)
+        return HttpResponseRedirect(new_object.get_absolute_url())
+
+    def get_form(self, form_class=None):
+        # c = super(DishUpdate, self).get_form()
+        if form_class is None:
+            form_class = self.get_form_class()
+        kws = self.get_form_kwargs()
+        dish_object = kws['instance']
+
+        # Gather the data of ingredients/amounts to populate the edit form
+        ing_amt_list = dish_object.ingredient_amounts.all()
+        initial_data = self.get_initial()
+        for idx, ing_amt in enumerate(ing_amt_list):
+            key_ing = 'ingredient{}'.format(idx + 1)
+            initial_data[key_ing] = ing_amt.ingredient
+            key_amt = 'amount{}'.format(idx + 1)
+            initial_data[key_amt] = ing_amt.amount
+
+        # Now create the form, and feed it initial data, then create extra fields
+        kws.update({'initial': initial_data})
+        f = form_class(**kws)
+        for idx, ing_amt in enumerate(ing_amt_list):
+            f.fields['ingredient{}'.format(idx + 1)] = f.fields['ingredient']
+            f.fields['amount{}'.format(idx + 1)] = f.fields['amount']
+
+        return f
 
     def get_object(self, *args, **kwargs):
         """Overridden to allow only team members to change dish"""
@@ -312,15 +365,11 @@ class DishUpdate(UpdateView):
 
 class DishCreate(CreateView):
     model = Dish
-    form_class = DishModelForm
+    form_class = DishForm
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
-        myuser = get_object_or_404(MyUser, user=self.request.user)
-        obj.created_by = myuser
-        obj.save()
-        form.save_m2m()
-        return HttpResponseRedirect(obj.get_absolute_url())
+        new_object = save_dish(form, self.request)
+        return HttpResponseRedirect(new_object.get_absolute_url())
 
 
 class DishDelete(DeleteView):
@@ -501,7 +550,8 @@ class TagDetail(DetailView):
         context['dish_count'] = tag_dishes.count()
         context['dishes'] = tag_dishes.annotate(num_meals=Count('meal')).order_by('-num_meals')[:15]
         context['ingredient_count'] = tag_ing.count()
-        context['ingredients'] = tag_ing.annotate(num_dishes=Count('dish')).order_by('-num_dishes')[:15]
+        # TODO: https://github.com/goobers/themenu/issues/90
+        # context['ingredients'] = tag_ing.annotate(num_dishes=Count('dish')).order_by('-num_dishes')[:15]
         context['meal_count'] = tag_meals.count()
         context['meals'] = tag_meals.order_by('-date')[:15]
         # If we need to add extra items to what passes to the template
@@ -563,6 +613,11 @@ class IngredientCreate(CreateView):
 class IngredientDetail(DetailView):
     model = Ingredient
 
+    def get_context_data(self, **kwargs):
+        context = super(IngredientDetail, self).get_context_data(**kwargs)
+        context['dish_set'] = Dish.objects.filter(ingredient_amounts__ingredient=self.object)
+        return context
+
 
 class IngredientDelete(DeleteView):
     model = Ingredient
@@ -574,7 +629,7 @@ class IngredientList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IngredientList, self).get_context_data(**kwargs)
-        context['ingredients'] = Ingredient.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
+        context['ingredient_amounts'] = IngredientAmount.objects.all().annotate(num_dishes=Count('dish', distinct=True)).order_by('-num_dishes')
         # Form is to search for ingredient details
         context['form'] = IngredientSearchForm
         return context
