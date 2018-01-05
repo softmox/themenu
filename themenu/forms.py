@@ -31,16 +31,12 @@ class IngredientSelect2Widget(NameSelect2Widget):
         return Ingredient.objects.all()
 
     def value_from_datadict(self, data, files, name):
-        print("my value from data dict")
-        print(name, data)
         if isinstance(data, MultiValueDict):
             return [d for d in data.getlist(name) if d]
         return data.get(name)
 
 
 class IngredientSearchForm(forms.ModelForm):
-    # name = forms.CharField(label='Ingredient Name', max_length=100)
-
     class Meta:
         model = Ingredient
         fields = ['name']
@@ -51,28 +47,12 @@ class IngredientSearchForm(forms.ModelForm):
 
 class IngredientField(forms.ModelMultipleChoiceField):
     def to_python(self, value):
-        print('TO PYTHON', value)
         if not value:
             return []
         else:
             return [item for item in value if item]
-    # def to_python(self, value):
-    #     """Normalize data to a list of strings."""
-    #     # Return an empty list if no input was given.
-    #     print('TO PYTHON')
-    #     print(value)
-    #     print(type(value))
-    #     if not value:
-    #         return []
-    #     # return value.split(',')
-    #     return value
 
-    # def validate(self, value):
-    #     print('VALIDATE')
-    #     print(value)
-    #     return True
 
-# class DishForm(forms.Form):
 class DishForm(forms.ModelForm):
     class Meta:
         model = Dish
@@ -82,16 +62,10 @@ class DishForm(forms.ModelForm):
             'tags': NameSelect2MultipleWidget,
         }
 
-    # name = forms.CharField(max_length=500, widget=forms.TextInput(attrs={'size': 50}))
-    # notes = forms.CharField(widget=forms.Textarea)
-    # source = forms.CharField(max_length=500, widget=forms.TextInput(attrs={'size': 50}))
-    # recipe = forms.CharField(widget=forms.Textarea)
     ingredient = IngredientField(required=False,
-    # ingredient = forms.ModelMultipleChoiceField(required=False,
-                                           widget=IngredientSelect2Widget,
-                                           queryset=Ingredient.objects.all())
+                                 widget=IngredientSelect2Widget,
+                                 queryset=Ingredient.objects.all())
     amount = forms.CharField(max_length=100, required=False)
-    # tags = forms.MultipleChoiceField(widget=NameSelect2MultipleWidget(queryset=Tag.objects.all()), required=False)
 
 
 class MealModelForm(forms.ModelForm):
@@ -128,4 +102,3 @@ class IngredientModelForm(forms.ModelForm):
             'tags': NameSelect2MultipleWidget,
 
         }
-

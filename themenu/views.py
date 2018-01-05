@@ -316,53 +316,30 @@ class DishUpdate(UpdateView):
         new_object = save_dish(form, self.request)
         return HttpResponseRedirect(new_object.get_absolute_url())
 
-    def get_initial(self, *args, **kwargs):
-        c = super(DishUpdate, self).get_initial(*args, **kwargs)
-        print('get initial', c)
-        return c
-
-    def get_form_class(self):
-        c = super(DishUpdate, self).get_form_class()
-        print('get_form class', c)
-        return c
-
     def get_form(self, form_class=None):
         # c = super(DishUpdate, self).get_form()
         if form_class is None:
             form_class = self.get_form_class()
         kws = self.get_form_kwargs()
         dish_object = kws['instance']
+
+        # Gather the data of ingredients/amounts to populate the edit form
         ing_amt_list = dish_object.ingredient_amounts.all()
         initial_data = self.get_initial()
         for idx, ing_amt in enumerate(ing_amt_list):
-
             key_ing = 'ingredient{}'.format(idx + 1)
             initial_data[key_ing] = ing_amt.ingredient
             key_amt = 'amount{}'.format(idx + 1)
             initial_data[key_amt] = ing_amt.amount
 
+        # Now create the form, and feed it initial data, then create extra fields
         kws.update({'initial': initial_data})
         f = form_class(**kws)
         for idx, ing_amt in enumerate(ing_amt_list):
             f.fields['ingredient{}'.format(idx + 1)] = f.fields['ingredient']
             f.fields['amount{}'.format(idx + 1)] = f.fields['amount']
 
-        print('GET FORM')
-        print(f.fields)
-
-        # import pdb; pdb.set_trace()
         return f
-
-    def get_context_data(self, **kwargs):
-        context = super(DishUpdate, self).get_context_data(**kwargs)
-        print('get context data')
-        model = context['object']
-        ingredient_nums = [str(i+1) for i in range(model.ingredient_amounts.count())]
-        # import pdb; pdb.set_trace()
-        form = context['form']
-        # If we need to add extra items to what passes to the template
-        # context['now'] = timezone.now()
-        return context
 
     def get_object(self, *args, **kwargs):
         """Overridden to allow only team members to change dish"""
