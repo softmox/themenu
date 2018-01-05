@@ -1,5 +1,10 @@
 {% extends "themenu/layout.html" %}
 
+{% block headtags %}
+<title>{{ team.name|title }} | NOMplan.life</title>
+<meta property="og:title" content="{{ team.name|title }} | NOMplan.life">
+{% endblock %}
+
 {% block body %}
 
 <div class="container width=95%">

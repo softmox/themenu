@@ -1,5 +1,11 @@
 {% extends "themenu/layout.html" %}
 
+{% block headtags %}
+<title>{{ object.name|title }} | NOMplan.life</title>
+<meta property="og:title" content="{{ object.name|title }} | NOMplan.life">
+{% endblock %}
+
+
 {% block body %}
 
 <div class="container">

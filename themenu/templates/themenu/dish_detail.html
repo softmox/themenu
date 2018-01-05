@@ -1,5 +1,10 @@
 {% extends "themenu/layout.html" %}
 
+{% block headtags %}
+<title>{{ object.name|title }} | NOMplan.life</title>
+<meta property="og:title" content="{{ object.name|title }} | NOMplan.life">
+{% endblock %}
+
 {% block body %}
 
 <div class="container">
@@ -7,7 +12,7 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <div class="page-header">
-      <h1>{{object.name}}    <span>
+      <h1>{{object.name | title }}    <span>
           <a href="{% url 'dish-update' pk=object.id %}"><button type="button" class="btn btn-warning">Edit</button></a>
           {% if not user_review %}
             <a href="{% url 'review-create' dish_id=object.id %}"><button type="button" class="btn btn-success">Create review</button></a>

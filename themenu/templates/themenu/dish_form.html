@@ -1,6 +1,13 @@
 {% extends "themenu/layout.html" %}
 {% load themenu_extras %}
 
+
+{% block headtags %}
+<title>Create a Dish | NOMplan.life</title>
+<meta property="og:title" content="Create a Dish | NOMplan.life">
+{% endblock %}
+
+
 {% block body %}
 
 <form id="dish-create-form" action="." method="post">{% csrf_token %}

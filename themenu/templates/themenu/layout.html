@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NOMplan.life</title>
   <link rel="apple-touch-icon" sizes="57x57" href="https://d2fcjrtizqatsy.cloudfront.net/nom-plan.ico/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="https://d2fcjrtizqatsy.cloudfront.net/nom-plan.ico/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="https://d2fcjrtizqatsy.cloudfront.net/nom-plan.ico/apple-icon-72x72.png">
@@ -26,6 +25,17 @@
   <link rel="stylesheet" type="text/css" href="{% static 'themenu/css/bootstrap.min.css' %}" />
   <link rel="stylesheet" type="text/css" href="{% static 'themenu/css/style.css' %}"/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://d2fcjrtizqatsy.cloudfront.net/nom-plan.ico/apple-icon-144x144.png">
+  <meta property="og:url" content="{{request.get_host}}{{ request.path }}">
+  <meta property="og:description" content="A place for nommers to plan their meals.">
+
+  {% block headtags %}
+  <!-- Can override on pages to include dish names, etc. These are default. -->
+  <title>NOMplan.life</title>
+  <meta property="og:title" content="NOMplan.life">
+  {% endblock %}
 
 
   <!-- For select2 forms -->
