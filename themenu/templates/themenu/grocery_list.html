@@ -20,12 +20,12 @@
       <a href="{% url 'random-grocery-create' %}">
         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add New Random Grocery Item
       </a>
-      <ul class="sortable list-group checked-list-box">
+      <ul class="list-group checked-list-box">
         {% for item in random_grocery_list %}
           {% include "themenu/random_grocery_item.html" %}
         {% endfor %}
       </ul>
-      <ul class="sortable list-group checked-list-box">
+      <ul class="list-group checked-list-box">
         {% for ingredient_name, amounts_string, grocery_list, all_purchased, ids_string in ingredient_grocery_list %}
           {% include "themenu/grocery_list_item.html" %}
         {% endfor %}

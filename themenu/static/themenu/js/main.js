@@ -1,10 +1,4 @@
 $(document).ready(function() {
-  // Make the two sets of grocery list items sortable
-  var groceryLists = document.getElementsByClassName('sortable');
-  sortOpts = {delay: 1000};  // Must hold down 1 sec to move
-  new Sortable(groceryLists[0], sortOpts);
-  new Sortable(groceryLists[1], sortOpts);
-
   // CSRF setup for ajax calls
   var csrftoken = getCookie('csrftoken');
   $.ajaxSetup({
