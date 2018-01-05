@@ -285,9 +285,36 @@ class DishDetail(DetailView):
         return context
 
 
+def save_dish(form, request):
+    """ Used by both DishCreate and DishUpdate"""
+    new_dish = form.save(commit=False)
+    ias = zip(form.data.getlist('ingredient'), form.data.getlist('amount'))
+    used_ing_amts = []
+    for ia in ias:
+        if not ia[0]:  # no ingredient, blank
+            continue
+        ingredient = Ingredient.objects.get(pk=int(ia[0]))
+        new_ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient,
+                                                                 amount=ia[1])
+        used_ing_amts.append(new_ia)
+
+    myuser = get_object_or_404(MyUser, user=request.user)
+    new_dish.created_by = myuser
+    new_dish.save()
+    for ia in used_ing_amts:
+        new_dish.ingredient_amounts.add(ia)
+    form.save_m2m()  # Save the list of tags, another M2M
+
+    return new_dish
+
+
 class DishUpdate(UpdateView):
     model = Dish
     form_class = DishForm
+
+    def form_valid(self, form):
+        new_object = save_dish(form, self.request)
+        return HttpResponseRedirect(new_object.get_absolute_url())
 
     def get_initial(self, *args, **kwargs):
         c = super(DishUpdate, self).get_initial(*args, **kwargs)
@@ -333,11 +360,6 @@ class DishUpdate(UpdateView):
         ingredient_nums = [str(i+1) for i in range(model.ingredient_amounts.count())]
         # import pdb; pdb.set_trace()
         form = context['form']
-        context['extra_fields'] = [(i, form.fields['ingredient{}'.format(i)],
-                                        form.fields['amount{}'.format(i)])
-                                    for i in ingredient_nums]
-
-        print(context['extra_fields'])
         # If we need to add extra items to what passes to the template
         # context['now'] = timezone.now()
         return context
@@ -359,29 +381,8 @@ class DishCreate(CreateView):
     form_class = DishForm
 
     def form_valid(self, form):
-        new_object = self.save_dish(form)
+        new_object = save_dish(form, self.request)
         return HttpResponseRedirect(new_object.get_absolute_url())
-
-    def save_dish(self, form):
-        new_dish = form.save(commit=False)
-        ias = zip(form.data.getlist('ingredient'), form.data.getlist('amount'))
-        used_ing_amts = []
-        for ia in ias:
-            if not ia[0]:  # no ingredient, blank
-                continue
-            ingredient = Ingredient.objects.get(pk=int(ia[0]))
-            new_ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient,
-                                                                     amount=ia[1])
-            used_ing_amts.append(new_ia)
-
-        myuser = get_object_or_404(MyUser, user=self.request.user)
-        new_dish.created_by = myuser
-        new_dish.save()
-        for ia in used_ing_amts:
-            new_dish.ingredient_amounts.add(ia)
-        form.save_m2m()  # Save the list of tags, another M2M
-
-        return new_dish
 
 
 class DishDelete(DeleteView):
