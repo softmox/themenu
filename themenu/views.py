@@ -288,10 +288,17 @@ class DishDetail(DetailView):
 def save_dish(form, request):
     """ Used by both DishCreate and DishUpdate"""
     new_dish = form.save(commit=False)
-    ias = zip(form.data.getlist('ingredient'), form.data.getlist('amount'))
+    # Ingredient and amounts in HTML template may be called "ingredient2", etc.
+    ingredient_keys = [k for k in form.data.keys() if k.startswith('ingredient')]
+    amount_keys = [k for k in form.data.keys() if k.startswith('amount')]
+
+    # Gather all ingredients and the corresponding amounts to filter empties
+    ias = zip(chain.from_iterable(form.data.getlist(key) for key in ingredient_keys),
+              chain.from_iterable(form.data.getlist(key) for key in amount_keys))
+
     used_ing_amts = []
     for ia in ias:
-        if not ia[0]:  # no ingredient, blank
+        if not ia[0]:  # no ingredient, skip, don't care about amounts
             continue
         ingredient = Ingredient.objects.get(pk=int(ia[0]))
         new_ia, created = IngredientAmount.objects.get_or_create(ingredient=ingredient,
@@ -301,6 +308,9 @@ def save_dish(form, request):
     myuser = get_object_or_404(MyUser, user=request.user)
     new_dish.created_by = myuser
     new_dish.save()
+
+    # only keep the ones that survived on this form submit (for updates)
+    new_dish.ingredient_amounts.clear()
     for ia in used_ing_amts:
         new_dish.ingredient_amounts.add(ia)
     form.save_m2m()  # Save the list of tags, another M2M
