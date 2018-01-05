@@ -1,4 +1,8 @@
 $(document).ready(function() {
+  // Make the two sets of grocery list items sortable
+  new Sortable(document.getElementsByClassName('sortable')[0]);
+  new Sortable(document.getElementsByClassName('sortable')[1]);
+
   // CSRF setup for ajax calls
   var csrftoken = getCookie('csrftoken');
   $.ajaxSetup({
