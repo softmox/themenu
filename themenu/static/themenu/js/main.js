@@ -54,6 +54,13 @@ $(document).ready(function() {
     $parentContainer.remove();
   });
 
+  // Cosuing issue for older version of select2
+  // https://github.com/select2/select2/issues/4384#issuecomment-228464364
+	$(document).on('select2:close', 'select', function () {
+      $(this).focus();
+  });
+
+
   // Remove the dummy before submitting to not give blank data
   $("#dish-create-form").submit(function(event) {
     event.preventDefault();
