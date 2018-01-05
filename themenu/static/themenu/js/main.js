@@ -46,6 +46,14 @@ $(document).ready(function() {
     cloneDiv();
   });
 
+  // This one slightly different to bind to newly added "remove-ingredient" buttons
+  $(document).on('click touch', '.remove-ingredient', function(event) {
+    console.log('remove-ingredient');
+    event.preventDefault();
+    var $parentContainer = $(this).parents('.ingredient-container');
+    $parentContainer.remove();
+  });
+
   // Remove the dummy before submitting to not give blank data
   $("#dish-create-form").submit(function(event) {
     event.preventDefault();

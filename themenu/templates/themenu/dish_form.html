@@ -43,6 +43,7 @@
   <!-- start with a dummy, blank field -->
   <div style="display: none" id="ingredient-container-0" class="ingredient-container row fieldWrapper">
     <div class="ingredient-div col-md-6 col-sm-6">
+    <button type="button" class="remove-ingredient btn btn-danger">X</button>
     {{ form.ingredient.errors }}
     {{ form.ingredient.label_tag }}
     {% if field.help_text %}
@@ -65,6 +66,7 @@
   {% with idx=field.name|slice:'10:' %}
   <div id="ingredient-container-{{idx}}" class="ingredient-container row fieldWrapper">
     <div class="ingredient-div col-md-6 col-sm-6">
+    <button type="button" class="remove-ingredient btn btn-danger">X</button>
     {{ form.ingredient.label_tag }}
     {{ field }}
     </div>
@@ -80,8 +82,7 @@
   {% endif %}
   {% endfor %}
 
-  <br><br>
-  To remove ingredients, click "x" on the ingredient select box. <br>
+  <br>
   <button id="add-ingredient">Add another ingredient</button><br>
   <a href="{% url 'ingredient-create' %}" target="_blank"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Create new ingredient</a>
   <br><br>
