@@ -9,24 +9,6 @@ $(document).ready(function() {
     }
   });
 
-  // Api call for the tags for autocomplete
-  // https://select2.github.io/examples.html
-  // var selectDropDowns = $('.select-multiple');
-  // if (selectDropDowns) {
-  //   // console.log(selectDropDowns);
-  //   for (var i = 0; i < selectDropDowns.length; i++) {
-  //     model = $(selectDropDowns[i]).data('model');
-  //     $(selectDropDowns[i]).select2({
-  //       placeholder: 'Start typing for ' + model + ' ...',
-  //       // To include data here, the elements need a "text" field,
-  //       //    as well as the id field
-  //       // data: data
-  //     });
-  //     fetchDataAndAppend('/api/' + model, {}, $(selectDropDowns[i]));
-  //   }
-
-  // }
-
 
   // Search bar: pass to the /dishes/search url
   $('#dish-search-form').submit(function(event) {
@@ -156,29 +138,15 @@ $(document).ready(function() {
 });
 
 function cloneDiv(selector) {
-  //var d2 = $(selector).clone();
-
-  //var $el = $('#id_ingredient');
-
-  //var $el = $('.ingredient-div');
-  var curCount = $('.ingredient-container').length - 1;  // Dont count the dummy
-  curCount++;
-  //var $inContainer = $('.ingredient-container:last');
   var $inContainer = $('#ingredient-container-0');
+  var curCount = $('.ingredient-container').length - 1;  // Dont count the dummy
 
+  curCount++;  // Increment for the new one we are cloning
   var d2 = $inContainer.clone().prop('id', 'ingredient-container-' + curCount).show();
-  //$('#ingredient-div').append(d2);
-  // $inContainer.after(d2);
   $('.ingredient-container:last').after(d2)
-  // $el.remove();
-  // $('.ingredient-div .select2-container').each(function() {
-    // $(this).prop('id', 'testing-' + curCount);
-  // });
 
   function initSelect2() {
     var $d2s = $('.ingredient-div .django-select2');
-    // $d2s.empty();
-    // $d2s.removeData();
     // Calling the method below reinitializes the dropdowns, but duplicates
     $d2s.djangoSelect2();
     // I have 0 idea why there's just one last one that breaks and duplicates... :(
@@ -188,12 +156,6 @@ function cloneDiv(selector) {
   initSelect2();
 }
 
-function resetSelect2() {
-  var $d2s = $('.django-select2');
-  $d2s.empty();
-  $d2s.removeData();
-  $d2s.djangoSelect2();
-}
 
 function dropdownsOpen() {
   var dropIsOpen = false;
