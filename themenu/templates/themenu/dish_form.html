@@ -49,7 +49,7 @@
   <!-- ManyToMany fields- Select2 multiple fields -->
   <!-- start with a dummy, blank field -->
   <div style="display: none" id="ingredient-container-0" class="ingredient-container row fieldWrapper">
-    <div class="ingredient-div col-md-6 col-sm-6">
+    <div class="ingredient-div col-sm-8">
     <button type="button" class="remove-ingredient btn btn-danger">X</button>
     {{ form.ingredient.errors }}
     {{ form.ingredient.label_tag }}
@@ -58,7 +58,7 @@
     {% endif %}
     {{ form.ingredient }}
     </div>
-    <div class="amounts-div col-md-4 col-sm-4">
+    <div class="amounts-div col-sm-4 ">
       {{ form.amount.errors }}
       {{ form.amount.label_tag }}
       {% if field.help_text %}
@@ -72,13 +72,13 @@
   {% if field.name|startswith:'ingredient' and not field.name == 'ingredient' %}
   {% with idx=field.name|slice:'10:' %}
   <div id="ingredient-container-{{idx}}" class="ingredient-container row fieldWrapper">
-    <div class="ingredient-div col-md-6 col-sm-6">
+    <div class="ingredient-div col-sm-8">
     <button type="button" class="remove-ingredient btn btn-danger">X</button>
     {{ form.ingredient.label_tag }}
     {{ field }}
     </div>
 
-    <div class="amounts-div col-md-4 col-sm-4">
+    <div class="amounts-div col-sm-4 ">
     {{ form.amount.label_tag }}
     {% with amountname='amount'|add:idx %}
     {{form|get:amountname}}
