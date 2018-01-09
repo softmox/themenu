@@ -77,7 +77,8 @@ def grocery_list(request):
         """Fetches the future meals for a team, unpurchased first"""
         return GroceryListItem.objects.filter(course__meal__team=team)\
                                       .filter(course__meal__date__gte=date.today())\
-                                      .order_by('purchased', 'course__meal__date')
+                                      .order_by('purchased',
+                                                'ingredient_amount__ingredient__name')
 
     def _get_random_groceries(team):
         """Returns a queryset with all unpurchased RandomGroceryItems"""
@@ -123,9 +124,9 @@ def grocery_list(request):
          ','.join(str(g.id) for g in grocery_items))  # ids_string
         for ingredient_name, (grocery_items, amount_list) in ingredient_grocery_list.items()
     ]
-    # Sort the (ingredient, [grocery1,grocery2,..], purchased) tuples with
-    # ones where everything has been purchased last
-    sorted_items = sorted(mark_all_purchased, key=lambda x: x[2])
+    # Sort the tuples with ones that haven't been purchased first
+    # note: the 4th item in each tuple is the "purchased" boolean
+    sorted_items = sorted(mark_all_purchased, key=lambda x: x[3])
 
     random_grocery_list = _get_random_groceries(team)
     context = {
