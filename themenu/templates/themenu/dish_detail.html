@@ -35,11 +35,9 @@
       {% endif %}
 
       <p>{{object.notes}}</p>
-      <div class="tag thumbs">
+      <div class="tag btn-group ">
         {% for t in object.tags.all %}
-          <div class="col-md-2">
-              <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none">{{ t.name }}</button></a>
-          </div>
+              <a href="{% url 'tag-detail' t.id %}"><button class="btn btn-md btn-default" style="background-color:{{t.color}}; border:none; margin: 10px 1px 0px 1px">{{ t.name }}</button></a>
         {% endfor %}
       </div>
     </div>
