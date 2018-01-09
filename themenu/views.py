@@ -290,8 +290,8 @@ def save_dish(form, request):
     """ Used by both DishCreate and DishUpdate"""
     new_dish = form.save(commit=False)
     # Ingredient and amounts in HTML template may be called "ingredient2", etc.
-    ingredient_keys = [k for k in form.data.keys() if k.startswith('ingredient')]
-    amount_keys = [k for k in form.data.keys() if k.startswith('amount')]
+    ingredient_keys = sorted([k for k in form.data.keys() if k.startswith('ingredient')])
+    amount_keys = sorted([k for k in form.data.keys() if k.startswith('amount')])
 
     # Gather all ingredients and the corresponding amounts to filter empties
     ias = zip(chain.from_iterable(form.data.getlist(key) for key in ingredient_keys),
