@@ -21,7 +21,7 @@ def notify_course_post_save(sender, **kwargs):
     course = kwargs['instance']
     update_fields = kwargs['update_fields'] or ''
     # Only create groceries for "cook" type meals
-    if course.meal.meal_prep != 'cook':
+    if course.meal.meal_prep == 'leftover':
         return
 
     if kwargs['created'] is True:
