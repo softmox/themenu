@@ -21,14 +21,13 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = os.environ.get('DEBUG') or True  # For use on heroku to run in debug sometimes
+DEBUG = os.environ.get('DEBUG') or False  # For use on heroku to run in debug sometimes
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if DEBUG is False:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'w0*kbbnkf46j0adk^gt$*ql8c))9b*zhsa-&a)+d8i)d+o&vyw')
 else:
     SECRET_KEY = 'w0*kbbnkf46j0adk^gt$*ql8c))9b*zhsa-&a)+d8i)d+o&vyw'
-
 
 # Application definition
 
@@ -76,13 +75,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'debug': DEBUG,
+            'debug':
+            DEBUG,
         },
     },
 ]
 
 WSGI_APPLICATION = 'themenu.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -94,9 +93,11 @@ else:
     DB_ENV = 'local' if DEBUG else 'prod'
 
 if DB_ENV == 'local':
-    DATABASES = {'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'themenu'},
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'themenu'
+        },
     }
 else:
     db_from_env = dj_database_url.config(conn_max_age=500)
@@ -150,7 +151,6 @@ STATICFILES_DIRS = [
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -179,13 +179,17 @@ def get_cache():
                 'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
                 'TIMEOUT': 500,
                 'BINARY': True,
-                'OPTIONS': {'tcp_nodelay': True}
+                'OPTIONS': {
+                    'tcp_nodelay': True
+                }
             },
             'select2': {
                 'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
                 'TIMEOUT': 500,
                 'BINARY': True,
-                'OPTIONS': {'tcp_nodelay': True}
+                'OPTIONS': {
+                    'tcp_nodelay': True
+                }
             }
         }
     except:
@@ -198,6 +202,7 @@ def get_cache():
             }
         }
 
+
 CACHES = get_cache()
 
 SELECT2_CACHE_BACKEND = 'select2'
@@ -206,21 +211,20 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = 'index'
 
 LOGIN_EXEMPT_URLS = (  # Used in middleware.py
-   r'^register/$',
- # r'^about\.html$',
- # r'^legal/', # allow any URL under /legal/*
+    r'^register/$',
+    # r'^about\.html$',
+    # r'^legal/', # allow any URL under /legal/*
 )
 
 LOGIN_RESTRICTED_URLS = (  # Used in middleware.py
-   r'^calendar/',
-   r'^grocery_list/$',
-   r'.*create.*',
-   r'.*update.*',
-   r'.*delete.*',
-   r'^password/',  # These are password reset/ change urls
-   r'^courseupdate/',
-   r'^groceryupdate/',
-   r'^teams.*/join',  # Cant join team without signup, but can view
-   r'^select2/',
+    r'^calendar/',
+    r'^grocery_list/$',
+    r'.*create.*',
+    r'.*update.*',
+    r'.*delete.*',
+    r'^password/',  # These are password reset/ change urls
+    r'^courseupdate/',
+    r'^groceryupdate/',
+    r'^teams.*/join',  # Cant join team without signup, but can view
+    r'^select2/',
 )
-
